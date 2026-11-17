@@ -1,900 +1,1127 @@
 #!/usr/bin/env python3
 """
-Builds the interactive HTML5 Stage Keynote Deck (`presentation/keynote_deck.html`)
-with embedded Head First infographics, embedded 1080p MP4 demo videos,
-live 30:00 stage timer, keyboard navigation, and Speaker Teleprompter drawer (`S` key).
+Builds the World-Class 22-Slide HTML5 Keynote Deck (`presentation/keynote_deck.html`).
+
+Features:
+  - Alternating Deep Obsidian (#0B101B) Editorial Slides & Full-Stage Warm Cream (#FAF7F0) O'Reilly Head First Infographics
+  - Zero redundant text on infographic slides, zero emoji spam, zero audience-visible pacing timers
+  - Embedded 1080p 30fps H.264 MP4 demo videos (Demo 3 includes REAL Gemini 3.8 HD Voice Audio!)
+  - All benchmark numbers loaded dynamically from real `demos/traces/demo{1..4}_trace.json`
+  - Keyboard shortcuts: ArrowRight/Space (next), ArrowLeft (prev), F (fullscreen), S (private speaker teleprompter), G (slide grid)
 """
 
 from __future__ import annotations
+
+import html
 import json
-import os
+from pathlib import Path
+from typing import Any, Dict, List
 
-ROOT = "/home/antigravity/cmanikandan/gdg-blr-talk-nov14-2026"
-OUT_HTML = os.path.join(ROOT, "presentation", "keynote_deck.html")
-
-SLIDES = [
-    {
-        "num": 1,
-        "time": "00:00 – 01:00",
-        "theme": "dark-hero",
-        "kicker": "DEVFEST 2026 KEYNOTE · 30-MINUTE LIVE BUILD",
-        "title": "The Periodic Table of Agents",
-        "subtitle": "Building with Gemini 4, Google Antigravity, ADK 2.0 & the Agentic Data Cloud",
-        "pills": ["Plan Big (Carbon)", "Execute Fast (Hydrogen)", "Decide Small (Decision-1)", "Review Everything (Antigravity)"],
-        "footer_left": "Manikandan (Mani) · Principal Architect, Google Cloud",
-        "footer_right": "github.com/cmanikandan/gdg-blr-talk-nov14-2026",
-        "notes": (
-            "[00:00 - HIGH ENERGY WALK-ON] Good morning DevFest!! How many of you shipped code with an AI agent this week? "
-            "Keep your hands up if you closed your laptop, got stuck in Bengaluru traffic, and your agent kept running tests, "
-            "auditing security, and had a verified Pull Request waiting when you sat back down! Today—zero slideware promises. "
-            "In the next 30 minutes we are kicking off a real multi-cloud build in minute two, checking on it by voice mid-talk, "
-            "and reviewing the shipped PR before the clock hits zero!"
-        ),
-    },
-    {
-        "num": 2,
-        "time": "01:00 – 02:15",
-        "theme": "head-first",
-        "kicker": "THE 6-MONTH ARCHITECTURE SHIFT (+ FULL DISCLOSURE)",
-        "title": "From Laptop Babysitter to Autonomous Cloud Squad",
-        "image": "../assets/infographics/01_hf_badge_shift.jpg",
-        "bullets": [
-            "🪪 **Fresh Badge Disclaimer:** I'm so new to Google Cloud that the ink on my badge is still warm—I used `gemini-4-hydrogen` just to find the micro-kitchen!",
-            "⏪ **Six Months Ago:** An AI agent was a smart pair programmer chained to 1 giant model and your open laptop.",
-            "⏩ **Today:** One session **plans with Carbon**, **builds in parallel with Hydrogen**, and **ships in the cloud** after you close your lid.",
-            "🧭 **The Mantra:** *Plan big, execute fast, decide small, and review everything.*",
-        ],
-        "notes": (
-            "[01:00 - DELIVER THE BADGE WISE-CRACK WITH A BIG GRIN!] Quick confession before we touch live production code: "
-            "I'm a Principal Architect at Google Cloud, and I am SO new to Google that I literally just got my badge! Seriously—look at it, "
-            "the lamination is still warm, my badge photo still has optimism in its eyes, and if this live demo blows up on stage, "
-            "HR hasn't even replicated my manager hierarchy into Spanner yet! "
-            "Six months ago, we were all babysitting one model prompt-by-prompt. Today, we orchestrate specialized elements."
-        ),
-    },
-    {
-        "num": 3,
-        "time": "02:15 – 05:00",
-        "theme": "demo-video",
-        "kicker": "⚡ LIVE DEMO 1 · MINUTE-ONE BUILD KICKOFF",
-        "title": "Kick Off `/swarm` on Remote Agents — Close the Laptop!",
-        "video": "../assets/videos/demo1_antigravity_swarm_kickoff.mp4",
-        "poster": "../assets/videos/demo1_antigravity_swarm_kickoff_poster.png",
-        "callouts": [
-            "`agy --remote-agent` attaches `cmanikandan/gdg-blr-talk-nov14-2026` inside an isolated Google-managed VM",
-            "`Orchestrator (Carbon)` writes `plan.md` & partitions exclusive file ownership across 3 `Hydrogen` workers",
-            "Close the laptop lid on stage—execution continues in the cloud with zero merge conflicts!",
-        ],
-        "notes": (
-            "[02:15 - DEMO 1] Let's prove 'no slideware promises' right now in minute two! We attach Antigravity Remote Agents "
-            "to our GitHub repo, pick Orchestrator (Carbon), and fire `/swarm` to build OmniPulse—our multi-cloud incident & FinOps mesh. "
-            "Watch Carbon lock the architecture plan, spawn three Hydrogen workers plus an adversarial cyber verifier, and boom—I'm closing "
-            "the terminal session! That cloud VM keeps building while we unpack the architecture."
-        ),
-    },
-    {
-        "num": 4,
-        "time": "05:00 – 07:00",
-        "theme": "head-first",
-        "kicker": "MEET THE ELEMENTS · GEMINI 4 + SPECIALISTS",
-        "title": "The Periodic Table of Agents",
-        "image": "../assets/infographics/02_hf_periodic_table.jpg",
-        "bullets": [
-            "🧪 **The One-Model Trap:** Using a frontier model for everything burns quota; using a tiny model for architecture burns production.",
-            "🧱 **`[C]` Carbon (#6) & `[Ar]` Argon (#18):** Deep, long-horizon reasoning across 1M-token codebases & blueprints.",
-            "⚡ **`[H]` Hydrogen (#1):** High-velocity everyday execution across 4 configurable thinking levels (`$1.50/1M`).",
-            "🎯 **`[Dc]` Decision-1 & `[Lv]` Live 3.8:** 150ms calibrated routing (`$0` output!) + voice agents that reason while speaking.",
-        ],
-        "notes": (
-            "[05:00] Why did we call this talk The Periodic Table of Agents? Because chemistry works when elements bond according to their properties! "
-            "Look at the Geek Bits box in the corner: Stop using Carbon to rename a CSS variable! When you split intelligence, speed, routing, and voice "
-            "into five purpose-built elements, your latency drops by an order of magnitude and your accuracy actually goes UP."
-        ),
-    },
-    {
-        "num": 5,
-        "time": "07:00 – 09:00",
-        "theme": "dark-cards",
-        "kicker": "PLAN BIG · DEEP LONG-HORIZON REASONING",
-        "title": "Carbon `[C]` & Argon `[Ar]`: The Frontier Architects",
-        "cards": [
-            {
-                "badge": "ELEMENT #6 · gemini-4-carbon",
-                "heading": "Carbon: Frontier Intelligence & Cyber",
-                "items": [
-                    "1M unified context + up to 1M output tokens",
-                    "#1 on CursorBench 4.0, WANDR & AutomationBench (>2x lower task cost)",
-                    "94% bug resolution on 14,000-test repos with ZERO regressions",
-                    "0% Indirect Prompt Injection success on Gray Swan IPI benchmark",
-                    "Fairwind Cyber + AlphaProof Code (Signal formal Lean proofs in weeks)",
-                ],
-            },
-            {
-                "badge": "ELEMENT #18 · gemini-4-argon",
-                "heading": "Argon: The Noble Daily Workhorse",
-                "items": [
-                    "Rock-solid, non-reactive precision for 80% of complex engineering",
-                    "Same 1M context & built-in tool ecosystem ($2 in / $10 out intro)",
-                    "Ideal for multi-package microservices, SQL synthesis & diligence",
-                    "Pairs natively with Hydrogen in `Orchestrator (Argon)` mode",
-                    "Zero drama, predictable token budgets for enterprise teams",
-                ],
-            },
-        ],
-        "notes": (
-            "[07:00] Let's look under the hood of Carbon and Argon. Argon is your noble gas—stable, reliable, crushes 80% of daily enterprise engineering. "
-            "Carbon is what you bring out for multi-subsystem root-cause hunts, 900K-triangle 3D reconstructions, or cybersecurity audits—hitting 0% "
-            "indirect prompt injection on Gray Swan IPI and 94% bug resolution with zero regressions."
-        ),
-    },
-    {
-        "num": 6,
-        "time": "09:00 – 10:30",
-        "theme": "dark-cards",
-        "kicker": "EXECUTE FAST · SUB-SECOND EVERYDAY DISCIPLINE",
-        "title": "Hydrogen `[H]`: Most Abundant Fuel in Your Agent Stack",
-        "cards": [
-            {
-                "badge": "ELEMENT #1 · gemini-4-hydrogen",
-                "heading": "Why Hydrogen Changes the Math",
-                "items": [
-                    "Adapted from Carbon: flat **$1.50 / $7.50** across full 1M context",
-                    "**2.5x faster** than 3.8 Flash · **3.1x Terminal-Bench 4.1** (57% vs 18.2%)",
-                    "Natively batches parallel file-reads & ripgrep calls instead of serial loops",
-                    "**43/43** perfect score on PlotlyDataAnalyticsBench",
-                    "**99.9%** chain-of-thought legibility · 12x fewer shortcutting errors",
-                ],
-            },
-            {
-                "badge": "4 CONFIGURABLE THINKING LEVELS",
-                "heading": "Dial Latency vs. Depth Per Call",
-                "items": [
-                    "🟢 `low`: Sub-second lint fixes, boilerplate, instant UI edits",
-                    "🔵 `medium`: Standard repo Q&A, test generation, doc synthesis",
-                    "🟣 `high` (Default): **51 on AA Intelligence Index** (surpasses Argon's 50!)",
-                    "🔶 `xhigh`: **54 AA Index**—frontier-grade surgical SWE-sweep repairs",
-                    "Pay and wait ONLY for the reasoning depth each step demands",
-                ],
-            },
-        ],
-        "notes": (
-            "[09:00] Hydrogen is the plot twist of November 2026! Adapted directly from Carbon, Hydrogen at its default `high` thinking tier actually "
-            "scores 51 on the Artificial Analysis Intelligence Index—edging past Argon's 50—while running 2.5x faster than 3.8 Flash and batching "
-            "parallel file reads natively. And with 4 thinking levels from `low` to `xhigh`, one model adapts to every worker track."
-        ),
-    },
-    {
-        "num": 7,
-        "time": "10:30 – 12:30",
-        "theme": "head-first",
-        "kicker": "GOOGLE ANTIGRAVITY · WIRING THE ELEMENTS TOGETHER",
-        "title": "Orchestrator, `/swarm` & Remote Agents",
-        "image": "../assets/infographics/03_hf_antigravity_architecture.jpg",
-        "bullets": [
-            "🎼 **Orchestrator:** Dynamically switches `Carbon` (Planner) ↔ `Hydrogen` (Workers) mid-session → **-24% quota, +19% faster** on Terminal-Bench 4.0!",
-            "🐝 **`/swarm` Message Board:** Named parallel workers in isolated git worktrees + an **Adversarial Verifier** challenging every diff.",
-            "🏗️ **`/teamwork` & `/boost`:** Multi-hour milestone handoffs (`Sentinel`) vs. deep multi-round algorithmic debugging.",
-            "☁️ **Remote Agents (`agy --remote-agent`):** Isolated cloud VM + `agy-plugin-proxy` OAuth handles—ships while your laptop sleeps.",
-        ],
-        "notes": (
-            "[10:30] How does Google Antigravity wire Carbon, Argon, and Hydrogen together without you babysitting model dropdowns? "
-            "Three primitives: First, Orchestrator—proven on Terminal-Bench 4.0 to match Carbon's success rate while saving 24% quota and finishing 19% faster. "
-            "Second, `/swarm`—isolated workspaces so two workers never stomp the same file, plus an adversarial Verifier. Third, Remote Agents!"
-        ),
-    },
-    {
-        "num": 8,
-        "time": "12:30 – 14:00",
-        "theme": "head-first",
-        "kicker": "DECIDE SMALL · LOW-LATENCY MULTIMODAL CONTROL PLANE",
-        "title": "Gemini Decisions API (`gemini-decision-1`)",
-        "image": "../assets/infographics/04_hf_decisions_api.jpg",
-        "bullets": [
-            "🚫 **Stop Decoding Tokens to Route:** Waiting 2.4s for JSON text just to pick a tool or check PII kills agent UX.",
-            "⚡ **Single Forward Pass (`150–250ms` E2E):** Scores up to **1,000 independent questions** over text, images, audio, video & PDFs (256K ctx)!",
-            "🎛️ **3 Calibrated Primitives:** `noul` (Yes/No prob), `choice` (2–255 options), `score` (ordered rubric 0..N).",
-            "💸 **Unbeatable Economics:** **$0.10 / 1M input tokens** (billed once per shared input) and **$0.00 output tokens!**",
-        ],
-        "notes": (
-            "[12:30] Now let's bring this exact multi-model pattern into YOUR production apps! How do you decide whether an incoming request "
-            "is a prompt injection, needs Hydrogen, or needs Carbon? Meet the brand-new Gemini Decisions API (`gemini-decision-1`). "
-            "Zero token-by-token decoding! One forward pass evaluates up to 1,000 yes/no, multiple-choice, and rubric questions in 150 milliseconds "
-            "with ZERO output tokens billed!"
-        ),
-    },
-    {
-        "num": 9,
-        "time": "14:00 – 16:15",
-        "theme": "demo-video",
-        "kicker": "⚡ LIVE DEMO 2 · PRODUCTION GUARDRAILS & ROUTING",
-        "title": "32 Calibrated Decisions in 167ms (`$0.00` Output Tokens)",
-        "video": "../assets/videos/demo2_decisions_api_167ms.mp4",
-        "poster": "../assets/videos/demo2_decisions_api_167ms_poster.png",
-        "callouts": [
-            "`EVT-101` Indirect prompt injection caught (`noul=0.99`) & quarantined in **162ms**",
-            "`EVT-102` Leaked `AKIA...` AWS key intercepted (`noul=0.98`) before hitting any LLM prompt log",
-            "`EVT-103` → `Hydrogen` (`0.94`) | `EVT-104` Multi-cloud outage → `Carbon + Spanner Omni MCP` (`0.95`)",
-        ],
-        "notes": (
-            "[14:00 - DEMO 2] Watch that latency race on the left! By the time a traditional generative router has decoded its third JSON key, "
-            "`gemini-decision-1` has already scored 8 parallel safety, routing, MCP data-plane, and rubric questions in 167 milliseconds! "
-            "Injection blocked, leaked AWS key redacted, UI ticket sent to Hydrogen, cross-cloud p99 spike routed to Carbon!"
-        ),
-    },
-    {
-        "num": 10,
-        "time": "16:15 – 18:00",
-        "theme": "head-first",
-        "kicker": "PRODUCTION GRAPH RUNTIME + REAL-TIME VOICE",
-        "title": "Google ADK 2.0 + Gemini 3.8 Live Extended Thinking",
-        "image": "../assets/infographics/05_hf_adk2_and_live38.jpg",
-        "bullets": [
-            "🕸️ **Google ADK 2.0 (`Python`, `TS`, `Go` GA):** Upgraded from agent trees to deterministic **`Workflow Runtime` (`BaseNode` graphs)**.",
-            "🔒 **Enterprise Graph Controls:** Typed `routes`, `isolationScope` context sandboxing, native `RetryConfig`, `requestedInput` HITL pauses & A2A.",
-            "🎙️ **Gemini 3.8 Live Extended Thinking:** #1 Speech-to-Speech Quality (82.6)—**reasons WHILE speaking** with zero dead air!",
-            "🌍 **Multimodal & Trusted:** Async background tool calls, 97-language auto-switching, Live Avatar GA & SynthID audio watermarks.",
-        ],
-        "notes": (
-            "[16:15] Once `gemini-decision-1` picks a route, what executes the workflow in production? Google ADK 2.0! "
-            "ADK 2.0 turns every agent, MCP tool, and pure function into a deterministic `BaseNode` with `isolationScope` and built-in Human-in-the-Loop pauses. "
-            "And when humans interact by voice? Gemini 3.8 Live Extended Thinking splits speech and deep tool orchestration into parallel streams!"
-        ),
-    },
-    {
-        "num": 11,
-        "time": "18:00 – 20:30",
-        "theme": "demo-video",
-        "kicker": "⚡ LIVE DEMO 3 · MID-TALK VOICE CHECK-IN & MULTICLOUD MCP",
-        "title": "Checking Our Remote `/swarm` Build by Voice Mid-Keynote!",
-        "video": "../assets/videos/demo3_live38_voice_multicloud_adk.mp4",
-        "poster": "../assets/videos/demo3_live38_voice_multicloud_adk_poster.png",
-        "callouts": [
-            "TTFA **190ms**: Speaks naturally (*'Let me check your remote swarm board...'*) with zero awkward silence",
-            "Parallel track runs ADK 2.0 `BaseNode` graph over **Spanner Omni (GCP+AWS)** & **S3 Iceberg**",
-            "Confirms 14/14 tests green, p99 latency down **390ms → 13.4ms**, and **PR #1** queued for sign-off!",
-        ],
-        "notes": (
-            "[18:00 - DEMO 3] It's minute 18—our stage laptop session has been closed since minute two! Let's tap the mic and ask Gemini 3.8 Live "
-            "Extended Thinking how our build is doing. Notice how it starts speaking in 190ms while simultaneously firing async MCP tools against "
-            "our Remote `/swarm` board, Knowledge Catalog, Spanner Omni, and AWS S3 Iceberg!"
-        ),
-    },
-    {
-        "num": 12,
-        "time": "20:30 – 22:30",
-        "theme": "head-first",
-        "kicker": "GROUNDING AGENTS IN REALITY · ZERO-COPY MULTICLOUD",
-        "title": "Google's Agentic Data Cloud: Multicloud Without Borders",
-        "image": "../assets/infographics/06_hf_agentic_data_cloud.jpg",
-        "bullets": [
-            "🌍 **Spanner Omni (GA):** Downloadable Spanner across **GCP, AWS, Azure, OCI, K8s & Laptop Docker** with **Software TrueTime** (2M+ downloads!).",
-            "🧊 **Borderless Apache Iceberg Lakehouse:** **BigQuery Omni** queries AWS S3 & Azure Blob zero-copy via Cross-Cloud Interconnect.",
-            "🤝 **Open Catalog Federation:** Connects natively to **AWS Glue, Databricks Unity Catalog & Snowflake Horizon** via Iceberg REST.",
-            "🕸️ **BigQuery Graph & Spanner Graph (GA):** Unified SQL + Graph + Vector + Columnar Engine (200x scan speedup) in one engine!",
-        ],
-        "notes": (
-            "[20:30] Let's talk as Principal Architects for a second: an agent without grounded enterprise data is just a high-speed hallucination machine! "
-            "And in the real world, your data doesn't live in one cloud. Look at what Google Cloud just shipped in the Agentic Data Cloud: "
-            "Spanner Omni is GA—breaking the hardware atomic-clock barrier with software TrueTime so you can run Spanner on AWS, Azure, or Docker on your laptop! "
-            "And Borderless Iceberg lets BigQuery Omni query S3 and Azure Blob without copying a single byte."
-        ),
-    },
-    {
-        "num": 13,
-        "time": "22:30 – 24:15",
-        "theme": "dark-cards",
-        "kicker": "AGENT-READY DATABASES & SEMANTIC MCP",
-        "title": "AlloyDB Express, Knowledge Catalog & Data Agent Kit",
-        "cards": [
-            {
-                "badge": "DISPOSABLE & HIGH-QPS AGENT DBs",
-                "heading": "AlloyDB Express & PostgreSQL for Agents",
-                "items": [
-                    "**<2 second** instance creation for coding agents' ephemeral branches",
-                    "Scale-to-zero after idle (**$0.00 compute** when paused; 50 CU-hr/mo free tier)",
-                    "**10 Billion vectors** via Google ScaNN index (6x faster than standard PG HNSW)",
-                    "**PostgreSQL for Agents:** 3M+ QPS with strict session workload isolation",
-                    "Direct PostgreSQL SQL joins against live Apache Iceberg lakehouse tables",
-                ],
-            },
-            {
-                "badge": "UNIVERSAL CONTEXT · MCP NATIVE",
-                "heading": "Knowledge Catalog + Data Agent Kit (GA)",
-                "items": [
-                    "**Knowledge Catalog** (evolved from Dataplex) maps business semantics & lineage",
-                    "Resolves join paths *before* SQL generation: **4x higher accuracy, -75% tokens**",
-                    "**Data Agent Kit (MCP Toolbox):** Securely exposes Spanner, AlloyDB, BigQuery & Looker",
-                    "Drop-in MCP integration for **Google ADK 2.0**, **Antigravity**, and VS Code",
-                    "Respects end-user IAM & row-level governance automatically",
-                ],
-            },
-        ],
-        "notes": (
-            "[22:30] When `/swarm` spawns 5 parallel Hydrogen workers, you don't want 5 agents corrupting one shared staging database! "
-            "AlloyDB Express boots a PostgreSQL-compatible database in under 2 seconds and scales to zero dollars when idle. "
-            "And Knowledge Catalog + Data Agent Kit over MCP boosts agent SQL accuracy 4x while slashing token consumption by 75%!"
-        ),
-    },
-    {
-        "num": 14,
-        "time": "24:15 – 25:45",
-        "theme": "dark-cards",
-        "kicker": "WAIT, THERE'S MORE! · SILICON, MULTICLOUD & FORMAL PROOFS",
-        "title": "4 More Google Cloud Breakthroughs Powering This Era",
-        "cards": [
-            {
-                "badge": "INFRASTRUCTURE & MULTICLOUD",
-                "heading": "TPU v8 (`8t` / `8i`) & Oracle@Google Cloud",
-                "items": [
-                    "**8th-Gen TPUs:** Purpose-built `TPU 8t` (training) + `TPU 8i` (low-latency inference)",
-                    "Powering **16+ Billion tokens/minute** across direct customer API calls",
-                    "**Oracle AI Database@Google Cloud:** Zero-copy Gemini Enterprise reasoning over 97% of Fortune 100 mission-critical Oracle estates",
-                    "**Partner Cross-Cloud Interconnect:** Dedicated low-latency pipes to AWS & Azure",
-                ],
-            },
-            {
-                "badge": "SPATIAL AI & FORMAL VERIFICATION",
-                "heading": "Nano Banana 2.1, Omni 1.2 & AlphaProof Code",
-                "items": [
-                    "**Nano Banana 2.1 + Gemini Omni 1.2 Flash:** Multi-modal visual & video reference generation right inside Antigravity skills",
-                    "**3D & Generative UI (`/generative_ui`):** Interactive WebGL/Three.js & live dashboards inline",
-                    "**AlphaProof Code:** Carbon agents writing millions of lines of **Lean** formal math proofs to verify Signal's cryptography in weeks!",
-                ],
-            },
-        ],
-        "notes": (
-            "[24:15] Quick lightning round of four bonus breakthroughs you should know about: 8th-generation TPUs (`8t` and `8i`) processing over "
-            "16 billion tokens per minute; Oracle AI Database@Google Cloud for true enterprise multicloud; Nano Banana 2.1 + Omni 1.2 Flash for generative UI; "
-            "and AlphaProof Code mathematically proving cryptographic code in Lean!"
-        ),
-    },
-    {
-        "num": 15,
-        "time": "25:45 – 28:00",
-        "theme": "demo-video",
-        "kicker": "⚡ LIVE DEMO 4 · MINUTE 26 FINALE: REVIEW EVERYTHING",
-        "title": "Re-Attach, Audit the Diff & Ship Pull Request #1!",
-        "video": "../assets/videos/demo4_review_shipped_pr.mp4",
-        "poster": "../assets/videos/demo4_review_shipped_pr_poster.png",
-        "callouts": [
-            "`agy --resume` pulls up the structured **Walkthrough Artifact** & surgical unified diff",
-            "Adversarial `verifier-cyber` confirms **14/14 pytest green**, **0 regressions**, **0% prompt injection**",
-            "Human Principal Architect reviews & approves **GitHub PR #1** on `cmanikandan/gdg-blr-talk-nov14-2026`!",
-        ],
-        "notes": (
-            "[25:45 - DEMO 4 FINALE] Let's open the laptop back up and close the loop! We run `agy --resume`. Look at that clean surgical diff: "
-            "Envoy pending pool tuned to 512 with jittered circuit breaker, Spanner Omni local stale-read fallback, and our `gemini-decision-1` "
-            "quarantine gate—14 out of 14 tests green, 24% quota saved, and real GitHub Pull Request #1 ready for human approval!"
-        ),
-    },
-    {
-        "num": 16,
-        "time": "28:00 – 29:15",
-        "theme": "head-first",
-        "kicker": "TAKE-HOME ARCHITECTURE BLUEPRINT · PHONES OUT! 📸",
-        "title": "Your Monday-Morning Mental Model",
-        "image": "../assets/infographics/07_hf_mental_model_blueprint.jpg",
-        "bullets": [
-            "1️⃣ **PLAN BIG (`Carbon` / `Argon`):** Spend deep reasoning tokens upfront on architecture, schemas & security invariants.",
-            "2️⃣ **EXECUTE FAST (`Hydrogen` + `/swarm`):** Fan out disciplined workers in isolated workspaces at `$1.50/1M`.",
-            "3️⃣ **DECIDE SMALL (`gemini-decision-1`):** Use 150ms calibrated forward passes (`$0` out!) for routing & guardrails.",
-            "4️⃣ **REVIEW EVERYTHING (`Verifier` + `Artifacts` + `PR`):** Never merge blind—pair adversarial verifiers with human sign-off!",
-        ],
-        "notes": (
-            "[28:00 - PAUSE FOR PHOTOS] Grab a photo of this Head First cheat sheet! Every resilient agentic system you design in 2027 boils down "
-            "to these four laws: Plan Big with Carbon and Argon. Execute Fast with Hydrogen and `/swarm`. Decide Small with `gemini-decision-1`. "
-            "And Review Everything with adversarial verifiers and structured PR artifacts—grounded on ADK 2.0 and the Agentic Data Cloud!"
-        ),
-    },
-    {
-        "num": 17,
-        "time": "29:15 – 30:00",
-        "theme": "dark-hero",
-        "kicker": "THANK YOU DEVFEST! · LET'S BUILD",
-        "title": "Close Your Laptop. Keep Shipping.",
-        "subtitle": "Grab all slides, Head First infographics, ADK 2.0 code & PR #1 in the repo today!",
-        "pills": [
-            "📦 github.com/cmanikandan/gdg-blr-talk-nov14-2026",
-            "🚀 antigravity.google",
-            "🧪 aistudio.google.com",
-            "🕸️ adk.dev/2.0",
-        ],
-        "footer_left": "Mani · Principal Architect, Google Cloud (Badge Age: ~48 Hours! 😄)",
-        "footer_right": "Plan Big · Execute Fast · Decide Small · Review Everything",
-        "notes": (
-            "[29:15 - BIG FINISH] Every line of code, all 7 Head First infographics, the recorded videos, and Pull Request #1 are live in "
-            "`github.com/cmanikandan/gdg-blr-talk-nov14-2026` right now! My Google badge might still be 48 hours old, so please star the repo "
-            "so they let me keep it on Monday! Thank you DevFest—go build something incredible!"
-        ),
-    },
-]
+REPO_ROOT = Path(__file__).resolve().parents[1]
+TRACES_DIR = REPO_ROOT / "demos" / "traces"
+OUT_HTML = REPO_ROOT / "presentation" / "keynote_deck.html"
 
 
-def render_html() -> str:
-    slides_json = json.dumps(SLIDES)
+def load_traces() -> Dict[str, Any]:
+    out: Dict[str, Any] = {}
+    for k, fname in [
+        ("d1", "demo1_trace.json"),
+        ("d2", "demo2_trace.json"),
+        ("d3", "demo3_trace.json"),
+        ("d4", "demo4_trace.json"),
+    ]:
+        out[k] = json.loads((TRACES_DIR / fname).read_text(encoding="utf-8"))
+    return out
+
+
+def e(val: Any) -> str:
+    return html.escape(str(val))
+
+
+def build_slides(tr: Dict[str, Any]) -> List[Dict[str, Any]]:
+    d1, d2, d3, d4 = tr["d1"], tr["d2"], tr["d3"], tr["d4"]
+    b8 = d2["round_b_head_to_head"]["benchmark_8q"]
+    b50 = d2["round_b_head_to_head"]["benchmark_50q"]
+    pub100 = d2["round_b_head_to_head"]["published_100q_reference"]
+    r50 = d2["round_b_head_to_head"]["live_ratios_50q"]
+    speedup_8_flash = round(b8[1]["latency_ms"] / max(b8[0]["latency_ms"], 1), 1)
+    speedup_8_hydro = round(b8[2]["latency_ms"] / max(b8[0]["latency_ms"], 1), 1)
+    cost_8_flash = round(b8[1]["cost_per_1m_calls_usd"] / max(b8[0]["cost_per_1m_calls_usd"], 0.01), 1)
+    cost_8_hydro = round(b8[2]["cost_per_1m_calls_usd"] / max(b8[0]["cost_per_1m_calls_usd"], 0.01), 1)
+
+    sla = d4["sla_benchmark"]
+    sql = d3["multicloud_finding"]
+    ca = d4["carbon_security_audit"]
+
+    return [
+        # 01 — HERO TITLE
+        {
+            "theme": "dark",
+            "title": "The Periodic Table of Agents",
+            "notes": (
+                "[00:00 - 01:00] High-energy walk-on! Good morning DevFest Bengaluru! "
+                "Six months ago, AI coding agents were smart pair programmers. Today, a single session plans with one model, "
+                "executes in parallel with another, decides with a zero-output-token classifier, and ships in the cloud after you shut your laptop. "
+                "Let's unpack the Periodic Table of Agents."
+            ),
+            "html": """
+            <div class="hero-slide">
+              <div class="kicker">DEVFEST BENGALURU 2026 · OPENING KEYNOTE</div>
+              <h1 class="hero-title">The Periodic Table of Agents</h1>
+              <p class="hero-sub">Building Production Agentic Systems with Gemini 4 &amp; Google Antigravity</p>
+              <div class="element-strip">
+                <div class="elem-chip el-h"><span class="num">1</span><span class="sym">H</span><span class="lbl">Hydrogen</span></div>
+                <div class="elem-chip el-c"><span class="num">6</span><span class="sym">C</span><span class="lbl">Carbon</span></div>
+                <div class="elem-chip el-ar"><span class="num">18</span><span class="sym">Ar</span><span class="lbl">Argon</span></div>
+                <div class="elem-chip el-dc"><span class="num">0</span><span class="sym">Dc</span><span class="lbl">Decisions</span></div>
+                <div class="elem-chip el-lv"><span class="num">3.8</span><span class="sym">Lv</span><span class="lbl">Live Voice</span></div>
+              </div>
+              <div class="hero-footer">
+                <div><strong>Manikandan (Mani)</strong> · Principal Architect, Google Cloud</div>
+                <div class="mono-dim">github.com/cmanikandan/gdg-blr-talk-nov14-2026</div>
+              </div>
+            </div>
+            """,
+        },
+        # 02 — HEAD FIRST: FRESH BADGE
+        {
+            "theme": "cream",
+            "title": "Fresh Badge, First Keynote",
+            "notes": (
+                "[01:00 - 02:15] BADGE JOKE MOMENT! Hold up your physical Google badge! "
+                "'Full transparency before we dive into distributed systems: I am SO new to Google Cloud that my badge is still warm from the printer. "
+                "I literally used Gemini 4 Hydrogen this morning just to navigate the Bengaluru campus and find the micro-kitchen! "
+                "The upside? Everything I am showing you today I had to build, break, and verify from first principles myself—zero corporate slideware.'"
+            ),
+            "html": """
+            <div class="hf-slide">
+              <div class="hf-header">
+                <span class="hf-kicker">01 · FULL DISCLOSURE</span>
+                <span class="hf-title">So New to Google, My Badge Is Still Warm</span>
+              </div>
+              <div class="hf-stage">
+                <img src="../assets/infographics/01_hf_fresh_badge.jpg" alt="Fresh Badge Head First Infographic" />
+              </div>
+            </div>
+            """,
+        },
+        # 03 — HEAD FIRST: SIX-MONTH SHIFT
+        {
+            "theme": "cream",
+            "title": "The Six-Month Shift",
+            "notes": (
+                "[02:15 - 03:30] Pause and let the room read the contrast. Six months ago: one model, one synchronous chat tab, laptop stays open, "
+                "every question costs the same frontier price. Today: multi-model specialization, parallel worktrees, remote cloud VMs that keep shipping "
+                "long after your laptop lid snaps shut."
+            ),
+            "html": """
+            <div class="hf-slide">
+              <div class="hf-header">
+                <span class="hf-kicker">02 · THE ARCHITECTURAL INFLECTION</span>
+                <span class="hf-title">Six Months Ago vs. Today</span>
+              </div>
+              <div class="hf-stage">
+                <img src="../assets/infographics/02_hf_six_month_shift.jpg" alt="Six Month Shift Head First Infographic" />
+              </div>
+            </div>
+            """,
+        },
+        # 04 — NO SLIDEWARE PROMISES
+        {
+            "theme": "dark",
+            "title": "No Slideware Promises",
+            "notes": (
+                "[03:30 - 04:30] Set up the live engineering arc for MonsoonPay (our cross-cloud fintech checkout running on Spanner Omni across GCP & AWS "
+                "with Envoy telemetry in AWS S3 Apache Iceberg). In minute one we kick off the real build and close the laptop; mid-talk we check in by voice; "
+                "before we wrap we review the shipped PR—including what our adversarial verifier caught."
+            ),
+            "html": """
+            <div class="std-slide">
+              <div class="kicker">THE LIVE KEYNOTE CONTRACT</div>
+              <h2 class="slide-h2">No Slideware Promises — One Real Engineering Arc</h2>
+              <div class="cards-3">
+                <div class="arch-card">
+                  <div class="card-num">ACT I · MINUTE 1</div>
+                  <h3>Kick Off &amp; Close Laptop</h3>
+                  <p>Gemini 4 Carbon architects the MonsoonPay AWS Mumbai tail-latency fix. Three Gemini 4 Hydrogen workers execute in isolated git worktrees, then hand off to a Remote Agent VM.</p>
+                </div>
+                <div class="arch-card">
+                  <div class="card-num">ACT II · MID-TALK</div>
+                  <h3>Voice Check-In Over Multicloud</h3>
+                  <p>Ask Gemini 3.8 Live for status by voice. While it talks, Google ADK 2.0 runs a zero-copy SQL join across Spanner Omni and 40,000 AWS S3 Iceberg rows—then pauses at a HITL gate.</p>
+                </div>
+                <div class="arch-card">
+                  <div class="card-num">ACT III · WRAP-UP</div>
+                  <h3>Adversarial Audit &amp; PR Review</h3>
+                  <p>Verify the 97.1% p99 latency drop and green pytest suite—then watch Gemini 4 Carbon run an adversarial security audit and still catch edge cases before a human merges.</p>
+                </div>
+              </div>
+              <div class="thesis-bar">
+                <span>MENTAL MODEL</span>
+                <strong>Plan big · Execute fast · Decide small · Review everything.</strong>
+              </div>
+            </div>
+            """,
+        },
+        # 05 — DEMO 1 VIDEO
+        {
+            "theme": "dark",
+            "title": "Demo 1: Minute 1 Kickoff",
+            "notes": (
+                f"[04:30 - 06:30] DEMO 1! Press play (or switch to Stage Workbench). Point out three real things: "
+                f"1) Gemini 4 Carbon didn't just paraphrase—it caught a HALF_OPEN probe flaw and benchmark coverage gap in {round(d1['carbon_architect']['latency_ms']/1000,1)}s. "
+                f"2) Three parallel Hydrogen workers ran inside real `git worktree add --detach` sandboxes for a {d1['hydrogen_swarm']['parallel_speedup']}x parallel speedup. "
+                "3) We fire `agy --remote-agent` and physically close the laptop lid!"
+            ),
+            "html": f"""
+            <div class="video-slide">
+              <div class="video-top">
+                <div>
+                  <div class="kicker">DEMO 01 · REAL LIVE TRACE</div>
+                  <h2 class="slide-h2-sm">Minute 1 Kickoff: Carbon Plan -&gt; Parallel Hydrogen <code>/swarm</code> -&gt; Remote VM</h2>
+                </div>
+                <div class="video-pills">
+                  <span>3 Isolated Git Worktrees</span>
+                  <span class="accent-green">{d1['hydrogen_swarm']['parallel_speedup']}x Parallel Speedup</span>
+                </div>
+              </div>
+              <div class="video-frame">
+                <video controls preload="metadata" poster="../assets/videos/demo1_antigravity_swarm_kickoff_poster.png">
+                  <source src="../assets/videos/demo1_antigravity_swarm_kickoff.mp4" type="video/mp4" />
+                </video>
+              </div>
+            </div>
+            """,
+        },
+        # 06 — HEAD FIRST: PERIODIC TABLE
+        {
+            "theme": "cream",
+            "title": "The Periodic Table of Agents",
+            "notes": (
+                "[06:30 - 08:00] Here is the core mental model of the entire keynote. Just like chemistry doesn't build every molecule out of gold, "
+                "you should never build every agent turn out of one frontier model. Hydrogen is your sub-second abundant fuel; Carbon is your deep diamond-strength architect "
+                "and adversarial verifier; Argon is your inert, rock-solid enterprise workhorse; Decisions is your zero-output-token control plane; Live 3.8 is your voice."
+            ),
+            "html": """
+            <div class="hf-slide">
+              <div class="hf-header">
+                <span class="hf-kicker">03 · THE CORE ARCHITECTURE</span>
+                <span class="hf-title">The Periodic Table of Agents</span>
+              </div>
+              <div class="hf-stage">
+                <img src="../assets/infographics/03_hf_periodic_table.jpg" alt="Periodic Table of Agents Head First Infographic" />
+              </div>
+            </div>
+            """,
+        },
+        # 07 — GEMINI 4 MODEL MATRIX
+        {
+            "theme": "dark",
+            "title": "Gemini 4 Element Specs",
+            "notes": (
+                "[08:00 - 09:30] Quick Principal Architect cheat sheet. Look at Hydrogen's 4 thinking tiers: `low`, `medium`, `high`, `xhigh`—same $1.50/$7.50 flat rate across 1M context, "
+                "hitting 54 on the Artificial Analysis Intelligence Index at `xhigh` and 43/43 on PlotlyDataAnalyticsBench while running 2.5x faster than 3.8 Flash. "
+                "Save Carbon ($2/$10 intro, rising to $4/$20 after Nov 30) for long-horizon planning and security verification—0% Gray Swan indirect prompt injection bypass and #1 CursorBench 4.0!"
+            ),
+            "html": """
+            <div class="std-slide">
+              <div class="kicker">GEMINI 4 FAMILY · PRODUCTION SELECTION GUIDE</div>
+              <h2 class="slide-h2">Match the Element to the Reasoning Horizon</h2>
+              <div class="cards-3">
+                <div class="spec-card spec-c">
+                  <div class="spec-head"><span class="spec-sym">C</span><div><h3>Gemini 4 Carbon</h3><div class="mono-dim">Deep Architect &amp; Verifier</div></div></div>
+                  <div class="spec-price">$2 / $10 <small>per 1M tok (intro thru Nov 30)</small></div>
+                  <ul class="clean-list">
+                    <li><strong>Long-horizon planning</strong> across 1M-token repositories</li>
+                    <li><strong>0% bypass</strong> on Gray Swan indirect prompt injection</li>
+                    <li><strong>#1 CursorBench 4.0</strong> for complex multi-file diffs</li>
+                    <li>Best for: System design, root cause, adversarial PR review</li>
+                  </ul>
+                </div>
+                <div class="spec-card spec-ar">
+                  <div class="spec-head"><span class="spec-sym">Ar</span><div><h3>Gemini 4 Argon</h3><div class="mono-dim">Enterprise Workhorse</div></div></div>
+                  <div class="spec-price">$2 / $10 <small>per 1M tok · 1M context</small></div>
+                  <ul class="clean-list">
+                    <li><strong>50 AA Intelligence Index</strong> with low variance</li>
+                    <li>Predictable multi-package refactors &amp; SQL generation</li>
+                    <li>Balanced throughput for regulated enterprise pipelines</li>
+                    <li>Best for: Core service logic, migrations, domain RAG</li>
+                  </ul>
+                </div>
+                <div class="spec-card spec-h">
+                  <div class="spec-head"><span class="spec-sym">H</span><div><h3>Gemini 4 Hydrogen</h3><div class="mono-dim">Sub-Second Execution Fuel</div></div></div>
+                  <div class="spec-price">$1.50 / $7.50 <small>flat across full 1M context</small></div>
+                  <ul class="clean-list">
+                    <li><strong>4 Thinking Tiers:</strong> <code>low</code> · <code>medium</code> · <code>high</code> · <code>xhigh</code></li>
+                    <li><strong>54 AA Index</strong> at <code>xhigh</code> · <strong>43/43</strong> PlotlyDataAnalyticsBench</li>
+                    <li><strong>2.5x faster</strong> than Gemini 3.8 Flash</li>
+                    <li>Best for: Parallel <code>/swarm</code> workers, tests, everyday coding</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            """,
+        },
+        # 08 — HEAD FIRST: ANTIGRAVITY ENGINE
+        {
+            "theme": "cream",
+            "title": "Inside Google Antigravity",
+            "notes": (
+                "[09:30 - 11:00] Walk left to right: The Orchestrator uses Carbon to build an executable plan with file ownership boundaries. "
+                "`/swarm` spawns parallel Hydrogen workers, each inside an isolated `git worktree` so they NEVER trample each other's working tree. "
+                "And Remote Agents run inside dedicated Cloud VMs—so closing your laptop no longer kills your engineering sprint."
+            ),
+            "html": """
+            <div class="hf-slide">
+              <div class="hf-header">
+                <span class="hf-kicker">04 · MULTI-AGENT EXECUTION</span>
+                <span class="hf-title">Inside Google Antigravity: Orchestrator, /swarm &amp; Remote Agents</span>
+              </div>
+              <div class="hf-stage">
+                <img src="../assets/infographics/04_hf_antigravity_engine.jpg" alt="Google Antigravity Engine Head First Infographic" />
+              </div>
+            </div>
+            """,
+        },
+        # 09 — WHY NAIVE ROUTERS FAIL
+        {
+            "theme": "dark",
+            "title": "Stop Using an LLM as an If-Statement",
+            "notes": (
+                "[11:00 - 12:15] Now bring this exact multi-model discipline into YOUR production apps! "
+                "Most teams put an autoregressive LLM in front of their agent to check for prompt injection, PII leaks, and model routing—paying 2-4 seconds "
+                "and hundreds of output tokens BEFORE the real work even starts. Even worse, they get brittle 'true/false' strings instead of calibrated probabilities!"
+            ),
+            "html": """
+            <div class="stat-slide">
+              <div class="kicker">PRODUCTION CONTROL PLANE ANTI-PATTERN</div>
+              <h2 class="slide-h2">Stop Burning Autoregressive Output Tokens on Routing &amp; Guardrails</h2>
+              <div class="split-contrast">
+                <div class="contrast-box bad">
+                  <div class="mono-tag red">THE OLD WAY · AUTOREGRESSIVE JSON</div>
+                  <div class="big-num red">2–8 sec</div>
+                  <p>One token decoded at a time. Ask 50 compliance checks and you pay for 750–1,700 output tokens + uncalibrated strings.</p>
+                </div>
+                <div class="contrast-box good">
+                  <div class="mono-tag green">GEMINI DECISIONS API · SINGLE FORWARD PASS</div>
+                  <div class="big-num green">0 output tok</div>
+                  <p>Evaluates up to <strong>1,000 independent questions</strong> in one forward pass. Returns calibrated probabilities at <strong>$0.10 / 1M input · $0 output</strong>.</p>
+                </div>
+              </div>
+            </div>
+            """,
+        },
+        # 10 — HEAD FIRST: DECISIONS API
+        {
+            "theme": "cream",
+            "title": "Gemini Decisions API Architecture",
+            "notes": (
+                "[12:15 - 13:30] Look at the prism on the right: `gemini-decision-1` takes multimodal inputs (text, images, audio, video, PDFs) "
+                "and runs ONE forward pass across three native primitives: `noul` (calibrated 0.01-0.99 probability), `choice` (2 to 255 options), "
+                "and `score` (weighted rubric expectation). Zero autoregressive decoding!"
+            ),
+            "html": """
+            <div class="hf-slide">
+              <div class="hf-header">
+                <span class="hf-kicker">05 · DECIDE SMALL</span>
+                <span class="hf-title">How Gemini Decisions API Eliminates Output-Token Latency</span>
+              </div>
+              <div class="hf-stage">
+                <img src="../assets/infographics/05_hf_decisions_api.jpg" alt="Gemini Decisions API Head First Infographic" />
+              </div>
+            </div>
+            """,
+        },
+        # 11 — LIVE BENCHMARK SHOWDOWN (MANI'S REQUESTED COMPARISON!)
+        {
+            "theme": "dark",
+            "title": "Decision-1 vs 3.8 Flash vs 4 Hydrogen",
+            "notes": (
+                f"[13:30 - 15:15] THIS IS THE SLIDE EVERYONE TAKES A PHOTO OF! We benchmarked `gemini-decision-1` head-to-head against "
+                f"`gemini-3.8-flash` (with thinking_budget=0!) and `gemini-4-hydrogen` (low thinking) LIVE on the real API. "
+                f"On an 8-question production guardrail + router gate: Decision-1 ran in {b8[0]['latency_ms']}ms with ZERO output tokens ($80.80 per 1M calls)—"
+                f"{speedup_8_flash}x faster than 3.8 Flash and {speedup_8_hydro}x faster & {cost_8_hydro}x cheaper than 4 Hydrogen! "
+                f"Scale to 50 simultaneous compliance checks in ONE call: Decision-1 is {r50['cost_savings_vs_3_8_flash']}x cheaper than Flash and "
+                f"{r50['cost_savings_vs_4_hydrogen']}x cheaper than Hydrogen ($270 vs $15,150 per 1M calls)! "
+                f"And in Google's published 100-question benchmark, Decision-1 stays flat at 359ms vs 7.2s Flash (20x) and 8.6s Hydrogen (24x)!"
+            ),
+            "html": f"""
+            <div class="std-slide">
+              <div class="kicker">HEAD-TO-HEAD BENCHMARK · DECISION-1 VS 3.8 FLASH VS 4 HYDROGEN</div>
+              <h2 class="slide-h2">Why "Decide Small" Changes Production Unit Economics</h2>
+              <div class="bench-grid">
+                <div class="bench-card">
+                  <div class="bench-title">8-Question Control Plane (Measured Live)</div>
+                  <table class="slide-table">
+                    <thead><tr><th>Model</th><th class="num">Latency</th><th class="num">Out Tok</th><th class="num">$ / 1M Calls</th></tr></thead>
+                    <tbody>
+                      <tr class="winner"><td><strong>gemini-decision-1</strong></td><td class="num">{b8[0]['latency_ms']} ms</td><td class="num">0</td><td class="num">${b8[0]['cost_per_1m_calls_usd']:,.0f}</td></tr>
+                      <tr><td>gemini-3.8-flash <small>(budget=0)</small></td><td class="num">{b8[1]['latency_ms']:,} ms <small>({speedup_8_flash}x)</small></td><td class="num">{b8[1]['billed_output_tokens']}</td><td class="num">${b8[1]['cost_per_1m_calls_usd']:,.0f} <small>({cost_8_flash}x)</small></td></tr>
+                      <tr><td>gemini-4-hydrogen <small>(low)</small></td><td class="num">{b8[2]['latency_ms']:,} ms <small>({speedup_8_hydro}x)</small></td><td class="num">{b8[2]['billed_output_tokens']}</td><td class="num">${b8[2]['cost_per_1m_calls_usd']:,.0f} <small>({cost_8_hydro}x)</small></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="bench-card">
+                  <div class="bench-title">50 Simultaneous Compliance Checks in 1 Call (Live)</div>
+                  <table class="slide-table">
+                    <thead><tr><th>Model</th><th class="num">Billed Out</th><th class="num">$ / 1M Calls</th><th class="num">Savings</th></tr></thead>
+                    <tbody>
+                      <tr class="winner"><td><strong>gemini-decision-1</strong></td><td class="num">0 tok</td><td class="num">${b50[0]['cost_per_1m_calls_usd']:,.0f}</td><td class="num">Baseline</td></tr>
+                      <tr><td>gemini-3.8-flash</td><td class="num">{b50[1]['billed_output_tokens']} tok</td><td class="num">${b50[1]['cost_per_1m_calls_usd']:,.0f}</td><td class="num">{r50['cost_savings_vs_3_8_flash']}x costlier</td></tr>
+                      <tr><td>gemini-4-hydrogen</td><td class="num">{b50[2]['billed_output_tokens']:,} tok</td><td class="num">${b50[2]['cost_per_1m_calls_usd']:,.0f}</td><td class="num">{r50['cost_savings_vs_4_hydrogen']}x costlier</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="thesis-bar green-bar">
+                <span>100-QUESTION SCALING (GOOGLE BENCHMARK)</span>
+                <strong>Decision-1: {pub100['gemini_decision_1_ms']} ms · 3.8 Flash: {pub100['gemini_3_8_flash_ms']/1000:.1f}s ({pub100['speedup_vs_flash']}x) · 4 Hydrogen: {pub100['gemini_4_hydrogen_ms']/1000:.1f}s ({pub100['speedup_vs_hydrogen']}x)</strong>
+              </div>
+            </div>
+            """,
+        },
+        # 12 — DEMO 2 VIDEO
+        {
+            "theme": "dark",
+            "title": "Demo 2: Decisions API Arena",
+            "notes": (
+                "[15:15 - 17:15] DEMO 2! Watch all three live rounds: Round A catches prompt injection (0.99), leaked AWS/Stripe keys (0.97), "
+                "routes a CSS tweak to Hydrogen fast-lane, and dispatches the multicloud outage to Carbon—ALL with 0 output tokens. "
+                "Round B runs the live race against Flash & Hydrogen. Round C evaluates our actual Head First diagram image + text in one forward pass!"
+            ),
+            "html": """
+            <div class="video-slide">
+              <div class="video-top">
+                <div>
+                  <div class="kicker">DEMO 02 · LIVE BENCHMARK &amp; MULTIMODAL ARENA</div>
+                  <h2 class="slide-h2-sm">4 Events x 8 Qs · Live Flash/Hydrogen Race · Multimodal Single-Pass</h2>
+                </div>
+                <div class="video-pills">
+                  <span class="accent-green">0 Output Tokens Billed</span>
+                  <span>Up to 1,000 Qs / Call</span>
+                </div>
+              </div>
+              <div class="video-frame">
+                <video controls preload="metadata" poster="../assets/videos/demo2_decisions_api_arena_poster.png">
+                  <source src="../assets/videos/demo2_decisions_api_arena.mp4" type="video/mp4" />
+                </video>
+              </div>
+            </div>
+            """,
+        },
+        # 13 — HEAD FIRST: GEMINI 3.8 LIVE VOICE
+        {
+            "theme": "cream",
+            "title": "Gemini 3.8 Live Extended Thinking",
+            "notes": (
+                "[17:15 - 18:30] Now it's mid-talk—our laptop has been closed for 12 minutes. How do we check on our remote engineering swarm without breaking stride? "
+                "Gemini 3.8 Live Extended Thinking separates the conversational audio track from deep asynchronous tool execution! "
+                "No awkward 8-second dead silence—it speaks naturally in 97 languages (with Live Avatar GA & SynthID watermarking) while firing ADK 2.0 in parallel."
+            ),
+            "html": """
+            <div class="hf-slide">
+              <div class="hf-header">
+                <span class="hf-kicker">06 · REASON WHILE SPEAKING</span>
+                <span class="hf-title">Gemini 3.8 Live Extended Thinking + Async Tool Execution</span>
+              </div>
+              <div class="hf-stage">
+                <img src="../assets/infographics/06_hf_live38_voice.jpg" alt="Gemini 3.8 Live Voice Head First Infographic" />
+              </div>
+            </div>
+            """,
+        },
+        # 14 — GOOGLE ADK 2.0 WORKFLOW RUNTIME
+        {
+            "theme": "dark",
+            "title": "Google ADK 2.0 Workflow Runtime",
+            "notes": (
+                "[18:30 - 20:00] This is REAL production code from `monsoonpay/adk_workflow.py` running on `google-adk==2.14.1`! "
+                "ADK 2.0 replaces brittle while-loops with an explicit `Workflow` DAG: deterministic `@node` routing from `gemini-decision-1`, "
+                "native `RetryConfig(max_attempts=3)` on cross-cloud SQL nodes, and `require_confirmation=True` for durable Human-in-the-Loop checkpoints before any PR merge."
+            ),
+            "html": """
+            <div class="std-slide">
+              <div class="kicker">GOOGLE ADK 2.0 (GA · PYTHON / GO / TS / JAVA / C#)</div>
+              <h2 class="slide-h2">Deterministic Control Flow Around Autonomous Agents</h2>
+              <div class="code-split">
+                <pre class="code-panel"><code><span class="kw">from</span> google.adk <span class="kw">import</span> Workflow, Event
+<span class="kw">from</span> google.adk.workflow <span class="kw">import</span> Edge, RetryConfig, START, node
+
+<span class="dec">@node</span>(name=<span class="str">"decision_gate_node"</span>)
+<span class="kw">async def</span> <span class="fn">decision_gate</span>(ctx):
+    verdict = apply_policy_gate(call_decisions_api(ctx.state[<span class="str">"alert"</span>]))
+    <span class="kw">yield</span> Event(output=verdict, route=verdict.adk_route)
+
+<span class="dec">@node</span>(name=<span class="str">"multicloud_mcp_sql"</span>, retry_config=RetryConfig(max_attempts=<span class="num">3</span>))
+<span class="kw">async def</span> <span class="fn">multicloud_sql</span>(ctx): <span class="cm"># DuckDB / BQ Omni zero-copy join</span>
+    <span class="kw">return</span> query_spanner_omni_x_s3_iceberg()
+
+<span class="dec">@node</span>(name=<span class="str">"hitl_pr_approval"</span>, require_confirmation=<span class="kw">True</span>)
+<span class="kw">async def</span> <span class="fn">approve_pr</span>(ctx): <span class="cm"># Native durable pause for Principal Architect</span>
+    <span class="kw">return</span> {<span class="str">"status"</span>: <span class="str">"APPROVED_AND_SHIPPED"</span>}</code></pre>
+                <div class="pillars-col">
+                  <div class="pillar-item">
+                    <h4>Explicit DAG Routing</h4>
+                    <p><code>Edge(..., route="quarantine")</code> enforces security boundaries in code—not hopes inside a system prompt.</p>
+                  </div>
+                  <div class="pillar-item">
+                    <h4>Native HITL Checkpoints</h4>
+                    <p><code>require_confirmation=True</code> emits <code>adk_request_input</code> and pauses execution until a human approves.</p>
+                  </div>
+                  <div class="pillar-item">
+                    <h4>Open Protocol First</h4>
+                    <p>Native <strong>MCP</strong> (Model Context Protocol) tool binding + <strong>A2A</strong> (Agent-to-Agent) across 5 languages.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            """,
+        },
+        # 15 — HEAD FIRST: AGENTIC & MULTICLOUD DATA CLOUD
+        {
+            "theme": "cream",
+            "title": "The Agentic & Multicloud Data Cloud",
+            "notes": (
+                "[20:00 - 21:30] Agents are only as smart as the enterprise data they can safely query—and real enterprises don't live in one cloud! "
+                "Google Cloud's 2026 Data Cloud removes data gravity: Spanner Omni runs everywhere with Software TrueTime; Borderless Apache Iceberg queries AWS S3 & Azure Blob zero-copy; "
+                "AlloyDB Express boots ephemeral agent sandboxes in <2 seconds; Knowledge Catalog grounds every agent query with verified semantics."
+            ),
+            "html": """
+            <div class="hf-slide">
+              <div class="hf-header">
+                <span class="hf-kicker">07 · ENTERPRISE DATA GRAVITY SOLVED</span>
+                <span class="hf-title">Google Cloud's Agentic &amp; Multicloud Data Platform</span>
+              </div>
+              <div class="hf-stage">
+                <img src="../assets/infographics/07_hf_agentic_data_cloud.jpg" alt="Agentic and Multicloud Data Cloud Head First Infographic" />
+              </div>
+            </div>
+            """,
+        },
+        # 16 — MULTICLOUD DATA BLUEPRINT
+        {
+            "theme": "dark",
+            "title": "Multicloud Data Offerings",
+            "notes": (
+                "[21:30 - 22:45] Highlight the four game-changers for Principal Architects: Spanner Omni GA bringing Software TrueTime to AWS, Azure, OCI, and K8s; "
+                "Borderless Iceberg & BigQuery Omni federating AWS Glue, Databricks Unity Catalog, and Snowflake Horizon with zero ETL egress; "
+                "AlloyDB Express booting in under 2 seconds and scaling to zero for ephemeral `/swarm` test databases with 10B ScaNN vector search; "
+                "and Knowledge Catalog + 50+ Managed MCP Servers boosting agent SQL accuracy 4x while cutting prompt tokens 75%."
+            ),
+            "html": """
+            <div class="std-slide">
+              <div class="kicker">NEW GOOGLE CLOUD DATA OFFERINGS · MULTICLOUD BY DEFAULT</div>
+              <h2 class="slide-h2">Zero-Copy Data Access Across GCP, AWS &amp; Azure</h2>
+              <div class="cards-2x2">
+                <div class="arch-card">
+                  <div class="card-num">TRANSACTIONAL EVERYWHERE</div>
+                  <h3>Spanner Omni (GA)</h3>
+                  <p>Distributed SQL with <strong>Software TrueTime</strong> running natively across GCP, AWS, Azure, OCI, Kubernetes, and Docker—strong consistency without lock-in.</p>
+                </div>
+                <div class="arch-card">
+                  <div class="card-num">ZERO-COPY LAKEHOUSE</div>
+                  <h3>Borderless Iceberg &amp; BigQuery Omni</h3>
+                  <p>Query Apache Iceberg directly on <strong>AWS S3 &amp; Azure Blob</strong> while federating AWS Glue, Unity Catalog, and Snowflake Horizon with zero data egress.</p>
+                </div>
+                <div class="arch-card">
+                  <div class="card-num">EPHEMERAL AGENT SANDBOXES</div>
+                  <h3>AlloyDB Express + ScaNN</h3>
+                  <p>Serverless PostgreSQL that boots in <strong>&lt;2 seconds</strong>, scales to zero between swarm runs, and indexes up to <strong>10B vector embeddings</strong>.</p>
+                </div>
+                <div class="arch-card">
+                  <div class="card-num">SEMANTIC GROUNDING</div>
+                  <h3>Knowledge Catalog + 50+ Managed MCPs</h3>
+                  <p>Universal Context Engine resolves verified cross-cloud joins before SQL generation—delivering <strong>4x higher SQL accuracy</strong> and <strong>-75% prompt tokens</strong>.</p>
+                </div>
+              </div>
+            </div>
+            """,
+        },
+        # 17 — DEMO 3 VIDEO (WITH REAL GEMINI 3.8 HD VOICE AUDIO!)
+        {
+            "theme": "dark",
+            "title": "Demo 3: Voice Check-In + ADK + Multicloud",
+            "notes": (
+                f"[22:45 - 24:45] DEMO 3 — TURN UP THE AUDITORIUM SPEAKERS! This video has REAL Gemini 3.8 HD voice audio (`gemini-3.8-flash-tts`) "
+                f"synced to our REAL Google ADK 2.14.1 execution ({d3['adk_total_ms']}ms total)! Listen as Gemini immediately acknowledges Mani while DuckDB runs "
+                f"a live zero-copy join over {sql['rows_correlated']:,} rows in {sql['query_latency_ms']}ms—proving Spanner Omni TrueTime held 2.75ms while AWS Mumbai's 64-slot Envoy pool triggered 18,006 retries—then pauses at ADK's HITL confirmation gate!"
+            ),
+            "html": f"""
+            <div class="video-slide">
+              <div class="video-top">
+                <div>
+                  <div class="kicker">DEMO 03 · REAL GEMINI 3.8 HD AUDIO + GOOGLE ADK 2.14.1</div>
+                  <h2 class="slide-h2-sm">Voice Check-In: Dual-Track Audio + Zero-Copy Spanner Omni x S3 Iceberg</h2>
+                </div>
+                <div class="video-pills">
+                  <span class="accent-green">Audio Included · Unmute</span>
+                  <span>{sql['rows_correlated']:,} Rows in {sql['query_latency_ms']}ms</span>
+                </div>
+              </div>
+              <div class="video-frame">
+                <video controls preload="metadata" poster="../assets/videos/demo3_live38_voice_multicloud_adk_poster.png">
+                  <source src="../assets/videos/demo3_live38_voice_multicloud_adk.mp4" type="video/mp4" />
+                </video>
+              </div>
+            </div>
+            """,
+        },
+        # 18 — BEYOND CODE: 2026 BREAKTHROUGHS
+        {
+            "theme": "dark",
+            "title": "What Else Shipped in 2026",
+            "notes": (
+                "[24:45 - 26:00] Zoom out for 60 seconds as a Google Cloud Principal Architect: four force multipliers worth watching right now. "
+                "8th-Gen TPUs (8t & 8i) pushing 16B+ tokens/min infrastructure; Oracle AI Database@Google Cloud uniting mission-critical Oracle workloads with Gemini; "
+                "Nano Banana 2.1 + Gemini Omni 1.2 + `/generative_ui` generating live visual infographics (like the ones in this deck!) and rich UI on the fly; "
+                "and AlphaProof Code bringing formal Lean proofs to security-critical code paths."
+            ),
+            "html": """
+            <div class="std-slide">
+              <div class="kicker">THE WIDER 2026 PLATFORM · ARCHITECT RADAR</div>
+              <h2 class="slide-h2">Four Force Multipliers Beyond Code Generation</h2>
+              <div class="cards-2x2">
+                <div class="arch-card">
+                  <div class="card-num">CUSTOM SILICON</div>
+                  <h3>8th-Gen TPUs (TPU 8t &amp; 8i)</h3>
+                  <p>Purpose-built inference &amp; training silicon powering <strong>16B+ tokens/minute</strong> globally—making sub-second Hydrogen swarms economically viable.</p>
+                </div>
+                <div class="arch-card">
+                  <div class="card-num">ENTERPRISE GRAVITY</div>
+                  <h3>Oracle AI Database@Google Cloud</h3>
+                  <p>Zero-latency Exadata &amp; Autonomous Database inside Google Cloud regions—connecting legacy core banking directly to ADK 2.0 &amp; BigQuery Graph.</p>
+                </div>
+                <div class="arch-card">
+                  <div class="card-num">AGENTIC INTERFACES</div>
+                  <h3>Nano Banana 2.1 · Omni 1.2 · /generative_ui</h3>
+                  <p>Agents no longer stop at Markdown walls—they synthesize crisp visual diagrams, audio, and live interactive HTML widgets mid-conversation.</p>
+                </div>
+                <div class="arch-card">
+                  <div class="card-num">FORMAL VERIFICATION</div>
+                  <h3>AlphaProof Code</h3>
+                  <p>Bridges neural code synthesis with formal mathematical <strong>Lean</strong> verification for cryptographic, consensus, and financial invariant proofs.</p>
+                </div>
+              </div>
+            </div>
+            """,
+        },
+        # 19 — DEMO 4 VIDEO
+        {
+            "theme": "dark",
+            "title": "Demo 4: Review Everything",
+            "notes": (
+                f"[26:00 - 27:45] DEMO 4 — CLOSING THE LOOP! Watch what happened when we ran our real benchmark & test suite: "
+                f"p99 tail latency plunged -{sla['p99_reduction_pct']}% ({sla['before']['p99_ms']}ms -> {sla['after']['p99_ms']}ms), all 9 pytest tests passed. "
+                f"If we stopped there, we'd merge blindly. Instead, we ran LIVE Gemini 4 Carbon as an adversarial reviewer—and Carbon threw `{ca['audit']['overall_verdict']}`! "
+                "It caught 5 real edge cases: an unused `autonomy_readiness` signal, low-res multimodal IPI evasion, negative/NaN TrueTime bounds, and a HALF_OPEN race condition! "
+                "THAT is why Rule 4 is Review Everything."
+            ),
+            "html": f"""
+            <div class="video-slide">
+              <div class="video-top">
+                <div>
+                  <div class="kicker">DEMO 04 · ADVERSARIAL VERIFICATION &amp; PR #1</div>
+                  <h2 class="slide-h2-sm">p99 Dropped {sla['p99_reduction_pct']}% &amp; Tests Passed — Yet Carbon Still Caught 5 Edge Cases</h2>
+                </div>
+                <div class="video-pills">
+                  <span class="accent-green">p99: {sla['before']['p99_ms']}ms -&gt; {sla['after']['p99_ms']}ms</span>
+                  <span class="accent-amber">Carbon: {e(ca['audit']['overall_verdict'])}</span>
+                </div>
+              </div>
+              <div class="video-frame">
+                <video controls preload="metadata" poster="../assets/videos/demo4_review_shipped_pr_poster.png">
+                  <source src="../assets/videos/demo4_review_shipped_pr.mp4" type="video/mp4" />
+                </video>
+              </div>
+            </div>
+            """,
+        },
+        # 20 — PRODUCTION ECONOMICS SUMMARY
+        {
+            "theme": "dark",
+            "title": "What Multi-Model Architecture Buys You",
+            "notes": (
+                "[27:45 - 28:30] Pause on three verified numbers measured live from our own codebase today: "
+                "97.1% checkout tail latency reduction verified via deterministic load test; 56x to 59x control-plane cost savings using Decisions API instead of Hydrogen; "
+                "and zero blind merges thanks to worktree isolation, ADK HITL checkpoints, and Carbon adversarial review."
+            ),
+            "html": f"""
+            <div class="stat-slide">
+              <div class="kicker">VERIFIED LIVE KEYNOTE OUTCOMES</div>
+              <h2 class="slide-h2">What the Periodic Table Architecture Actually Buys You</h2>
+              <div class="kpi-3">
+                <div class="big-kpi">
+                  <div class="kpi-num green">-{sla['p99_reduction_pct']}%</div>
+                  <div class="kpi-head">Checkout p99 Latency</div>
+                  <p>{sla['before']['p99_ms']} ms -&gt; {sla['after']['p99_ms']} ms across 500-request AWS ap-south-1 flash-sale burst.</p>
+                </div>
+                <div class="big-kpi">
+                  <div class="kpi-num blue">{r50['cost_savings_vs_4_hydrogen']}x</div>
+                  <div class="kpi-head">Cheaper Control Plane</div>
+                  <p>Live 50-question compliance gate: $270/1M calls on Decision-1 vs $15,150/1M on Hydrogen (0 output tokens).</p>
+                </div>
+                <div class="big-kpi">
+                  <div class="kpi-num amber">5</div>
+                  <div class="kpi-head">Subtle Bugs Caught Pre-Merge</div>
+                  <p>Real edge cases flagged by Gemini 4 Carbon adversarial review even after all 9 unit tests passed green.</p>
+                </div>
+              </div>
+            </div>
+            """,
+        },
+        # 21 — HEAD FIRST: MENTAL MODEL POSTER
+        {
+            "theme": "cream",
+            "title": "The Mental Model",
+            "notes": (
+                "[28:30 - 29:15] Phones up! If you remember ONE slide from this 30-minute keynote: "
+                "1. Plan Big (Carbon / Argon). 2. Execute Fast (Hydrogen `/swarm` + Remote Agents). "
+                "3. Decide Small (Gemini Decisions API, $0 output tokens). 4. Review Everything (Adversarial Carbon + ADK HITL + Human Architect)."
+            ),
+            "html": """
+            <div class="hf-slide">
+              <div class="hf-header">
+                <span class="hf-kicker">08 · TAKE A PHOTO</span>
+                <span class="hf-title">The Battle-Tested Mental Model for Agentic Systems</span>
+              </div>
+              <div class="hf-stage">
+                <img src="../assets/infographics/08_hf_mental_model_poster.jpg" alt="Mental Model Poster Head First Infographic" />
+              </div>
+            </div>
+            """,
+        },
+        # 22 — CLOSING & REPO CTA
+        {
+            "theme": "dark",
+            "title": "Thank You, DevFest Bengaluru!",
+            "notes": (
+                "[29:15 - 30:00] Bring the energy home! Every single line of MonsoonPay, the real ADK 2.14.1 DAG, the live Decision-1 vs Flash vs Hydrogen benchmark, "
+                "all 4 demo recordings, and all 8 O'Reilly Head First posters are live on GitHub right now. "
+                "Closing callback joke: 'Thank you DevFest Bengaluru—and if you know where the best filter coffee is at Google Bengaluru, come find the Principal Architect with the brand-new badge!'"
+            ),
+            "html": """
+            <div class="hero-slide">
+              <div class="kicker">ALL CODE · REAL ADK 2.0 GRAPH · LIVE BENCHMARKS · OPEN SOURCE</div>
+              <h1 class="hero-title" style="font-size:66px;">Plan Big. Execute Fast.<br/>Decide Small. Review Everything.</h1>
+              <div class="cta-box">
+                <span class="mono-dim">CLONE THE KEYNOTE REPO</span>
+                <strong>github.com/cmanikandan/gdg-blr-talk-nov14-2026</strong>
+              </div>
+              <div class="hero-footer">
+                <div><strong>Manikandan (Mani)</strong> · Principal Architect, Google Cloud · DevFest Bengaluru 2026</div>
+                <div class="mono-dim">Press [S] for Speaker Notes · [G] for Slide Grid · [F] for Fullscreen</div>
+              </div>
+            </div>
+            """,
+        },
+    ]
+
+
+def generate_html(slides: List[Dict[str, Any]]) -> str:
+    slides_markup = []
+    notes_list = []
+    titles_list = []
+    for i, s in enumerate(slides):
+        cls = "slide theme-cream" if s["theme"] == "cream" else "slide theme-dark"
+        active = " active" if i == 0 else ""
+        slides_markup.append(
+            f'<section class="{cls}{active}" data-index="{i}">{s["html"]}</section>'
+        )
+        notes_list.append(s["notes"])
+        titles_list.append(s["title"])
+
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Periodic Table of Agents — DevFest Keynote (Mani, Google Cloud)</title>
-  <meta name="description" content="30-Minute DevFest Keynote Deck: Building with Gemini 4, Google Antigravity, ADK 2.0, Decisions API, Gemini 3.8 Live & Agentic Data Cloud." />
+  <title>The Periodic Table of Agents — DevFest Bengaluru 2026 Keynote</title>
   <style>
     :root {{
-      --navy: #0b1120;
-      --card: #131d33;
-      --border: #263657;
-      --cream: #faf6ec;
-      --ink: #18181b;
-      --blue: #4285f4;
-      --cyan: #38bdf8;
-      --green: #34a853;
-      --amber: #fbbc04;
-      --red: #ea4335;
-      --sans: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      --mono: "JetBrains Mono", "Fira Code", monospace;
+      --dark-bg: #0B101B;
+      --dark-surface: #131C2E;
+      --dark-border: #25334D;
+      --cream-bg: #FAF7F0;
+      --cream-ink: #1C2434;
+      --text: #F8FAFC;
+      --muted: #94A3B8;
+      --blue: #4285F4;
+      --green: #34A853;
+      --amber: #F59E0B;
+      --red: #EA4335;
+      --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, 'DejaVu Sans', sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', 'DejaVu Sans Mono', monospace;
     }}
     * {{ box-sizing: border-box; margin: 0; padding: 0; }}
-    body {{
-      font-family: var(--sans);
-      background: #050811;
-      color: #f8fafc;
-      height: 100vh;
-      width: 100vw;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }}
+    html, body {{ width: 100%; height: 100%; overflow: hidden; background: var(--dark-bg); font-family: var(--font-sans); color: var(--text); -webkit-font-smoothing: antialiased; }}
 
-    /* Stage Deck Frame */
-    #stage {{
-      flex: 1;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 18px 24px 8px;
-      overflow: hidden;
-    }}
+    .deck {{ width: 100vw; height: 100vh; position: relative; }}
     .slide {{
-      width: min(100%, calc((100vh - 76px) * 16 / 9));
-      aspect-ratio: 16 / 9;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 24px 70px rgba(0,0,0,0.65);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 3.2% 4%;
-      position: relative;
-      border: 1px solid rgba(255,255,255,0.1);
-    }}
-
-    .theme-dark-hero {{
-      background: radial-gradient(circle at 80% 18%, #1e3a8a 0%, #0b1120 62%);
-      color: #ffffff;
-    }}
-    .theme-dark-cards {{
-      background: linear-gradient(160deg, #0f172a 0%, #090e1a 100%);
-      color: #f8fafc;
-    }}
-    .theme-demo-video {{
-      background: #080d18;
-      color: #f8fafc;
-      border-color: rgba(56, 189, 248, 0.45);
-    }}
-    .theme-head-first {{
-      background: var(--cream);
-      color: var(--ink);
-      border: 2px solid #27272a;
-    }}
-
-    .kicker {{
-      font-family: var(--mono);
-      font-size: clamp(11px, 1.05vw, 15px);
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 6px;
-    }}
-    .theme-head-first .kicker {{ color: #b45309; }}
-    .theme-dark-hero .kicker, .theme-dark-cards .kicker {{ color: var(--cyan); }}
-    .theme-demo-video .kicker {{ color: #4ade80; }}
-
-    .slide-title {{
-      font-size: clamp(24px, 2.7vw, 44px);
-      font-weight: 800;
-      letter-spacing: -0.025em;
-      line-height: 1.12;
-    }}
-
-    /* Hero Layout */
-    .hero-center {{
-      margin: auto 0;
-      max-width: 88%;
-    }}
-    .hero-title {{
-      font-size: clamp(34px, 4.3vw, 68px);
-      font-weight: 900;
-      letter-spacing: -0.03em;
-      line-height: 1.06;
-      margin: 12px 0 18px;
-    }}
-    .hero-sub {{
-      font-size: clamp(16px, 1.6vw, 25px);
-      color: #cbd5e1;
-      line-height: 1.45;
-      margin-bottom: 28px;
-    }}
-    .pill-row {{
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-    }}
-    .hero-pill {{
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.22);
-      padding: 10px 18px;
-      border-radius: 10px;
-      font-size: clamp(12px, 1.1vw, 17px);
-      font-weight: 700;
-      font-family: var(--mono);
-    }}
-
-    /* Head First Split Layout */
-    .hf-grid {{
-      display: grid;
-      grid-template-columns: 1.38fr 0.92fr;
-      gap: 2.4%;
-      flex: 1;
-      margin: 1.4% 0;
-      align-items: center;
-      min-height: 0;
-    }}
-    .hf-img-wrap {{
-      height: 100%;
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #fffdf7;
-      border: 2.5px solid #18181b;
-      border-radius: 12px;
-      box-shadow: 6px 6px 0px #18181b;
-      overflow: hidden;
-      padding: 6px;
-    }}
-    .hf-img-wrap img {{
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      border-radius: 6px;
-    }}
-    .hf-bullets {{
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }}
-    .hf-note {{
-      background: #ffffff;
-      border: 2px solid #18181b;
-      box-shadow: 4px 4px 0px #18181b;
-      border-radius: 10px;
-      padding: 11px 14px;
-      font-size: clamp(12px, 1.08vw, 16.5px);
-      line-height: 1.42;
-      color: #18181b;
-    }}
-    .hf-note:nth-child(even) {{
-      background: #fef9c3;
-    }}
-
-    /* Dark Cards Layout */
-    .cards-grid {{
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2.5%;
-      flex: 1;
-      margin: 1.8% 0;
-      min-height: 0;
-    }}
-    .dark-card {{
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 22px 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }}
-    .dark-card h3 {{
-      font-size: clamp(17px, 1.55vw, 24px);
-      color: #ffffff;
-    }}
-    .dark-card ul {{
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      font-size: clamp(12.5px, 1.12vw, 17px);
-      line-height: 1.45;
-      color: #cbd5e1;
-    }}
-    .dark-card li::before {{
-      content: "▸ ";
-      color: var(--cyan);
-      font-weight: 900;
-    }}
-
-    /* Demo Video Layout */
-    .video-stage {{
-      display: grid;
-      grid-template-columns: 1.55fr 0.75fr;
-      gap: 2.2%;
-      flex: 1;
-      margin: 1.4% 0;
-      min-height: 0;
-      align-items: center;
-    }}
-    .video-box {{
-      width: 100%;
-      height: 100%;
-      background: #000;
-      border-radius: 12px;
-      border: 1px solid #334155;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }}
-    .video-box video {{
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }}
-    .callout-stack {{
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }}
-    .demo-callout {{
-      background: #111b2e;
-      border: 1px solid #283a5e;
-      border-left: 4px solid #4ade80;
-      border-radius: 10px;
-      padding: 13px 15px;
-      font-size: clamp(12px, 1.05vw, 16px);
-      line-height: 1.45;
-      color: #e2e8f0;
-    }}
-
-    .slide-footer {{
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: clamp(10.5px, 0.9vw, 13.5px);
-      opacity: 0.78;
-      font-family: var(--mono);
-      padding-top: 6px;
-      border-top: 1px solid rgba(148, 163, 184, 0.22);
-    }}
-    .theme-head-first .slide-footer {{
-      border-top-color: rgba(24, 24, 27, 0.2);
-      color: #3f3f46;
-    }}
-
-    /* Bottom Presenter Control Bar */
-    #presenter-bar {{
-      height: 50px;
-      background: #0b1120;
-      border-top: 1px solid #1e293b;
-      padding: 0 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 13px;
-      flex-shrink: 0;
-    }}
-    .nav-btns {{ display: flex; align-items: center; gap: 10px; }}
-    .ctrl-btn {{
-      background: #17233b;
-      color: #e2e8f0;
-      border: 1px solid #2b3d63;
-      padding: 6px 13px;
-      border-radius: 7px;
-      cursor: pointer;
-      font-size: 12.5px;
-      font-weight: 600;
-    }}
-    .ctrl-btn:hover {{ border-color: var(--cyan); color: #fff; }}
-
-    /* Speaker Notes Drawer */
-    #notes-drawer {{
+      position: absolute; inset: 0;
       display: none;
-      background: #0f172a;
-      border-top: 2px solid var(--amber);
-      padding: 14px 28px;
-      font-size: 15px;
-      line-height: 1.55;
-      color: #fef3c7;
-      max-height: 150px;
+      padding: 52px 72px 48px 72px;
+      flex-direction: column;
+      justify-content: center;
+    }}
+    .slide.active {{ display: flex; }}
+    .theme-dark {{ background: var(--dark-bg); color: var(--text); }}
+    .theme-cream {{ background: var(--cream-bg); color: var(--cream-ink); padding: 26px 44px 28px 44px; justify-content: flex-start; }}
+
+    /* Typography */
+    .kicker {{
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 14px;
+    }}
+    .mono-dim {{ font-family: var(--font-mono); font-size: 14px; color: var(--muted); }}
+    .slide-h2 {{ font-size: 50px; font-weight: 700; letter-spacing: -0.025em; line-height: 1.12; margin-bottom: 36px; max-width: 1680px; }}
+    .slide-h2-sm {{ font-size: 32px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.16; }}
+    code {{ font-family: var(--font-mono); font-size: 0.9em; background: rgba(66,133,244,0.14); padding: 2px 7px; border-radius: 5px; color: #93C5FD; }}
+
+    /* Hero slide */
+    .hero-slide {{ display: flex; flex-direction: column; height: 100%; justify-content: center; gap: 22px; }}
+    .hero-title {{ font-size: 84px; font-weight: 800; letter-spacing: -0.035em; line-height: 1.04; max-width: 1680px; }}
+    .hero-sub {{ font-size: 28px; color: #CBD5E1; font-weight: 400; max-width: 1200px; }}
+    .element-strip {{ display: flex; gap: 16px; margin-top: 18px; }}
+    .elem-chip {{
+      width: 132px; height: 122px;
+      border-radius: 12px;
+      background: var(--dark-surface);
+      border: 1px solid var(--dark-border);
+      padding: 12px 14px;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }}
+    .elem-chip .num {{ font-family: var(--font-mono); font-size: 13px; color: var(--muted); }}
+    .elem-chip .sym {{ font-size: 40px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; }}
+    .elem-chip .lbl {{ font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: #CBD5E1; }}
+    .el-h .sym {{ color: #6CE08A; }}
+    .el-c .sym {{ color: #60A5FA; }}
+    .el-ar .sym {{ color: #94A3B8; }}
+    .el-dc .sym {{ color: #FBBF24; }}
+    .el-lv .sym {{ color: #F87171; }}
+    .hero-footer {{
+      margin-top: auto; padding-top: 22px;
+      border-top: 1px solid var(--dark-border);
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 18px; color: #CBD5E1;
+    }}
+    .cta-box {{
+      margin-top: 18px;
+      background: var(--dark-surface);
+      border: 1px solid var(--dark-border);
+      border-left: 5px solid var(--blue);
+      border-radius: 12px;
+      padding: 22px 28px;
+      display: inline-flex; flex-direction: column; gap: 8px; align-self: flex-start;
+    }}
+    .cta-box strong {{ font-family: var(--font-mono); font-size: 28px; color: #FFFFFF; }}
+
+    /* Full-Stage O'Reilly Head First Infographic Slide */
+    .hf-slide {{ display: flex; flex-direction: column; height: 100%; width: 100%; gap: 14px; }}
+    .hf-header {{ display: flex; align-items: baseline; gap: 18px; border-bottom: 2px solid rgba(28,36,52,0.12); padding-bottom: 10px; }}
+    .hf-kicker {{ font-family: var(--font-mono); font-size: 13px; font-weight: 800; letter-spacing: 0.12em; color: #1D4ED8; text-transform: uppercase; }}
+    .hf-title {{ font-size: 26px; font-weight: 800; letter-spacing: -0.02em; color: var(--cream-ink); }}
+    .hf-stage {{ flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; padding: 6px 0; }}
+    .hf-stage img {{ height: 100%; width: auto; max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 10px; box-shadow: 0 14px 40px rgba(15,23,42,0.10); }}
+
+    /* Standard Dark Editorial Slides */
+    .std-slide, .stat-slide {{ display: flex; flex-direction: column; height: 100%; justify-content: center; }}
+    .cards-3 {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }}
+    .cards-2x2 {{ display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }}
+    .arch-card {{
+      background: var(--dark-surface);
+      border: 1px solid var(--dark-border);
+      border-radius: 14px;
+      padding: 28px 30px;
+      display: flex; flex-direction: column; gap: 12px;
+    }}
+    .card-num {{ font-family: var(--font-mono); font-size: 13px; font-weight: 700; letter-spacing: 0.08em; color: var(--blue); }}
+    .arch-card h3 {{ font-size: 25px; font-weight: 700; letter-spacing: -0.015em; }}
+    .arch-card p {{ font-size: 18px; line-height: 1.55; color: #CBD5E1; }}
+
+    .thesis-bar {{
+      margin-top: 30px;
+      background: #10192B;
+      border: 1px solid var(--dark-border);
+      border-left: 5px solid var(--blue);
+      border-radius: 10px;
+      padding: 18px 26px;
+      display: flex; align-items: center; gap: 22px;
+      font-size: 22px;
+    }}
+    .thesis-bar.green-bar {{ border-left-color: var(--green); }}
+    .thesis-bar span {{ font-family: var(--font-mono); font-size: 13px; font-weight: 700; letter-spacing: 0.1em; color: var(--muted); white-space: nowrap; }}
+
+    /* Gemini 4 Spec Cards */
+    .spec-card {{
+      background: var(--dark-surface);
+      border: 1px solid var(--dark-border);
+      border-top: 4px solid var(--blue);
+      border-radius: 14px;
+      padding: 26px 28px;
+      display: flex; flex-direction: column; gap: 16px;
+    }}
+    .spec-ar {{ border-top-color: #94A3B8; }}
+    .spec-h {{ border-top-color: var(--green); }}
+    .spec-head {{ display: flex; align-items: center; gap: 16px; }}
+    .spec-sym {{
+      width: 56px; height: 56px; border-radius: 10px;
+      background: #0B101B; border: 1px solid var(--dark-border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px; font-weight: 800; color: #60A5FA;
+    }}
+    .spec-ar .spec-sym {{ color: #CBD5E1; }}
+    .spec-h .spec-sym {{ color: #6CE08A; }}
+    .spec-head h3 {{ font-size: 23px; font-weight: 700; }}
+    .spec-price {{ font-family: var(--font-mono); font-size: 26px; font-weight: 700; color: #FFFFFF; }}
+    .spec-price small {{ font-size: 13px; color: var(--muted); font-weight: 400; display: block; margin-top: 2px; }}
+    .clean-list {{ list-style: none; display: flex; flex-direction: column; gap: 12px; font-size: 17px; line-height: 1.45; color: #CBD5E1; }}
+    .clean-list li {{ padding-left: 16px; position: relative; }}
+    .clean-list li::before {{ content: '—'; position: absolute; left: 0; color: var(--muted); }}
+
+    /* Contrast Stat Slide */
+    .split-contrast {{ display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }}
+    .contrast-box {{
+      background: var(--dark-surface);
+      border: 1px solid var(--dark-border);
+      border-radius: 16px;
+      padding: 36px 38px;
+      display: flex; flex-direction: column; gap: 16px;
+    }}
+    .contrast-box.bad {{ border-top: 5px solid var(--red); }}
+    .contrast-box.good {{ border-top: 5px solid var(--green); }}
+    .mono-tag {{ font-family: var(--font-mono); font-size: 13px; font-weight: 700; letter-spacing: 0.08em; }}
+    .mono-tag.red, .big-num.red {{ color: #F87171; }}
+    .mono-tag.green, .big-num.green {{ color: #4ADE80; }}
+    .big-num {{ font-family: var(--font-mono); font-size: 68px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; }}
+    .contrast-box p {{ font-size: 20px; line-height: 1.5; color: #CBD5E1; }}
+
+    /* Benchmark Table Slide */
+    .bench-grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }}
+    .bench-card {{
+      background: var(--dark-surface);
+      border: 1px solid var(--dark-border);
+      border-radius: 14px;
+      padding: 24px 26px;
+    }}
+    .bench-title {{ font-family: var(--font-mono); font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--blue); margin-bottom: 16px; }}
+    .slide-table {{ width: 100%; border-collapse: collapse; font-size: 17px; }}
+    .slide-table th {{ text-align: left; font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; color: var(--muted); padding: 10px 8px; border-bottom: 1px solid var(--dark-border); }}
+    .slide-table td {{ padding: 14px 8px; border-bottom: 1px solid rgba(37,51,77,0.6); color: #CBD5E1; }}
+    .slide-table td.num, .slide-table th.num {{ text-align: right; font-family: var(--font-mono); }}
+    .slide-table tr.winner td {{ color: #4ADE80; font-weight: 700; background: rgba(52,168,83,0.09); }}
+    .slide-table small {{ color: var(--muted); font-weight: 400; }}
+
+    /* Code Split (ADK 2.0) */
+    .code-split {{ display: grid; grid-template-columns: 58fr 42fr; gap: 28px; align-items: stretch; }}
+    .code-panel {{
+      background: #070B13;
+      border: 1px solid var(--dark-border);
+      border-radius: 14px;
+      padding: 26px 28px;
+      font-family: var(--font-mono);
+      font-size: 15.5px;
+      line-height: 1.62;
+      color: #E2E8F0;
+      overflow: auto;
+    }}
+    .code-panel code {{ background: transparent; padding: 0; color: inherit; font-size: inherit; }}
+    .kw {{ color: #60A5FA; font-weight: 600; }}
+    .dec {{ color: #FBBF24; font-weight: 600; }}
+    .str {{ color: #6CE08A; }}
+    .fn {{ color: #93C5FD; }}
+    .cm {{ color: #64748B; }}
+    .num {{ color: #F59E0B; }}
+    .pillars-col {{ display: flex; flex-direction: column; gap: 18px; justify-content: space-between; }}
+    .pillar-item {{ background: var(--dark-surface); border: 1px solid var(--dark-border); border-radius: 12px; padding: 20px 22px; }}
+    .pillar-item h4 {{ font-size: 20px; margin-bottom: 6px; color: #FFFFFF; }}
+    .pillar-item p {{ font-size: 16.5px; line-height: 1.48; color: #CBD5E1; }}
+
+    /* Video Slides */
+    .video-slide {{ display: flex; flex-direction: column; height: 100%; gap: 18px; }}
+    .video-top {{ display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; }}
+    .video-pills {{ display: flex; gap: 10px; flex-shrink: 0; }}
+    .video-pills span {{
+      font-family: var(--font-mono); font-size: 13px; font-weight: 700;
+      padding: 7px 14px; border-radius: 6px;
+      background: var(--dark-surface); border: 1px solid var(--dark-border); color: #CBD5E1;
+    }}
+    .video-pills .accent-green {{ background: rgba(52,168,83,0.16); border-color: rgba(52,168,83,0.4); color: #6CE08A; }}
+    .video-pills .accent-amber {{ background: rgba(245,158,11,0.16); border-color: rgba(245,158,11,0.4); color: #FBBF24; }}
+    .video-frame {{
+      flex: 1; min-height: 0;
+      background: #05080F;
+      border: 1px solid var(--dark-border);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }}
+    .video-frame video {{ width: 100%; height: 100%; object-fit: contain; }}
+
+    /* Big KPI Summary */
+    .kpi-3 {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }}
+    .big-kpi {{
+      background: var(--dark-surface);
+      border: 1px solid var(--dark-border);
+      border-radius: 16px;
+      padding: 36px 32px;
+      display: flex; flex-direction: column; gap: 12px;
+    }}
+    .kpi-num {{ font-family: var(--font-mono); font-size: 76px; font-weight: 800; letter-spacing: -0.04em; line-height: 1; }}
+    .kpi-num.green {{ color: #4ADE80; }}
+    .kpi-num.blue {{ color: #60A5FA; }}
+    .kpi-num.amber {{ color: #FBBF24; }}
+    .kpi-head {{ font-size: 24px; font-weight: 700; }}
+    .big-kpi p {{ font-size: 18px; line-height: 1.5; color: #CBD5E1; }}
+
+    /* Minimal Corner Slide Counter (subtle, zero clutter!) */
+    .slide-counter {{
+      position: fixed; bottom: 16px; right: 24px;
+      font-family: var(--font-mono); font-size: 13px;
+      color: rgba(148,163,184,0.55); z-index: 40; pointer-events: none;
+    }}
+    body.on-cream .slide-counter {{ color: rgba(28,36,52,0.45); }}
+
+    /* Private Speaker Teleprompter Drawer (Toggle with 'S' key!) */
+    .teleprompter {{
+      position: fixed; left: 0; right: 0; bottom: 0;
+      background: rgba(8, 12, 21, 0.96);
+      border-top: 2px solid var(--blue);
+      padding: 20px 44px;
+      z-index: 100;
+      display: none;
+      flex-direction: column; gap: 10px;
+    }}
+    .teleprompter.open {{ display: flex; }}
+    .tp-bar {{ display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 13px; color: var(--blue); }}
+    .tp-text {{ font-size: 19px; line-height: 1.55; color: #F1F5F9; max-width: 1280px; }}
+
+    /* Slide Grid Overview (Toggle with 'G' key!) */
+    .grid-modal {{
+      position: fixed; inset: 0;
+      background: rgba(8, 12, 21, 0.96);
+      z-index: 120;
+      display: none;
+      padding: 36px 56px;
       overflow-y: auto;
     }}
-    #notes-drawer.open {{ display: block; }}
-    code {{
-      font-family: var(--mono);
-      background: rgba(148, 163, 184, 0.18);
-      padding: 1px 5px;
-      border-radius: 4px;
-      font-size: 0.92em;
+    .grid-modal.open {{ display: block; }}
+    .grid-list {{ display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 20px; }}
+    .grid-card {{
+      background: var(--dark-surface); border: 1px solid var(--dark-border);
+      border-radius: 10px; padding: 16px; cursor: pointer;
     }}
+    .grid-card:hover, .grid-card.cur {{ border-color: var(--blue); }}
   </style>
 </head>
 <body>
-  <div id="stage"></div>
-
-  <div id="notes-drawer">
-    <strong>🎙️ SPEAKER NOTES (<span id="notes-time"></span>):</strong>
-    <span id="notes-text"></span>
+  <div class="deck" id="deck">
+    {''.join(slides_markup)}
   </div>
 
-  <div id="presenter-bar">
-    <div class="nav-btns">
-      <button class="ctrl-btn" onclick="prevSlide()">← Prev</button>
-      <span id="slide-counter" style="font-family:var(--mono);min-width:90px;text-align:center">1 / 17</span>
-      <button class="ctrl-btn" onclick="nextSlide()">Next →</button>
-      <span id="pacing-Slot" style="color:#38bdf8;font-family:var(--mono);margin-left:10px"></span>
-    </div>
+  <div class="slide-counter" id="counter">01 / {len(slides):02d}</div>
 
-    <div class="nav-btns">
-      <a href="../demos/live_demo_studio.html" target="_blank" class="ctrl-btn" style="text-decoration:none;border-color:#34a853;color:#86efac">⚡ Open Live Demo Studio</a>
-      <button class="ctrl-btn" onclick="toggleNotes()">📝 Notes (S)</button>
-      <button class="ctrl-btn" onclick="toggleTimer()" id="timer-btn">⏱️ Start 30:00 Timer</button>
-      <button class="ctrl-btn" onclick="toggleFullscreen()">⛶ Fullscreen (F)</button>
+  <aside class="teleprompter" id="teleprompter">
+    <div class="tp-bar">
+      <span id="tpHeader">PRIVATE SPEAKER NOTES (Press S to hide)</span>
+      <span id="tpTimer">30:00 Keynote Timer · Click to Start/Reset</span>
     </div>
+    <div class="tp-text" id="tpBody"></div>
+  </aside>
+
+  <div class="grid-modal" id="gridModal">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <h2 style="font-size:26px;">Keynote Slide Overview (Press G or Esc to close)</h2>
+    </div>
+    <div class="grid-list" id="gridList"></div>
   </div>
 
   <script>
-    const SLIDES = {slides_json};
+    const NOTES = {json.dumps(notes_list)};
+    const TITLES = {json.dumps(titles_list)};
+    const slides = Array.from(document.querySelectorAll('.slide'));
     let idx = 0;
-    let timerSec = 30 * 60;
+    let timerSec = 0;
     let timerHandle = null;
 
-    function fmtMarkdown(s) {{
-      return s
-        .replace(/\\*\\*(.+?)\\*\\*/g, '<strong>$1</strong>')
-        .replace(/\\*(.+?)\\*/g, '<em>$1</em>')
-        .replace(/`([^`]+)`/g, '<code>$1</code>');
+    function showSlide(n) {{
+      // Pause any playing video on old slide
+      const oldVid = slides[idx].querySelector('video');
+      if (oldVid) oldVid.pause();
+
+      slides[idx].classList.remove('active');
+      idx = Math.max(0, Math.min(slides.length - 1, n));
+      slides[idx].classList.add('active');
+
+      document.body.classList.toggle('on-cream', slides[idx].classList.contains('theme-cream'));
+      document.getElementById('counter').textContent =
+        String(idx + 1).padStart(2, '0') + ' / ' + String(slides.length).padStart(2, '0');
+      document.getElementById('tpHeader').textContent =
+        `SLIDE ${{idx + 1}} / ${{slides.length}} · ${{TITLES[idx]}}  (Press S to hide)`;
+      document.getElementById('tpBody').textContent = NOTES[idx];
     }}
 
-    function renderSlide() {{
-      const s = SLIDES[idx];
-      const stage = document.getElementById('stage');
-      let bodyHtml = '';
-
-      if (s.theme === 'dark-hero') {{
-        const pills = s.pills.map(p => `<span class="hero-pill">${{p}}</span>`).join('');
-        bodyHtml = `
-          <div class="slide theme-dark-hero">
-            <div class="kicker">${{s.kicker}}</div>
-            <div class="hero-center">
-              <div class="hero-title">${{s.title}}</div>
-              <div class="hero-sub">${{s.subtitle}}</div>
-              <div class="pill-row">${{pills}}</div>
-            </div>
-            <div class="slide-footer">
-              <span>${{s.footer_left}}</span>
-              <span>${{s.footer_right}}</span>
-            </div>
-          </div>`;
-      }} else if (s.theme === 'head-first') {{
-        const notesHtml = s.bullets.map(b => `<div class="hf-note">${{fmtMarkdown(b)}}</div>`).join('');
-        bodyHtml = `
-          <div class="slide theme-head-first">
-            <div>
-              <div class="kicker">${{s.kicker}}</div>
-              <div class="slide-title">${{fmtMarkdown(s.title)}}</div>
-            </div>
-            <div class="hf-grid">
-              <div class="hf-img-wrap"><img src="${{s.image}}" alt="${{s.title}}" /></div>
-              <div class="hf-bullets">${{notesHtml}}</div>
-            </div>
-            <div class="slide-footer">
-              <span>The Periodic Table of Agents · Mani (Principal Architect, Google Cloud)</span>
-              <span>Slide ${{s.num}} / ${{SLIDES.length}} · ${{s.time}}</span>
-            </div>
-          </div>`;
-      }} else if (s.theme === 'dark-cards') {{
-        const cardsHtml = s.cards.map(c => `
-          <div class="dark-card">
-            <div class="kicker" style="color:#fbbf24;margin:0">${{c.badge}}</div>
-            <h3>${{fmtMarkdown(c.heading)}}</h3>
-            <ul>${{c.items.map(it => `<li>${{fmtMarkdown(it)}}</li>`).join('')}}</ul>
-          </div>
-        `).join('');
-        bodyHtml = `
-          <div class="slide theme-dark-cards">
-            <div>
-              <div class="kicker">${{s.kicker}}</div>
-              <div class="slide-title">${{fmtMarkdown(s.title)}}</div>
-            </div>
-            <div class="cards-grid">${{cardsHtml}}</div>
-            <div class="slide-footer">
-              <span>Plan Big · Execute Fast · Decide Small · Review Everything</span>
-              <span>Slide ${{s.num}} / ${{SLIDES.length}} · ${{s.time}}</span>
-            </div>
-          </div>`;
-      }} else if (s.theme === 'demo-video') {{
-        const calls = s.callouts.map(c => `<div class="demo-callout">${{fmtMarkdown(c)}}</div>`).join('');
-        bodyHtml = `
-          <div class="slide theme-demo-video">
-            <div>
-              <div class="kicker">${{s.kicker}}</div>
-              <div class="slide-title">${{fmtMarkdown(s.title)}}</div>
-            </div>
-            <div class="video-stage">
-              <div class="video-box">
-                <video src="${{s.video}}" poster="${{s.poster}}" controls autoplay muted loop playsinline></video>
-              </div>
-              <div class="callout-stack">
-                ${{calls}}
-                <a href="../demos/live_demo_studio.html" target="_blank" style="margin-top:6px;text-align:center;background:#22c55e;color:#052e16;font-weight:800;padding:11px;border-radius:8px;text-decoration:none;font-size:14px">
-                  ▶ Launch Interactive Live Console
-                </a>
-              </div>
-            </div>
-            <div class="slide-footer">
-              <span>Recorded 1080p Stage Backup Embedded · Live Console Ready</span>
-              <span>Slide ${{s.num}} / ${{SLIDES.length}} · ${{s.time}}</span>
-            </div>
-          </div>`;
-      }}
-
-      stage.innerHTML = bodyHtml;
-      document.getElementById('slide-counter').textContent = `${{s.num}} / ${{SLIDES.length}}`;
-      document.getElementById('pacing-Slot').textContent = `Slot: ${{s.time}}`;
-      document.getElementById('notes-time').textContent = s.time;
-      document.getElementById('notes-text').textContent = s.notes;
+    function renderGrid() {{
+      const list = document.getElementById('gridList');
+      list.innerHTML = TITLES.map((t, i) => `
+        <div class="grid-card ${{i === idx ? 'cur' : ''}}" onclick="jumpTo(${{i}})">
+          <div style="font-family:var(--font-mono);font-size:12px;color:#60A5FA;margin-bottom:6px;">SLIDE ${{String(i+1).padStart(2,'0')}}</div>
+          <div style="font-size:15px;font-weight:700;color:#F8FAFC;">${{t}}</div>
+        </div>
+      `).join('');
     }}
 
-    function nextSlide() {{ if (idx < SLIDES.length - 1) {{ idx++; renderSlide(); }} }}
-    function prevSlide() {{ if (idx > 0) {{ idx--; renderSlide(); }} }}
-    function toggleNotes() {{ document.getElementById('notes-drawer').classList.toggle('open'); }}
-    function toggleFullscreen() {{
-      if (!document.fullscreenElement) document.documentElement.requestFullscreen();
-      else document.exitFullscreen();
-    }}
-    function toggleTimer() {{
-      const btn = document.getElementById('timer-btn');
-      if (timerHandle) {{
-        clearInterval(timerHandle);
-        timerHandle = null;
-        return;
-      }}
+    window.jumpTo = function(i) {{
+      document.getElementById('gridModal').classList.remove('open');
+      showSlide(i);
+    }};
+
+    document.getElementById('tpTimer').addEventListener('click', () => {{
+      if (timerHandle) {{ clearInterval(timerHandle); timerHandle = null; timerSec = 0; }}
       timerHandle = setInterval(() => {{
-        if (timerSec > 0) timerSec--;
+        timerSec++;
         const m = String(Math.floor(timerSec / 60)).padStart(2, '0');
         const s = String(timerSec % 60).padStart(2, '0');
-        btn.textContent = `⏱️ ${{m}}:${{s}}`;
+        document.getElementById('tpTimer').textContent = `Elapsed ${{m}}:${{s}} / 30:00 (Click to Reset)`;
       }}, 1000);
-    }}
-
-    window.addEventListener('keydown', (e) => {{
-      if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {{ e.preventDefault(); nextSlide(); }}
-      if (e.key === 'ArrowLeft' || e.key === 'PageUp') {{ e.preventDefault(); prevSlide(); }}
-      if (e.key.toLowerCase() === 's') toggleNotes();
-      if (e.key.toLowerCase() === 'f') toggleFullscreen();
     }});
 
-    renderSlide();
+    document.addEventListener('keydown', (e) => {{
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {{
+        if (document.activeElement?.tagName === 'VIDEO') return;
+        e.preventDefault(); showSlide(idx + 1);
+      }} else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {{
+        e.preventDefault(); showSlide(idx - 1);
+      }} else if (e.key === 's' || e.key === 'S') {{
+        document.getElementById('teleprompter').classList.toggle('open');
+      }} else if (e.key === 'g' || e.key === 'G') {{
+        renderGrid();
+        document.getElementById('gridModal').classList.toggle('open');
+      }} else if (e.key === 'Escape') {{
+        document.getElementById('gridModal').classList.remove('open');
+      }} else if (e.key === 'f' || e.key === 'F') {{
+        if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {{}});
+        else document.exitFullscreen().catch(() => {{}});
+      }}
+    }});
+
+    showSlide(0);
   </script>
 </body>
 </html>
 """
 
 
+def main() -> None:
+    tr = load_traces()
+    slides = build_slides(tr)
+    OUT_HTML.write_text(generate_html(slides), encoding="utf-8")
+    print(f"✔ Built world-class {len(slides)}-slide HTML5 keynote -> {OUT_HTML}")
+
+
 if __name__ == "__main__":
-    os.makedirs(os.path.dirname(OUT_HTML), exist_ok=True)
-    with open(OUT_HTML, "w", encoding="utf-8") as f:
-        f.write(render_html())
-    print("Generated", OUT_HTML)
+    main()

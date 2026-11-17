@@ -1,0 +1,23 @@
+[project]
+name = "periodic-table-of-agents"
+version = "2.0.0"
+description = "DevFest Bengaluru 2026 Keynote — The Periodic Table of Agents: Building with Gemini 4, Google Antigravity, Decisions API, Gemini 3.8 Live, ADK 2.0, and Multicloud Data Cloud"
+requires-python = ">=3.11"
+dependencies = [
+    "google-adk>=2.14.1",
+    "google-genai>=2.34.0",
+    "duckdb>=2.0.0",
+    "pyarrow>=20.0.0",
+    "rich>=14.0.0",
+    "fastapi>=0.115.0",
+    "uvicorn>=0.34.0",
+    "httpx>=0.28.0",
+    "websockets>=14.0.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=9.0.0"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

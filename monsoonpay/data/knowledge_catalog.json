@@ -1,0 +1,23 @@
+{
+  "catalog": "Google Cloud Knowledge Catalog (Universal Context Engine)",
+  "domain": "monsoonpay_multicloud_checkout",
+  "verified_entities": [
+    {
+      "entity": "spanner_omni.checkout_commits",
+      "engine": "Spanner Omni (GA \u2014 GCP asia-south1 + AWS ap-south-1)",
+      "local_uri": "/home/antigravity/cmanikandan/gdg-blr-talk-nov14-2026/monsoonpay/data/spanner_omni_commits.db",
+      "primary_join_key": "trace_span_id"
+    },
+    {
+      "entity": "lakehouse_iceberg.aws_s3_envoy_retries",
+      "engine": "Cross-Cloud Apache Iceberg / BigQuery Omni (Zero-Copy AWS S3)",
+      "local_uri": "/home/antigravity/cmanikandan/gdg-blr-talk-nov14-2026/monsoonpay/data/aws_s3_iceberg_envoy.parquet",
+      "primary_join_key": "trace_span_id"
+    }
+  ],
+  "verified_join": "checkout_commits.trace_span_id = aws_s3_envoy_retries.trace_span_id",
+  "slos": {
+    "checkout_p99_ms": 25.0,
+    "truetime_max_drift_ms": 7.0
+  }
+}

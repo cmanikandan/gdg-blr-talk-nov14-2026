@@ -1,0 +1,101 @@
+{
+  "demo": "demo4_review_shipped_pr",
+  "timestamp_utc": "2026-11-17T16:02:24Z",
+  "live_api": true,
+  "sla_benchmark": {
+    "before": {
+      "p50_ms": 13.43,
+      "p95_ms": 461.37,
+      "p99_ms": 478.55,
+      "fallback_reads": 0,
+      "policy": "synchronous_unbounded",
+      "max_pending": 64
+    },
+    "after": {
+      "p50_ms": 12.7,
+      "p95_ms": 13.87,
+      "p99_ms": 13.95,
+      "fallback_reads": 0,
+      "policy": "jittered_exponential_circuit_breaker",
+      "max_pending": 512
+    },
+    "p99_reduction_pct": 97.1
+  },
+  "pytest": {
+    "exit_code": 0,
+    "duration_ms": 2228,
+    "passed_count": 9,
+    "test_cases": [
+      "test_multicloud_dataset_integrity PASSED       [ 11%]",
+      "test_circuit_breaker_sla_improvement PASSED    [ 22%]",
+      "test_circuit_breaker_truetime_uncertainty_guard PASSED [ 33%]",
+      "test_circuit_breaker_state_transitions PASSED  [ 44%]",
+      "test_decisions_policy_gate_routes_and_zero_output_cost PASSED [ 55%]",
+      "test_make_image_input_block PASSED             [ 66%]",
+      "test_adk_workflow_graph_structure PASSED       [ 77%]",
+      "test_adk_workflow_offline_multicloud_and_hitl PASSED [ 88%]",
+      "test_adk_workflow_offline_quarantine_and_fast_lane PASSED [100%]"
+    ]
+  },
+  "carbon_security_audit": {
+    "model": "gemini-4-carbon",
+    "latency_ms": 17256,
+    "usage": {
+      "input_tokens": 3776,
+      "output_tokens": 435,
+      "thoughts_tokens": 0
+    },
+    "audit": {
+      "overall_verdict": "CHANGES_REQUESTED",
+      "gray_swan_ipi_score": "0% bypass",
+      "confidence_pct": 94,
+      "checks": [
+        {
+          "category": "Gray Swan IPI & Policy Bypass",
+          "status": "WARN",
+          "finding": "Evaluated human_approval and autonomy_readiness signals are completely ignored in apply_policy_gate branching."
+        },
+        {
+          "category": "Multimodal IPI Evasion",
+          "status": "WARN",
+          "finding": "Default low image resolution in make_image_input_block permits micro-font visual prompt injection bypasses."
+        },
+        {
+          "category": "Secret Handling & Credential Exposure",
+          "status": "PASS",
+          "finding": "API key securely passed via x-goog-api-key header without URL query logging or hardcoded secrets."
+        },
+        {
+          "category": "Spanner Omni TrueTime Bounds",
+          "status": "WARN",
+          "finding": "Negative or NaN truetime_drift_ms bypasses >7.0ms check, skewing simulated commit latencies downward."
+        },
+        {
+          "category": "Circuit-Breaker State Transitions",
+          "status": "WARN",
+          "finding": "HALF_OPEN saturated failure does not immediately re-open breaker unless consecutive_failures meets threshold."
+        },
+        {
+          "category": "Concurrency & Thundering-Herd Safety",
+          "status": "WARN",
+          "finding": "Unlocked state mutations and deterministic 4-request HALF_OPEN probing risk concurrent thundering herds."
+        }
+      ],
+      "architect_followup": "Enforce human_approval/autonomy_readiness gates, validate non-negative finite TrueTime drift, immediately re-open failed HALF_OPEN probes, and add thread-safe single-probe locking."
+    }
+  },
+  "github_pr": {
+    "author": {
+      "id": "MDQ6VXNlcjM2NzYwNDM=",
+      "is_bot": false,
+      "login": "cmanikandan",
+      "name": "Mani"
+    },
+    "baseRefName": "main",
+    "headRefName": "feat/omnipulse-agent-mesh",
+    "number": 1,
+    "state": "OPEN",
+    "title": "feat(omnipulse): multi-cloud ADK 2.0 mesh, Decisions API gate & Spanner Omni circuit breaker",
+    "url": "https://github.com/cmanikandan/gdg-blr-talk-nov14-2026/pull/1"
+  }
+}

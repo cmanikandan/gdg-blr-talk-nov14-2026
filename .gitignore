@@ -4,3 +4,8 @@ __pycache__/
 .pytest_cache/
 .DS_Store
 node_modules/
+.venv/
+.env
+*.env
+.worktrees/
+tmp/

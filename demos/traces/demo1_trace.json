@@ -1,0 +1,117 @@
+{
+  "demo": "demo1_antigravity_swarm",
+  "timestamp_utc": "2026-11-17T16:03:35Z",
+  "live_api": true,
+  "remote_agent_cmd": "agy --remote-agent --repo cmanikandan/gdg-blr-talk-nov14-2026 --plan .antigravity/plan.json",
+  "remote_vm": "agy-remote-vm-blr-01 (Google Cloud Run / GKE Sandbox \u2014 Laptop Can Close Now!)",
+  "carbon_architect": {
+    "model": "gemini-4-carbon",
+    "thinking_level": "low",
+    "latency_ms": 30222,
+    "usage": {
+      "input_tokens": 1808,
+      "output_tokens": 787,
+      "thoughts_tokens": 0
+    },
+    "plan": {
+      "architecture_summary": "MonsoonPay cross-cloud checkout orchestrates traffic in AWS ap-south-1 through Envoy proxies fronting Spanner Omni backed by Software TrueTime (<3ms drift). The circuit_breaker.py module models Envoy pending-request queue saturation and remedies the legacy 64-slot synchronous retry storm (p99=430ms) by expanding max_envoy_pending_requests to 512, applying jittered exponential backoff (max_retries=2, base_backoff_ms=4.0), and failing open into local Spanner Omni bounded stale reads (<15ms) when consecutive saturation breaches failure_threshold.",
+      "risk_assessment": "1. Benchmark Blind Spot: benchmark_policy peaks at 184 concurrent requests while SHIPPED_SWARM_POLICY sets max_envoy_pending_requests=512, meaning saturation, jittered retries, and OPEN/HALF_OPEN stale-read fallbacks are never exercised under the patched policy test. 2. Checkout Write-Path Integrity: Serving bounded stale reads during BreakerState.OPEN on checkout commits risks double-spend or stale inventory authorization unless strictly scoped to idempotent read-only pre-checks. 3. Half-Open Flapping & Retry Accounting: HALF_OPEN does not immediately re-open on single probe failure if consecutive_failures was reset, max_retries is unused in latency calculation, and modulo-based probe transitions (fallback_reads % 4) lack time-based cooldowns under high concurrency.",
+      "workers": [
+        {
+          "id": "W1",
+          "branch": "fix/envoy-ap-south-1-circuit-breakers",
+          "element": "gemini-4-hydrogen",
+          "thinking_level": "low",
+          "owner": "Traffic & Mesh SRE",
+          "task": "Update Envoy cluster configuration for AWS ap-south-1 checkout upstreams to raise max_pending_requests from 64 to 512, cap max_retries at 2 with 4ms base jittered exponential backoff, and enforce failure_threshold=5 outlier ejection.",
+          "target_file": "deploy/envoy/ap-south-1/checkout_cluster.yaml"
+        },
+        {
+          "id": "W2",
+          "branch": "fix/benchmark-saturation-coverage",
+          "element": "gemini-4-hydrogen",
+          "thinking_level": "low",
+          "owner": "Performance & Chaos Engineering",
+          "task": "Extend benchmark_policy and unit test suites to simulate >512 concurrent flash-sale spikes (up to 650 inflight) and p99=430ms retry storm profiles so OPEN/HALF_OPEN transitions and Spanner Omni stale-read fallbacks are deterministically verified.",
+          "target_file": "tests/test_circuit_breaker.py"
+        },
+        {
+          "id": "W3",
+          "branch": "fix/breaker-state-machine-and-truetime-safety",
+          "element": "gemini-4-hydrogen",
+          "thinking_level": "high",
+          "owner": "Distributed Systems & Storage Architecture",
+          "task": "Refactor SpannerOmniCircuitBreaker to immediately trip HALF_OPEN back to OPEN on probe saturation, incorporate max_retries into jittered backoff modeling, guard TrueTime uncertainty bounds dynamically, and isolate 15ms bounded stale-read fallbacks from mutating checkout commits.",
+          "target_file": "monsoonpay/circuit_breaker.py"
+        }
+      ]
+    }
+  },
+  "hydrogen_swarm": {
+    "worktree_isolation": "git worktree add --detach (zero merge conflict across 3 branches)",
+    "wall_clock_ms": 15082,
+    "sequential_sum_ms": 35808,
+    "parallel_speedup": 2.37,
+    "workers": [
+      {
+        "worker_id": "W1",
+        "owner": "Traffic & Mesh SRE",
+        "branch": "fix/envoy-ap-south-1-circuit-breakers",
+        "model": "gemini-4-hydrogen",
+        "thinking_level": "low",
+        "worktree_path": "/tmp/agy_swarm_wt_o4jlg4ol/worktree_1_w1",
+        "artifact_file": "checkout_cluster.yaml",
+        "artifact_lines": 15,
+        "artifact_preview": "name: checkout_ap_south_1\nconnect_timeout: 0.25s\ntype: STRICT_DNS\nlb_policy: ROUND_ROBIN\ncircuit_breakers:\n  thresholds:\n    - priority: DEFAULT\n      max_pending_requests: 512\n      max_retries: 2\noutlier_detection:",
+        "git_status": "?? .antigravity_swarm_out/",
+        "latency_ms": 15034,
+        "usage": {
+          "input_tokens": 148,
+          "output_tokens": 140,
+          "thoughts_tokens": 669
+        }
+      },
+      {
+        "worker_id": "W2",
+        "owner": "Performance & Chaos Engineering",
+        "branch": "fix/benchmark-saturation-coverage",
+        "model": "gemini-4-hydrogen",
+        "thinking_level": "low",
+        "worktree_path": "/tmp/agy_swarm_wt_o4jlg4ol/worktree_2_w2",
+        "artifact_file": "test_circuit_breaker.py",
+        "artifact_lines": 25,
+        "artifact_preview": "import asyncio, pytest\nfrom circuit_breaker import CircuitBreaker, State, OmniStaleReadFallback\n\n@pytest.mark.asyncio\nasync def test_flash_sale_spike_and_retry_storm():\n    cb = CircuitBreaker(failure_threshold=0.5, min_throughput=512, recovery_timeout_ms=200)\n    fallback = OmniStaleReadFallback(max_staleness_ms=5000)\n\n    async def storm_call(i: int):\n        latency = 0.43 if i % 100 == 0 else 0.02  # p99=430ms retry storm profile",
+        "git_status": "?? .antigravity_swarm_out/",
+        "latency_ms": 7851,
+        "usage": {
+          "input_tokens": 154,
+          "output_tokens": 312,
+          "thoughts_tokens": 218
+        }
+      },
+      {
+        "worker_id": "W3",
+        "owner": "Distributed Systems & Storage Architecture",
+        "branch": "fix/breaker-state-machine-and-truetime-safety",
+        "model": "gemini-4-hydrogen",
+        "thinking_level": "medium",
+        "worktree_path": "/tmp/agy_swarm_wt_o4jlg4ol/worktree_3_w3",
+        "artifact_file": "circuit_breaker.py",
+        "artifact_lines": 24,
+        "artifact_preview": "import random, time\nclass SpannerOmniCircuitBreaker:\n    def __init__(self, max_retries=3, max_probes=2, base_backoff=0.05, open_ttl=10.0, tt_bound_ms=7.0):\n        self.max_retries, self.max_probes, self.base_backoff = max_retries, max_probes, base_backoff\n        self.open_ttl, self.tt_bound_ms = open_ttl, tt_bound_ms\n        self.state, self.probes, self.opened_at = \"CLOSED\", 0, 0.0\n    def backoff(self, attempt: int) -> float:\n        return random.uniform(0.0, self.base_backoff * (2 ** min(attempt, self.max_retries)))\n    def guard_truetime(self, uncertainty_ms: float, load_factor: float = 1.0) -> None:\n        if uncertainty_ms > self.tt_bound_ms / max(load_factor, 1.0):",
+        "git_status": "?? .antigravity_swarm_out/",
+        "latency_ms": 12923,
+        "usage": {
+          "input_tokens": 145,
+          "output_tokens": 479,
+          "thoughts_tokens": 2144
+        }
+      }
+    ]
+  },
+  "pytest_verification": {
+    "exit_code": 0,
+    "duration_ms": 1861,
+    "summary": "9 passed in 1.30s"
+  }
+}

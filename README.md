@@ -1,55 +1,97 @@
-# 🧪 The Periodic Table of Agents: Building with Gemini 4 & Antigravity
+# The Periodic Table of Agents: Building with Gemini 4 and Antigravity
 
-> **DevFest 2026 Keynote** · **Manikandan (Mani)**, Principal Architect, Google Cloud  
-> *Plan Big · Execute Fast · Decide Small · Review Everything*
+> **DevFest Bengaluru 2026 Opening Keynote**  
+> **Speaker:** Manikandan (Mani), Principal Architect, Google Cloud  
+> **Core Mental Model:** *Plan big, execute fast, decide small, and review everything.*
 
-Six months ago, an AI coding agent was a smart pair programmer waiting for you to hit `Tab`. Today, a single session **plans with Carbon**, **builds in parallel with Hydrogen**, **routes in 150ms with Decision-1**, **checks in by voice with Gemini 3.8 Live**, **queries multicloud data zero-copy via ADK 2.0 + Spanner Omni & Iceberg**, and keeps shipping in the cloud long after you close your laptop.
-
----
-
-## 📂 Repository Contents
-
-| Path | Description |
-| :--- | :--- |
-| [`SPEAKER_RUN_OF_SHOW.md`](SPEAKER_RUN_OF_SHOW.md) | Complete 30-minute minute-by-minute keynote script, jokes, stage cues & pacing guide |
-| [`presentation/keynote_deck.html`](presentation/keynote_deck.html) | **Interactive Offline HTML5 Keynote Deck** (17 slides, embedded 1080p MP4 videos, `S` speaker notes drawer, `F` fullscreen, 30:00 stage timer) |
-| [`presentation/Periodic_Table_of_Agents_DevFest_Keynote.pptx`](presentation/Periodic_Table_of_Agents_DevFest_Keynote.pptx) | Exported PowerPoint backup of the 17-slide Google Slides deck |
-| [`presentation/Periodic_Table_of_Agents_DevFest_Keynote.pdf`](presentation/Periodic_Table_of_Agents_DevFest_Keynote.pdf) | Exported PDF slide deck |
-| [`assets/infographics/`](assets/infographics/) | **7 Custom O'Reilly "Head First" Style 16:9 Technical Infographics** |
-| [`assets/videos/`](assets/videos/) | **4 Pre-Recorded 1080p HD Demo Videos (`.mp4`) + Poster Frames (`.png`)** |
-| [`demos/live_demo_studio.html`](demos/live_demo_studio.html) | **Interactive Browser Mission Control Console** for all 4 stage demos + live Web Speech voice synthesis |
-| [`demos/omnipulse_decisions_router.py`](demos/omnipulse_decisions_router.py) | **Demo 2 CLI:** `gemini-decision-1` evaluating 8 parallel questions (`noul`, `choice`, `score`) in ~167ms (`$0` output tokens) |
-| [`demos/omnipulse_adk2_multicloud_agent.py`](demos/omnipulse_adk2_multicloud_agent.py) | **Demo 3A CLI:** Google ADK 2.0 `BaseNode` Workflow Graph + Knowledge Catalog, Spanner Omni (GA), Cross-Cloud Iceberg & AlloyDB Express MCP |
-| [`demos/omnipulse_live38_voice_checkin.py`](demos/omnipulse_live38_voice_checkin.py) | **Demo 3B CLI:** `gemini-3.8-live-extended-thinking` parallel voice turn-taking + async background tool orchestration |
+Every slide, O'Reilly Head First visual, live Gemini 4 / Decisions API / Gemini 3.8 HD Audio demo, real **Google ADK 2.14.1** workflow graph, and zero-copy **Spanner Omni × AWS S3 Apache Iceberg** telemetry pipeline in this repository runs end-to-end with zero mocked numbers.
 
 ---
 
-## ⚡ Quickstart: Run the Demos Locally
+## Live Measured Highlights (Captured Against Production Gemini APIs)
 
-```bash
-# 1. Run automated verification tests
-python3 -m unittest demos/test_omnipulse.py -v
+### 1. Head-to-Head Control Plane Race: `gemini-decision-1` vs. `gemini-3.8-flash` vs. `gemini-4-hydrogen`
 
-# 2. Demo 2: Gemini Decisions API (8 simultaneous guardrails & routes in ~167ms, $0 output tokens)
-#    (Add --live with GEMINI_API_KEY exported to hit live Google AI Studio v1beta endpoint)
-python3 demos/omnipulse_decisions_router.py
+| Benchmark | Model | Latency | Billed Output Tokens | Cost / 1M Calls | Speedup / Savings |
+| :--- | :--- | ---: | ---: | ---: | :--- |
+| **8-Question Control Plane** *(Live)* | **`gemini-decision-1`** | **273 ms** | **0** | **$81** | **Baseline ($0 output)** |
+| **8-Question Control Plane** *(Live)* | `gemini-3.8-flash` *(budget=0)* | 2,475 ms | 116 | $394 | 9.1x slower · 4.9x costlier |
+| **8-Question Control Plane** *(Live)* | `gemini-4-hydrogen` *(low)* | 3,826 ms | 549 | $4,772 | 14.0x slower · 59.1x costlier |
+| **50 Simultaneous Compliance Checks** *(Live)* | **`gemini-decision-1`** | **2,718 ms** | **0** | **$270** | **Baseline ($0 output)** |
+| **50 Simultaneous Compliance Checks** *(Live)* | `gemini-3.8-flash` *(budget=0)* | 5,808 ms | 754 | $2,291 | 2.1x slower · 8.5x costlier |
+| **50 Simultaneous Compliance Checks** *(Live)* | `gemini-4-hydrogen` *(low)* | 7,758 ms | 1,736 | $15,150 | 2.9x slower · **56.2x costlier** |
+| **100-Question Scaling** *(Google Nov 2026)* | **`gemini-decision-1`** | **359 ms** | **0** | — | **20x vs Flash (7.2s) · 24x vs Hydrogen (8.6s)** |
 
-# 3. Demo 3A: Google ADK 2.0 Deterministic BaseNode Graph + Multicloud Data Agent Kit (MCP)
-python3 demos/omnipulse_adk2_multicloud_agent.py
+### 2. MonsoonPay Live Engineering Loop Outcomes
+- **Demo 1 (Plan Big + Execute Fast):** Live `gemini-4-carbon` architected the fix and flagged subtle circuit-breaker risks; 3 parallel `gemini-4-hydrogen` workers executed inside isolated `git worktree add --detach` sandboxes (**`2.37x` parallel speedup**, `0` merge conflicts).
+- **Demo 3 (Voice Check-In + ADK 2.14.1 + Zero-Copy Multicloud):** Real `google.adk.Workflow` DAG ran in **`482 ms`** total—calling live `gemini-decision-1`, resolving Knowledge Catalog semantics, joining **40,000 rows** across Spanner Omni SQLite + AWS S3 Apache Iceberg Parquet in **`116.7 ms`** via DuckDB (`aws:ap-south-1` `p99=431.8ms`, `18,006` sync retries vs `gcp:asia-south1` `p99=16.1ms`, TrueTime drift `2.75ms`), and pausing natively at `@node(require_confirmation=True)` — narrated by real **Gemini 3.8 HD audio** (`gemini-3.8-flash-tts`).
+- **Demo 4 (Review Everything):** Deterministic 500-request burst benchmark verified **`-97.1%` checkout p99 drop** (`478.55 ms -> 13.95 ms`) with **9/9 `pytest` passing** — yet live `gemini-4-carbon` adversarial review still threw **`CHANGES_REQUESTED`**, catching **5 subtle security and concurrency edge cases** pre-merge.
 
-# 4. Demo 3B: Mid-Talk Voice Check-In (Gemini 3.8 Live Extended Thinking)
-python3 demos/omnipulse_live38_voice_checkin.py
+---
+
+## Repository Map
+
+```text
+├── monsoonpay/                       # Real production reference app
+│   ├── seed_multicloud_data.py       # Seeds 10k Spanner Omni SQLite + 40k S3 Iceberg Parquet rows
+│   ├── circuit_breaker.py            # Spanner Omni Software TrueTime bounded stale-read breaker
+│   ├── decisions_gate.py             # Real REST client for POST /v1beta/decisions (text + multimodal)
+│   └── adk_workflow.py               # Real Google ADK 2.14.1 Workflow DAG + DuckDB + HITL pause
+├── tests/
+│   └── test_monsoonpay.py            # 9 automated pytest verification tests
+├── demos/
+│   ├── demo1_antigravity_swarm.py    # Live Carbon architect + 3 parallel Hydrogen git-worktree workers
+│   ├── demo2_decisions_arena.py      # 4 events + Live Flash/Hydrogen race (8Q & 50Q) + Multimodal
+│   ├── demo3_voice_adk_multicloud.py # Real ADK 2.14.1 + DuckDB + Gemini 3.8 HD Audio (+ --live-mic)
+│   ├── demo4_review_shipped_pr.py    # SLA burst benchmark + pytest + Live Carbon adversarial review
+│   ├── stage_workbench.py            # FastAPI live/replay stage server (http://127.0.0.1:8765)
+│   ├── studio.html                   # 1920x1080 cinema workbench UI driven by real JSON traces
+│   ├── record_demos.mjs              # 1080p 30fps CDP + FFmpeg MP4 & Gemini 3.8 audio muxer
+│   └── traces/                       # Real captured API traces + mastered Gemini 3.8 HD WAV tracks
+├── assets/
+│   ├── infographics/                 # 8 O'Reilly Head First 16:9 visual posters (01..08)
+│   └── videos/                       # 4 embedded 1080p 30fps H.264 MP4s + PNG posters
+├── presentation/
+│   ├── keynote_deck.html             # Self-contained 22-slide HTML5 keynote (F, S, G shortcuts)
+│   ├── build_html_keynote.py         # Builds keynote_deck.html from live traces
+│   ├── build_google_slides.py        # Builds 22-slide Google Slides deck + PDF/PPTX export
+│   ├── Periodic_Table_of_Agents_DevFest_Keynote.pdf
+│   ├── Periodic_Table_of_Agents_DevFest_Keynote.pptx
+│   └── google_slides_metadata.json   # Live Google Slides & Drive video URLs
+└── SPEAKER_RUN_OF_SHOW.md            # Minute-by-minute 30:00 stage playbook
 ```
 
-To open the interactive browser keynote deck or demo console:
-- Open `presentation/keynote_deck.html` in Chrome/Edge/Safari (`←`/`→` navigate, `S` speaker notes, `F` fullscreen).
-- Open `demos/live_demo_studio.html` (`1`–`4` switch live scenes, `Space` replays, `🔊 Speak Audio` triggers live speech).
-
 ---
 
-## 🧠 The 4-Rule Mental Model
+## Quickstart
 
-1. **Plan Big (`gemini-4-carbon` & `gemini-4-argon`):** Spend frontier 1M-context reasoning tokens upfront on system boundaries, contracts, and security invariants.
-2. **Execute Fast (`gemini-4-hydrogen` + Antigravity `/swarm`):** Fan out parallel workers across isolated git worktrees and `<2s` AlloyDB Express sandboxes—Orchestrator saves **24% quota** and finishes **19% faster**.
-3. **Decide Small (`gemini-decision-1`):** Replace slow token-decoding routers with single-pass calibrated probabilities (**150–250ms**, up to **1,000 questions**, **$0.10/1M in · $0.00 out**).
-4. **Review Everything (`Verifier` + `Artifacts` + `PR`):** Pair adversarial verification agents with structured human PR sign-off grounded on **Google ADK 2.0** and the **Agentic Data Cloud** (**Spanner Omni**, **Borderless Iceberg**, **Knowledge Catalog**).
+### 1. Install Dependencies & Run Tests
+```bash
+python3 -m venv .venv
+.venv/bin/pip install -e ".[dev]"
+.venv/bin/python monsoonpay/seed_multicloud_data.py
+.venv/bin/pytest -v
+```
+
+### 2. Present the 22-Slide Keynote Deck (Offline-Safe, Embedded 1080p 30fps Videos + Audio)
+Open [`presentation/keynote_deck.html`](presentation/keynote_deck.html) in Chrome/Edge:
+- **`ArrowRight` / `Space`** — Next slide
+- **`F`** — Fullscreen auditorium mode
+- **`S`** — Private Speaker Teleprompter & 30:00 keynote timer
+- **`G`** — 22-slide jump grid
+
+### 3. Run Live Demos or Launch the Stage Workbench
+Never hardcode API keys—export `GEMINI_API_KEY` transiently in your shell:
+```bash
+export GEMINI_API_KEY="<your-gemini-api-key>"
+
+# Run individual live demos (writes fresh traces to demos/traces/)
+.venv/bin/python demos/demo1_antigravity_swarm.py
+.venv/bin/python demos/demo2_decisions_arena.py
+.venv/bin/python demos/demo3_voice_adk_multicloud.py       # add --live-mic on stage laptop for live WebSocket
+.venv/bin/python demos/demo4_review_shipped_pr.py
+
+# Or launch the interactive Stage Workbench (Live API + Instant Trace Replay)
+.venv/bin/python demos/stage_workbench.py
+# Open http://127.0.0.1:8765
+```
