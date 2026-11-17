@@ -1,0 +1,14 @@
+{
+  "presentation_id": "18YBK6Fdc-_WCEs6_DtVW28ZwuHNMAZTFcIrqRDw7LGg",
+  "presentation_url": "https://docs.google.com/presentation/d/18YBK6Fdc-_WCEs6_DtVW28ZwuHNMAZTFcIrqRDw7LGg/edit",
+  "title": "The Periodic Table of Agents: Building with Gemini 4 & Antigravity (DevFest Keynote)",
+  "slide_count": 17,
+  "drive_videos_folder_id": "17FSevMIs-B9Th0A3XHudNABUKQlHSgpY",
+  "drive_videos_folder_url": "https://drive.google.com/drive/folders/17FSevMIs-B9Th0A3XHudNABUKQlHSgpY",
+  "drive_videos": {
+    "demo1_antigravity_swarm_kickoff": "https://drive.google.com/file/d/1HOaMxWBm-Rd-eTYZE5AxKWrsRb6PFXeU/view",
+    "demo2_decisions_api_167ms": "https://drive.google.com/file/d/1txCsSUKm5PROv4CjMwZXlGn9fmUwWwpU/view",
+    "demo3_live38_voice_multicloud_adk": "https://drive.google.com/file/d/1F-HFLv6-9pQIGJQ3daiavthGJVlR-dY3/view",
+    "demo4_review_shipped_pr": "https://drive.google.com/file/d/1jywQPd5GISQJdftvTDHXGoFHKidGSBsa/view"
+  }
+}
