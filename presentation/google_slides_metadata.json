@@ -1,14 +1,38 @@
 {
-  "presentation_id": "18YBK6Fdc-_WCEs6_DtVW28ZwuHNMAZTFcIrqRDw7LGg",
-  "presentation_url": "https://docs.google.com/presentation/d/18YBK6Fdc-_WCEs6_DtVW28ZwuHNMAZTFcIrqRDw7LGg/edit",
-  "title": "The Periodic Table of Agents: Building with Gemini 4 & Antigravity (DevFest Keynote)",
-  "slide_count": 17,
-  "drive_videos_folder_id": "17FSevMIs-B9Th0A3XHudNABUKQlHSgpY",
-  "drive_videos_folder_url": "https://drive.google.com/drive/folders/17FSevMIs-B9Th0A3XHudNABUKQlHSgpY",
+  "presentation_id": "1Z2AlGl7zLxbDKW67ObSF2odrUfEUCqBE1oqYPAuR9mI",
+  "presentation_url": "https://docs.google.com/presentation/d/1Z2AlGl7zLxbDKW67ObSF2odrUfEUCqBE1oqYPAuR9mI/edit",
+  "title": "The Periodic Table of Agents: Building with Gemini 4 & Antigravity \u2014 DevFest Bengaluru 2026 Keynote (v2)",
+  "slide_count": 22,
+  "drive_videos_folder_id": "1yVidDh1ydfUn6oq7mLYRYbPAmo5I6Cnd",
+  "drive_videos_folder_url": "https://drive.google.com/drive/folders/1yVidDh1ydfUn6oq7mLYRYbPAmo5I6Cnd",
   "drive_videos": {
-    "demo1_antigravity_swarm_kickoff": "https://drive.google.com/file/d/1HOaMxWBm-Rd-eTYZE5AxKWrsRb6PFXeU/view",
-    "demo2_decisions_api_167ms": "https://drive.google.com/file/d/1txCsSUKm5PROv4CjMwZXlGn9fmUwWwpU/view",
-    "demo3_live38_voice_multicloud_adk": "https://drive.google.com/file/d/1F-HFLv6-9pQIGJQ3daiavthGJVlR-dY3/view",
-    "demo4_review_shipped_pr": "https://drive.google.com/file/d/1jywQPd5GISQJdftvTDHXGoFHKidGSBsa/view"
+    "demo1_antigravity_swarm_kickoff": "https://drive.google.com/file/d/1qzkyw823GSgbPzDm0OWyKiBCP9K72Uok/view",
+    "demo2_decisions_api_arena": "https://drive.google.com/file/d/1YwPv2MhlAG8-Txq_jxFKBKb2ArueOije/view",
+    "demo3_live38_voice_multicloud_adk": "https://drive.google.com/file/d/1DURAzSqBR5L7Evs66XoW2QedrTun0kri/view",
+    "demo4_review_shipped_pr": "https://drive.google.com/file/d/1RvLTbAxaHfmgfX1deoiZ_Hw-8LoB4End/view"
+  },
+  "resolved_slide_ids": {
+    "p": "p",
+    "S02": "slide_1794932485034233518_36",
+    "S03": "slide_1794932485034252706_42",
+    "S04": "slide_1794932485034261582_48",
+    "S05": "slide_1794932485034310262_71",
+    "S06": "slide_1794932485034319860_77",
+    "S07": "slide_1794932485034331486_83",
+    "S08": "slide_1794932485034380638_112",
+    "S09": "slide_1794932485034386874_118",
+    "S10": "slide_1794932485034434113_133",
+    "S11": "slide_1794932485034456763_139",
+    "S12": "slide_1794932485034561446_174",
+    "S13": "slide_1794932485034569909_180",
+    "S14": "slide_1794932485034578685_186",
+    "S15": "slide_1794932485034611926_204",
+    "S16": "slide_1794932485034617810_210",
+    "S17": "slide_1794932485034657831_235",
+    "S18": "slide_1794932485034674032_241",
+    "S19": "slide_1794932485034711287_266",
+    "S20": "slide_1794932485034749280_272",
+    "S21": "slide_1794932485034788258_292",
+    "S22": "slide_1794932485034794457_298"
   }
 }
