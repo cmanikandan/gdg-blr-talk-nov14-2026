@@ -8,17 +8,39 @@
  */
 import { spawn, execFileSync } from 'node:child_process';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { setTimeout as delay } from 'node:timers/promises';
 
-const ROOT = '/home/antigravity/cmanikandan/gdg-blr-talk-nov14-2026';
-const HTML_URL = `file://${ROOT}/demos/studio.html?record=1`;
-const TRACES_DIR = `${ROOT}/demos/traces`;
-const OUT_DIR = `${ROOT}/assets/videos`;
-const TMP_DIR = `/tmp/demo_frames_${Date.now()}`;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const ROOT = path.resolve(__dirname, '..');
+const HTML_URL = `${pathToFileURL(path.join(ROOT, 'demos', 'studio.html')).href}?record=1`;
+const TRACES_DIR = path.join(ROOT, 'demos', 'traces');
+const OUT_DIR = path.join(ROOT, 'assets', 'videos');
+const TMP_DIR = path.join(os.tmpdir(), `demo_frames_${Date.now()}`);
 
 const FPS = 30;
 const PORT = 9334;
+
+function findChromeBinary() {
+  const candidates = [
+    process.env.CHROME_PATH,
+    '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+    '/Applications/Chromium.app/Contents/MacOS/Chromium',
+    '/usr/bin/chromium',
+    '/usr/bin/chromium-browser',
+    '/usr/bin/google-chrome',
+    '/usr/bin/google-chrome-stable',
+  ].filter(Boolean);
+  for (const bin of candidates) {
+    if (fs.existsSync(bin)) return bin;
+  }
+  throw new Error(
+    'Could not find Chrome/Chromium binary. Install Google Chrome or export CHROME_PATH=/path/to/chrome'
+  );
+}
 
 function loadTraces() {
   const traces = {};
@@ -83,6 +105,13 @@ class CDPSession {
   }
 }
 
+function resolveTurnWav(wavPath) {
+  if (wavPath && fs.existsSync(wavPath)) return wavPath;
+  const fallback = path.join(TRACES_DIR, 'audio', path.basename(wavPath || ''));
+  if (fs.existsSync(fallback)) return fallback;
+  throw new Error(`Missing Demo 3 audio file: ${wavPath} (checked ${fallback})`);
+}
+
 function buildDemo3AudioMix(demo3Trace, outWavPath) {
   const turns = demo3Trace.voice_turns || [];
   if (turns.length < 3) return null;
@@ -102,9 +131,9 @@ function buildDemo3AudioMix(demo3Trace, outWavPath) {
     'ffmpeg',
     [
       '-y',
-      '-i', turns[0].wav_path,
-      '-i', turns[1].wav_path,
-      '-i', turns[2].wav_path,
+      '-i', resolveTurnWav(turns[0].wav_path),
+      '-i', resolveTurnWav(turns[1].wav_path),
+      '-i', resolveTurnWav(turns[2].wav_path),
       '-filter_complex', filterComplex,
       '-map', '[aout]',
       '-ar', '48000',
@@ -136,9 +165,10 @@ async function main() {
     { id: 5, name: 'demo5_code_modernization', duration: 14.0, posterAt: 12.6, hasAudio: false },
   ].filter(s => !onlyId || s.id === onlyId);
 
-  console.log(`Launching headless Chromium 1920x1080 @ ${FPS}fps...`);
+  const chromeBin = findChromeBinary();
+  console.log(`Launching headless Chrome (${chromeBin}) 1920x1080 @ ${FPS}fps...`);
   const chrome = spawn(
-    '/usr/bin/chromium',
+    chromeBin,
     [
       '--headless',
       '--no-sandbox',

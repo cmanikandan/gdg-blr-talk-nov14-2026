@@ -20,7 +20,7 @@ import tempfile
 from pathlib import Path
 from typing import Any, Dict, List
 
-ROOT = Path("/home/antigravity/cmanikandan/gdg-blr-talk-nov14-2026")
+ROOT = Path(__file__).resolve().parents[1]
 DIAG_DIR = ROOT / "assets" / "diagrams"
 VID_DIR = ROOT / "assets" / "videos"
 TRACES_DIR = ROOT / "demos" / "traces"
