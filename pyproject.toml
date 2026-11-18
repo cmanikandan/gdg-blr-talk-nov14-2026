@@ -1,7 +1,11 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "periodic-table-of-agents"
-version = "2.0.0"
-description = "DevFest Bengaluru 2026 Keynote — The Periodic Table of Agents: Building with Gemini 4, Google Antigravity, Decisions API, Gemini 3.8 Live, ADK 2.0, and Multicloud Data Cloud"
+version = "3.0.0"
+description = "DevFest Bengaluru 2026 Keynote — The Periodic Table of Agents: Building with Gemini 4, Google Antigravity, Decisions API, Gemini 3.8 Live, ADK 2.0, and Google Cloud Data Platform"
 requires-python = ">=3.11"
 dependencies = [
     "google-adk>=2.14.1",
@@ -17,6 +21,9 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=9.0.0"]
+
+[tool.setuptools.packages.find]
+include = ["monsoonpay*", "demos*"]
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
