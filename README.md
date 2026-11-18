@@ -93,11 +93,11 @@ export GEMINI_API_KEY="<your-gemini-api-key>"
 # Opens http://127.0.0.1:8765 automatically
 ```
 Inside the Web UI:
-- **6 Keynote Tabs (`1`–`6`)**: `/swarm Outage`, `Code Modernize`, `Decisions Arena`, `ADK + Lakehouse`, `Carbon PR Audit`, and `Voice AI Live` (1-click Google Drive launch for Demos 4A & 4B).
+- **7 Keynote Tabs (`0`–`6`)**: Starts on **`00 · Architecture & Flow`** (an interactive business + technical blueprint with clickable journey cards), followed by `01 · Parallel Fix`, `02 · Legacy Rewrite`, `03 · Instant Guardrails`, `04 · Voice + Cloud Data`, `05 · AI Security Audit`, and `06 · Voice AI Live` (1-click Google Drive launch for Demos 4A & 4B).
 - **`⚡ Run LIVE`**: Executes real Gemini APIs with a live visual phase stepper & event stream — then renders fresh live results directly on the visual stage.
-- **`▶ Replay` (`R`)**: Instant zero-Wi-Fi animated replay from the latest verified trace (including synchronized Gemini 3.8 HD audio with **`🔊 Audio ON/OFF`** on Tab 4).
-- **`? Behind the Scenes` (`B`)**: Plain-English 4-card breakdown explaining what executes live vs. local fixtures and the exact stage takeaway for every demo.
-- **`Auto-Reset` toggle + `⟲ Reset ▾` menu**: Automatically prunes stale git worktrees, verifies clean `monsoonpay/` code, and re-seeds Spanner Omni (`10k` rows) + BigQuery Iceberg (`40k` rows) after every live demo — or trigger **Reset Code & Backend** / **Full Factory Reset (+ Traces & Pytest)** anytime with one click.
+- **`▶ Replay` (`R`)**: Instant zero-Wi-Fi animated replay from the latest verified trace (including synchronized Gemini 3.8 HD audio with **`🔊 Audio ON/OFF`** on Tab `04`).
+- **`? Behind the Scenes` (`B`)**: Plain-English 4-card breakdown explaining what executes live vs. local fixtures and the exact stage takeaway for every tab.
+- **`Auto-Reset` toggle + `⟲ Reset ▾` menu**: Automatically cleans temporary sandboxes, verifies clean `monsoonpay/` code, and refreshes Spanner Omni (`10k` rows) + BigQuery Iceberg (`40k` rows) after every live demo — or trigger **Reset Code & Backend** / **Full Factory Reset (+ Baseline & Tests)** anytime with one click.
 
 ### 3. Clean Reset via CLI (Optional)
 ```bash

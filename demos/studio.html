@@ -206,24 +206,24 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      padding: 8px 24px;
+      gap: 8px;
+      padding: 6px 20px;
       background: rgba(13, 20, 34, 0.96);
       flex-wrap: wrap;
     }
 
     .tabs {
       display: flex;
-      gap: 6px;
+      gap: 4px;
       flex-wrap: wrap;
     }
     .tab-btn {
       background: transparent;
       border: 1px solid var(--border);
       color: var(--text-muted);
-      padding: 7px 12px;
+      padding: 5px 8.5px;
       border-radius: 7px;
-      font-size: 12.5px;
+      font-size: 11.5px;
       font-weight: 600;
       cursor: pointer;
       transition: background 0.15s, color 0.15s, border-color 0.15s;
@@ -234,20 +234,20 @@
 
     .controls {
       display: flex;
-      gap: 8px;
+      gap: 5px;
       align-items: center;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
     }
     .ctrl-btn {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
       background: var(--surface-alt);
       border: 1px solid var(--border);
       color: var(--text);
-      padding: 7px 13px;
+      padding: 5px 9.5px;
       border-radius: 7px;
-      font-size: 12.5px;
+      font-size: 11.5px;
       font-weight: 600;
       cursor: pointer;
       transition: background 0.15s, border-color 0.15s, opacity 0.15s;
@@ -842,6 +842,156 @@
     }
     .arch-step strong { color: #7BB1FF; font-family: var(--font-mono); font-size: 12.5px; }
 
+    /* ── Architecture & Live Demo Flow Tab (Scene 0) ── */
+    .pillars-row {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
+      align-items: stretch;
+      gap: 8px;
+    }
+    .pillar-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--blue);
+      border-radius: 10px;
+      padding: 10px 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .pillar-card.green { border-top-color: var(--green); }
+    .pillar-card.amber { border-top-color: var(--amber); }
+    .pillar-card.cyan { border-top-color: var(--cyan); }
+    .pillar-kicker {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .pillar-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .pillar-desc {
+      font-size: 12px;
+      line-height: 1.36;
+      color: #CBD5E1;
+    }
+    .pillar-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-dim);
+      padding: 0 2px;
+    }
+
+    .flow-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .flow-card {
+      text-align: left;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 11px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      cursor: pointer;
+      color: var(--text);
+      font-family: var(--font-sans);
+      transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+    }
+    .flow-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--blue);
+      background: var(--surface-alt);
+    }
+    .flow-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .flow-step-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: #7BB1FF;
+      white-space: nowrap;
+    }
+    .flow-card-title {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.25;
+    }
+    .flow-card-desc {
+      font-size: 12.2px;
+      line-height: 1.38;
+      color: #CBD5E1;
+      flex: 1;
+    }
+    .flow-card-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding-top: 6px;
+      border-top: 1px solid rgba(37, 51, 77, 0.7);
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+    .flow-models { color: var(--text-muted); }
+    .flow-launch { color: var(--green); font-weight: 700; white-space: nowrap; }
+
+    .stack-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .stack-tier {
+      background: #0D1524;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 9px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .stack-tier-head {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--blue);
+    }
+    .stack-tier-head.green { color: #6CE08A; }
+    .stack-tier-head.amber { color: #FBBF24; }
+    .stack-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+    .stack-pill {
+      font-size: 11.2px;
+      padding: 3px 7.5px;
+      border-radius: 5px;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      color: #E2E8F0;
+    }
+
     /* ── Interactive MacBook / Laptop Scaling (NEVER applies in ?record=1) ── */
     @media (max-width: 1680px) {
       body:not(.record-mode) .scene-kicker { font-size: 12.5px; margin-bottom: 4px; }
@@ -883,6 +1033,10 @@
     }
 
     @media (max-width: 1180px) {
+      body:not(.record-mode) .pillars-row { grid-template-columns: repeat(2, 1fr); }
+      body:not(.record-mode) .pillar-arrow { display: none; }
+      body:not(.record-mode) .flow-grid { grid-template-columns: repeat(2, 1fr); }
+      body:not(.record-mode) .stack-grid { grid-template-columns: 1fr; }
       body:not(.record-mode) .bts-grid { grid-template-columns: repeat(2, 1fr); }
       body:not(.record-mode) .grid-2,
       body:not(.record-mode) .grid-42-58,
@@ -907,12 +1061,12 @@
           <span id="apiText">Checking API...</span>
         </div>
 
-        <div class="status-chip" id="backendChip" title="Local Spanner Omni SQLite (10,000 rows) + BigQuery Iceberg Parquet (40,000 rows) + Git Worktrees">
+        <div class="status-chip" id="backendChip" title="Local Spanner Omni SQLite (10,000 rows) + BigQuery Iceberg Parquet (40,000 rows) + Sandbox Workspaces">
           <span class="status-dot green" id="backendDot"></span>
           <span id="backendText">Backend: Checking...</span>
         </div>
 
-        <label class="auto-reset-toggle" title="Automatically prune git worktrees, verify code cleanliness, and re-seed Spanner/Iceberg after every live demo finishes">
+        <label class="auto-reset-toggle" title="Automatically clean sandboxes, verify code files, and re-seed Spanner/BigQuery data after every live demo finishes">
           <input type="checkbox" id="chkAutoReset" checked />
           <span>Auto-Reset</span>
         </label>
@@ -925,14 +1079,14 @@
                 <span>⟲ Reset Code &amp; Backend</span>
                 <span class="tag tag-green">~0.4s</span>
               </strong>
-              <span>Prunes stale git worktrees, restores clean <code>monsoonpay/</code> code, and re-seeds 10k Spanner + 40k Iceberg rows. Keeps current screen results visible.</span>
+              <span>Cleans temporary sandboxes, restores clean demo code, and refreshes 10k Spanner + 40k BigQuery rows. Keeps your current screen visible.</span>
             </button>
             <button class="reset-option" id="btnFactoryReset" type="button">
               <strong>
-                <span>↺ Full Factory Reset (+ Traces &amp; Tests)</span>
+                <span>↺ Full Factory Reset (+ Baseline &amp; Tests)</span>
                 <span class="tag tag-amber">~2s</span>
               </strong>
-              <span>Resets code + backend, restores committed baseline traces &amp; Gemini 3.8 audio from git HEAD, and verifies 10/10 pytest.</span>
+              <span>Resets code + backend, restores baseline demo recordings &amp; voice tracks, and verifies all 10 automated tests pass.</span>
             </button>
           </div>
         </div>
@@ -941,17 +1095,19 @@
 
     <div class="demo-bar">
       <nav class="tabs" aria-label="Keynote Demos">
-        <button class="tab-btn active" data-scene="1" type="button">01 · /swarm Outage</button>
-        <button class="tab-btn" data-scene="5" type="button">02 · Code Modernize</button>
-        <button class="tab-btn" data-scene="2" type="button">03 · Decisions Arena</button>
-        <button class="tab-btn" data-scene="3" type="button">04 · ADK + Lakehouse</button>
-        <button class="tab-btn" data-scene="4" type="button">05 · Carbon PR Audit</button>
+        <button class="tab-btn active" data-scene="0" type="button">00 · Architecture &amp; Flow</button>
+        <button class="tab-btn" data-scene="1" type="button">01 · Parallel Fix</button>
+        <button class="tab-btn" data-scene="5" type="button">02 · Legacy Rewrite</button>
+        <button class="tab-btn" data-scene="2" type="button">03 · Instant Guardrails</button>
+        <button class="tab-btn" data-scene="3" type="button">04 · Voice + Cloud Data</button>
+        <button class="tab-btn" data-scene="4" type="button">05 · AI Security Audit</button>
         <button class="tab-btn" data-scene="6" type="button">06 · Voice AI Live</button>
       </nav>
 
       <div class="controls">
-        <button class="ctrl-btn" id="btnAudioToggle" type="button" style="display:none;">🔊 Audio: ON</button>
+        <button class="ctrl-btn" id="btnAudioToggle" type="button" style="display:none;">🔊 Audio</button>
         <button class="ctrl-btn" id="btnBtsToggle" type="button" title="Keyboard shortcut: B">? Behind the Scenes</button>
+        <button class="ctrl-btn primary" id="btnStartDemo1" type="button" style="display:none;">Start Demo 01 →</button>
         <button class="ctrl-btn" id="btnReplay" type="button" title="Keyboard shortcut: R">▶ Replay</button>
         <button class="ctrl-btn primary" id="btnRunLive" type="button">⚡ Run LIVE</button>
       </div>
@@ -991,7 +1147,7 @@
     }
 
     let TRACES = window.__INJECTED_TRACES__ || {};
-    let currentScene = 1;
+    let currentScene = 0;
     let rafId = null;
     let liveAudios = [];
     let audioTimers = [];
@@ -1005,47 +1161,54 @@
     const SCENE_TO_DEMO_ID = { 1: 'demo1', 2: 'demo2', 3: 'demo3', 4: 'demo4', 5: 'demo5' };
 
     const BEHIND_THE_SCENES = {
+      0: {
+        title: 'Tab 00 · Keynote Architecture & End-to-End Demo Journey',
+        scenario: 'Gives both business executives and engineers one simple map before diving into live demos — showing how Gemini 4, Antigravity, Decisions API, Google ADK 2.0, and Google Cloud Data fit together for MonsoonPay.',
+        live: 'Click any of the 6 journey cards on this screen (or use tabs 01–06 across the top) to jump straight into that demo. Every live demo connects directly to real Google Gemini APIs.',
+        local: 'The entire Command Center runs locally on your laptop so switching tabs, replaying animations, or launching Google Drive Voice AI recordings is instant.',
+        takeaway: '"One mental model to remember from today: Plan big, execute fast, decide small, and review everything."'
+      },
       1: {
-        title: 'Demo 01 · Plan Big with Carbon + Execute Fast with Parallel Hydrogen /swarm',
-        scenario: 'MonsoonPay is hitting a 430ms checkout p99 spike in Google Cloud asia-south2 (Delhi) during a festival flash sale because a 64-slot Cloud Run / Envoy connection pool is thrashing with retries.',
-        live: 'Calls LIVE gemini-4-carbon to diagnose the real source files and output a structured 3-worker JSON recovery plan. Then spawns 3 REAL isolated git worktrees (git worktree add --detach) and fans out 3 concurrent LIVE gemini-4-hydrogen calls in parallel, writing real patch artifacts into each sandbox and running pytest.',
-        local: 'The temporary git worktrees are created in your OS temp directory and immediately removed when finished (and pruned on Reset). The Remote Agent CLI command shown in the footer illustrates handing off the verified branch to an Antigravity Remote VM.',
-        takeaway: '"Don\'t ask one model to do everything. Use Carbon once to think deeply and prevent subtle bugs, then fan out parallel Hydrogen workers in isolated git worktrees for ~1.5x-2x faster execution with zero merge conflicts."'
+        title: 'Demo 01 · Plan Big with Carbon + Build Fast with 3 Parallel Hydrogen Workers',
+        scenario: 'During a festival flash sale in Delhi (asia-south2), MonsoonPay checkouts slow down to 430ms+ because a small 64-connection server queue gets overloaded with retries.',
+        live: 'Calls LIVE gemini-4-carbon to inspect the real code and design a 3-part recovery plan. Then creates 3 isolated code sandboxes on disk and runs 3 LIVE gemini-4-hydrogen builders in parallel, generating real fixes with zero merge conflicts and verifying all automated tests.',
+        local: 'The temporary sandboxes live in your OS temp folder and are automatically cleaned up when done (and verified on Reset). The bottom command shows handing off the finished work to a Cloud VM so you can close your laptop.',
+        takeaway: '"Don\'t force one AI model to do everything. Use Carbon once to think deeply and prevent costly mistakes, then let parallel Hydrogen builders execute in isolated sandboxes ~1.5x–2x faster with zero conflicts."'
       },
       5: {
-        title: 'Demo 02 · Enterprise Code Modernization (1M Context + Long Decode + /teamwork Falsifier)',
-        scenario: 'MonsoonPay has a legacy procedural UPI settlement monolith (monsoonpay/legacy_settlement.py) with an O(N²) duplicate-UTR linear scan and subtle, undocumented Indian RBI + 18% GST half-up rounding rules.',
-        live: 'First runs the real legacy monolith on 8,000 generated Indian UPI/Card transactions and locks its exact SHA-256 output digest. Next calls LIVE gemini-4-carbon to extract all 5 hidden business invariants. Then calls LIVE gemini-4-argon (or Hydrogen fallback) to synthesize a brand-new O(N) Python engine, compiles it live, and verifies 100% bit-exact SHA-256 parity + 6 hard boundary edge cases.',
-        local: 'The 8,000 synthetic Indian payment transactions are generated deterministically in memory each run (and the AI-generated modernized module is compiled in memory without overwriting legacy_settlement.py, so the demo is cleanly repeatable).',
-        takeaway: '"The hard part of modernizing legacy banking or systems code isn\'t writing new syntax — it\'s proving zero silent behavior drift. Lock an unmodified golden falsifier first, let Carbon/Argon modernize it, and prove 30x-90x speedup with 0.00 INR drift."'
+        title: 'Demo 02 · Modernize Legacy Indian UPI Code (Zero-Error Verified Rewrite)',
+        scenario: 'MonsoonPay runs an older UPI settlement program that slows to a crawl as transaction volumes grow — because it checks past payment IDs one by one — while hiding tricky RBI zero-fee and 18% GST rounding rules.',
+        live: 'First runs the old code on 8,000 Indian UPI/Card payments and locks its exact output fingerprint. Next, LIVE gemini-4-carbon reads the legacy code and lists all 5 hidden business rules. Then LIVE gemini-4-argon writes a fast modern version, runs it live on the same 8,000 payments plus 6 tricky boundary cases, and proves 0.00 INR difference with up to 94x faster speed.',
+        local: 'The 8,000 realistic Indian payment records are generated fresh in memory, and the AI-rewritten engine runs in memory without overwriting the original legacy file — so you can replay or re-run cleanly anytime.',
+        takeaway: '"The hardest part of modernizing legacy banking code isn\'t writing new code — it\'s proving zero silent financial drift. Lock an exact accuracy check first, let Gemini 4 modernize it, and prove 40x–90x faster execution with 0.00 INR error."'
       },
       2: {
-        title: 'Demo 03 · Gemini Decisions API Arena ($0 Output Tokens vs 3.8 Flash & 4 Hydrogen)',
-        scenario: 'Before an expensive agent ever runs, production systems need deterministic security guardrails (prompt injection, leaked credentials, PII) and routing — often checking 8 to 50+ RBI/PCI rules per event.',
-        live: 'Makes 100% REAL Gemini API calls across three rounds: (A) 4 live events scored across 8 simultaneous bool/choice/score questions via POST /v1beta/decisions (0 output tokens!), (B) a live head-to-head race on the exact same payload vs gemini-3.8-flash and gemini-4-hydrogen for both 8Q and 50Q, and (C) a single-pass multimodal scoring of our real Google Cloud architecture JPEG.',
-        local: 'The 100-question scaling banner at bottom-right cites Google\'s published Nov 2026 benchmark (359ms vs 7.2s Flash vs 8.6s Hydrogen). Every single row in Round A, Round B (8Q & 50Q), and Round C is measured live against the Gemini API.',
-        takeaway: '"Stop burning generative output tokens on yes/no routing and compliance checks. Decisions API scores 50+ rules in a single forward pass with ZERO output tokens — 10x-25x faster and up to 50x+ cheaper."'
+        title: 'Demo 03 · Instant Security & Compliance Guardrails ($0 Output Cost)',
+        scenario: 'Before an expensive AI agent runs, enterprises must check every incoming message for prompt-hacking attacks, leaked API keys, routing, and 50+ RBI/PCI compliance rules. Using standard chat models for yes/no checks wastes time and money.',
+        live: 'Runs 100% LIVE against Google Gemini APIs across 3 rounds: (A) 4 live events screened across 8 security & routing checks in one instant pass (0 output tokens!), (B) a live speed & cost race on the exact same alert vs gemini-3.8-flash and gemini-4-hydrogen (8 checks and 50 compliance checks), and (C) an instant check on our Google Cloud architecture diagram.',
+        local: 'Only the small bottom-right box cites Google\'s published 100-check benchmark (359ms vs 7.2s Flash vs 8.6s Hydrogen). Every single row in Rounds A, B, and C is measured live.',
+        takeaway: '"Stop burning generative output tokens on yes/no routing and compliance checks. Decisions API scores 50+ rules in a single instant pass with ZERO output cost — 10x–25x faster and up to 50x+ cheaper."'
       },
       3: {
-        title: 'Demo 04 · Google ADK 2.14.1 Workflow + Zero-Copy Lakehouse + Gemini 3.8 HD Audio',
-        scenario: 'Mid-keynote, Mani checks on the outage by voice after closing his laptop. The agent must screen the prompt, discover the right join key, correlate operational Spanner commits with Envoy gateway logs, and pause before merging.',
-        live: 'Runs a REAL Google ADK 2.14.1 Workflow DAG (@node, Edge, RetryConfig, require_confirmation=True): Node 1 calls LIVE gemini-decision-1; Node 2 reads Knowledge Catalog; Node 3 runs a REAL DuckDB zero-copy SQL join across 40,000 rows; Node 4 checks the patched SLA; Node 5 genuinely pauses at native ADK HITL. Phase 2 calls LIVE gemini-3.8-flash-tts to synthesize 3 fresh HD WAV audio tracks.',
-        local: 'So this runs reliably on stage Wi-Fi with zero cloud IAM setup, Spanner Omni (10,000 rows) is backed by a local SQLite database and BigQuery Borderless Iceberg (40,000 rows) by a real Apache Parquet file — both freshly re-seeded on Reset.',
-        takeaway: '"Real enterprise agents need orchestration graphs (ADK 2.0), zero-copy federated SQL grounded by a semantic Knowledge Catalog, and native Human-in-the-Loop pauses — never blind auto-merges."'
+        title: 'Demo 04 · Live Voice Check-In + Automated Workflow + Unified Cloud Data',
+        scenario: 'Mid-talk, after closing your laptop, you ask by voice whether the remote cloud workers found the Delhi checkout slowdown and whether Pull Request #1 is ready to approve.',
+        live: 'Runs a real Google ADK 2.0 multi-step workflow: Step 1 screens your request via LIVE gemini-decision-1; Step 2 looks up the verified join key in Knowledge Catalog; Step 3 runs a real live SQL join across 40,000 payment & gateway records with zero data copying; Step 4 checks the patched speed; Step 5 pauses automatically for human approval. Then LIVE gemini-3.8-flash-tts generates the spoken HD voice update.',
+        local: 'So venue Wi-Fi or cloud permissions never break your keynote, Spanner Omni (10,000 rows) is backed by a local database and BigQuery Iceberg (40,000 rows) by a local Parquet file — both refreshed cleanly whenever you click Reset.',
+        takeaway: '"Production AI agents need governed workflows (ADK 2.0), live federated data with zero ETL copying, and built-in Human Approval pauses — never blind auto-merges."'
       },
       4: {
-        title: 'Demo 05 · Review Everything: SLA Proof + Pytest + Live Carbon Adversarial Security Audit',
-        scenario: 'The swarm shipped a fix that slashed checkout tail latency and turned CI green — now we put our fourth mental-model pillar ("Review Everything") to the test before a human architect merges Pull Request #1.',
-        live: 'Executes a real 500-request burst benchmark against monsoonpay/circuit_breaker.py (64-slot legacy vs 512-slot TrueTime patch), runs the real pytest suite (10/10 tests), then sends the actual Python source code of circuit_breaker.py and decisions_gate.py to LIVE gemini-4-carbon acting as an adversarial Principal Security Reviewer, and fetches real GitHub PR #1 metadata.',
-        local: 'The 500-request flash-sale burst runs deterministically in Python against the real SpannerOmniCircuitBreaker class so you see exact reproducible before/after p50/p95/p99 latency numbers every single run.',
-        takeaway: '"Green tests and a -97% p99 drop are NOT enough to ship. Running Carbon as an adversarial reviewer catches subtle concurrency & policy-bypass edge cases that unit tests miss — humans stay in charge of the merge button."'
+        title: 'Demo 05 · Review Everything: Load Test + Automated Tests + AI Security Audit',
+        scenario: 'The AI workers cut worst-case checkout delay by 97% and turned every automated test green — now we prove why an independent AI security review and human sign-off still matter before going live.',
+        live: 'Runs a 500-user flash-sale load test comparing the old 64-connection setup against the new 512-connection protected setup, runs all 10 automated tests, then sends the actual Python code to LIVE gemini-4-carbon acting as an independent Principal Security Reviewer, and checks GitHub Pull Request #1.',
+        local: 'The 500-user load test runs locally against the real Python circuit-breaker code so you get crisp, reliable before-and-after latency proof every time.',
+        takeaway: '"Green tests and a 97% speed boost are still NOT enough to auto-launch. Putting Carbon in an independent security-reviewer role catches subtle concurrency and policy gaps that unit tests miss — humans keep the merge button."'
       },
       6: {
-        title: 'Demo 06 · Real Gemini 3.8 Live & VoiceAI Production Recordings (Google Drive)',
-        scenario: 'Showcasing real end-to-end multimodal and telephony voice agents that reason in parallel while speaking — with zero awkward dead air.',
-        live: 'Launches Mani\'s two real recorded Google Drive sessions directly in full screen: (4A) Gemini 3.8 Live Extended Thinking using 1 FPS camera + 16kHz voice to rebook cancelled flight PNR LH8942X while running NON_BLOCKING BigQuery/Firestore queries, and (4B) Gemini VoiceAI connected to live Indian PSTN/VoLTE carriers over Cloud Run Gen2 (asia-south1) across EN, HI, TA, KN, TE & Hinglish.',
-        local: 'High-resolution poster frames are bundled right in this repo (assets/videos/) so this stage screen works offline, with 1-click Google Drive launch buttons for full video playback.',
-        takeaway: '"Dual-track reasoning changes voice UX forever: the voice track keeps talking naturally while the reasoning track runs live SQL and policy tools in the background — even over real Indian PSTN phone lines."'
+        title: 'Demo 06 · Real Gemini 3.8 Live & Indian Phone-Line Voice AI Recordings',
+        scenario: 'Shows real production voice agents that think and query enterprise databases in the background while speaking naturally — with zero awkward silence.',
+        live: 'Opens Mani\'s two real recorded Google Drive sessions directly in full screen: (4A) Gemini 3.8 Live using live camera + voice to rebook cancelled Frankfurt flight PNR LH8942X while running background BigQuery/Firestore lookups, and (4B) Gemini VoiceAI answering real Indian phone calls across English, Hindi, Tamil, Kannada, Telugu & Hinglish on Cloud Run (Mumbai).',
+        local: 'Preview posters are bundled locally in the repo so this screen loads instantaneously offline, with 1-click Google Drive launch buttons.',
+        takeaway: '"Dual-track voice AI changes customer experience forever: the voice keeps talking naturally while the reasoning engine runs live database lookups and policy checks in the background — even over standard Indian phone lines."'
       }
     };
 
@@ -1076,7 +1239,185 @@
       return (lastSpace > maxLen * 0.6 ? cut.slice(0, lastSpace) : cut) + '…';
     }
 
-    // ── SCENE 1: Carbon Architect -> Parallel Hydrogen `/swarm` -> Remote Agent ──
+    function humanizeRule(str) {
+      return String(str || '')
+        .replace(/Idempotent first-seen-wins UTR deduplication:/i, 'No double-counting:')
+        .replace(/canonical digest parity/gi, 'exact output fingerprint match')
+        .replace(/SHA-256 parity digest/gi, 'digital output fingerprint')
+        .replace(/O\(N\^2\)|O\(N²\)/g, 'slow full-list scan')
+        .replace(/O\(1\)/g, 'instant lookup')
+        .replace(/O\(N\)/g, 'single-pass')
+        .replace(/ROUND_HALF_UP/g, 'standard half-up rounding');
+    }
+
+    // ── SCENE 0: End-to-End Architecture & Interactive Keynote Demo Flow ──
+    function renderScene0() {
+      const d1 = TRACES.demo1;
+      const d5 = TRACES.demo5;
+      const d2 = TRACES.demo2;
+      const d3 = TRACES.demo3;
+      const d4 = TRACES.demo4;
+
+      const speedupSwarm = d1?.hydrogen_swarm?.parallel_speedup || '1.8';
+      const speedupMod = d5?.benchmark?.speedup_factor || '94.3';
+      const costSave = d2?.round_b_head_to_head?.live_ratios_50q?.cost_savings_vs_4_hydrogen || '53.4';
+      const sqlMs = (d3?.lakehouse_finding || d3?.multicloud_finding)?.query_latency_ms || '162';
+      const p99Drop = d4?.sla_benchmark?.p99_reduction_pct || '97.1';
+
+      const cards = [
+        {
+          scene: 1,
+          step: 'STEP 01 · PLAN & BUILD',
+          badge: `${speedupSwarm}x FASTER · 0 CONFLICTS`,
+          badgeCls: 'tag-blue',
+          title: 'Fix a Flash-Sale Checkout Outage in Parallel',
+          desc: 'A Delhi traffic surge spikes checkout delays past 430ms. Carbon plans the fix once; 3 Hydrogen workers build in isolated sandboxes simultaneously, then hand off to a Cloud VM.',
+          models: 'Gemini 4 Carbon + 3x Hydrogen',
+          cta: 'Open Demo 01 →',
+        },
+        {
+          scene: 5,
+          step: 'STEP 02 · MODERNIZE',
+          badge: `${speedupMod}x FASTER · 0.00 INR ERROR`,
+          badgeCls: 'tag-green',
+          title: 'Rewrite a Slow Legacy UPI System with Zero Drift',
+          desc: 'AI reads an old Indian UPI settlement engine, uncovers 5 hidden RBI & 18% GST rules, writes a fast modern replacement, and proves 100% exact paisa-for-paisa accuracy on 8,000 payments.',
+          models: 'Gemini 4 Carbon + Argon',
+          cta: 'Open Demo 02 →',
+        },
+        {
+          scene: 2,
+          step: 'STEP 03 · DECIDE SMALL',
+          badge: `UP TO ${costSave}x CHEAPER`,
+          badgeCls: 'tag-amber',
+          title: 'Screen Attacks & 50 RBI Rules in One Instant Check',
+          desc: 'Blocks prompt-hacking attacks and leaked secrets before agents ever run, then races live against Flash & Hydrogen across 8 and 50 compliance checks with ZERO output tokens.',
+          models: 'Gemini Decisions API',
+          cta: 'Open Demo 03 →',
+        },
+        {
+          scene: 3,
+          step: 'STEP 04 · VOICE + DATA',
+          badge: `40k ROWS IN ${sqlMs}ms · 0 ETL`,
+          badgeCls: 'tag-blue',
+          title: 'Voice Status Check + Live Cloud Data Join',
+          desc: 'Close your laptop and check in by voice. Google ADK 2.0 joins live Spanner transactions with BigQuery logs (zero data copying), pinpoints Delhi, and pauses for human approval.',
+          models: 'Google ADK 2.0 + Gemini 3.8 Voice',
+          cta: 'Open Demo 04 →',
+        },
+        {
+          scene: 4,
+          step: 'STEP 05 · SECURITY AUDIT',
+          badge: `-${p99Drop}% DELAY · AI AUDIT`,
+          badgeCls: 'tag-amber',
+          title: 'Independent AI Security Review Before Launch',
+          desc: 'Load testing proves checkout delay fell 97% and all 10 tests pass — yet Carbon audits the code independently and catches subtle pre-merge risks before a human hits Merge.',
+          models: 'Load Test + Pytest + Carbon Audit',
+          cta: 'Open Demo 05 →',
+        },
+        {
+          scene: 6,
+          step: 'STEP 06 · VOICE AI LIVE',
+          badge: 'LIVE VIDEO & TELEPHONY',
+          badgeCls: 'tag-green',
+          title: 'Voice Agents That Think While They Speak',
+          desc: 'Watch two real Google Drive recordings: live camera + voice flight rebooking with zero dead air, plus real Indian phone-line calls across English, Hindi, Tamil, Kannada, Telugu & Hinglish.',
+          models: 'Gemini 3.8 Live + Cloud Run Mumbai',
+          cta: 'Open Demo 06 →',
+        },
+      ];
+
+      const flowHtml = cards.map(c => `
+        <button class="flow-card" type="button" data-jump-scene="${c.scene}">
+          <div class="flow-card-top">
+            <span class="flow-step-num">${esc(c.step)}</span>
+            <span class="tag ${c.badgeCls}">${esc(c.badge)}</span>
+          </div>
+          <div class="flow-card-title">${esc(c.title)}</div>
+          <div class="flow-card-desc">${esc(c.desc)}</div>
+          <div class="flow-card-foot">
+            <span class="flow-models">${esc(c.models)}</span>
+            <span class="flow-launch">${esc(c.cta)}</span>
+          </div>
+        </button>
+      `).join('');
+
+      return `
+        <div class="scene-header">
+          <div>
+            <div class="scene-kicker">KEYNOTE BLUEPRINT · ONE CONNECTED GOOGLE CLOUD STORY (MONSOONPAY)</div>
+            <div class="scene-title">Architecture &amp; Live Demo Flow — Click Any Step to Launch</div>
+          </div>
+          <div class="scene-meta">
+            <div class="meta-stat">Story<strong>MonsoonPay UPI</strong></div>
+            <div class="meta-stat green">Live Demos<strong>6 Interactive</strong></div>
+            <div class="meta-stat amber">Cloud<strong>100% Google Cloud</strong></div>
+          </div>
+        </div>
+
+        <div class="pillars-row">
+          <div class="pillar-card">
+            <div class="pillar-kicker">PILLAR 1 · ARCHITECT</div>
+            <div class="pillar-title">Plan Big</div>
+            <div class="pillar-desc"><strong>Gemini 4 Carbon</strong> reads the whole system, uncovers hidden risks &amp; business rules, and creates a clear blueprint.</div>
+          </div>
+          <div class="pillar-arrow">→</div>
+          <div class="pillar-card green">
+            <div class="pillar-kicker">PILLAR 2 · BUILDERS</div>
+            <div class="pillar-title">Execute Fast</div>
+            <div class="pillar-desc"><strong>Argon &amp; Hydrogen</strong> work in parallel inside isolated sandboxes — shipping clean code fast and running in the cloud.</div>
+          </div>
+          <div class="pillar-arrow">→</div>
+          <div class="pillar-card cyan">
+            <div class="pillar-kicker">PILLAR 3 · GUARDRAILS</div>
+            <div class="pillar-title">Decide Small</div>
+            <div class="pillar-desc"><strong>Gemini Decisions API</strong> checks security, routing &amp; 50+ compliance rules in one instant pass at <strong>$0 output cost</strong>.</div>
+          </div>
+          <div class="pillar-arrow">→</div>
+          <div class="pillar-card amber">
+            <div class="pillar-kicker">PILLAR 4 · GOVERNANCE</div>
+            <div class="pillar-title">Review Everything</div>
+            <div class="pillar-desc"><strong>Carbon Security Audit + Human Approval</strong> verify real performance, accuracy, and safety before anything ships.</div>
+          </div>
+        </div>
+
+        <div class="flow-grid">
+          ${flowHtml}
+        </div>
+
+        <div class="stack-grid">
+          <div class="stack-tier">
+            <div class="stack-tier-head">1 · USER &amp; VOICE EXPERIENCE</div>
+            <div class="stack-pills">
+              <span class="stack-pill">Stage Web Command Center</span>
+              <span class="stack-pill">Antigravity IDE</span>
+              <span class="stack-pill">Gemini 3.8 Live (Camera + Voice)</span>
+              <span class="stack-pill">Indian Phone Telephony (6 Languages)</span>
+            </div>
+          </div>
+          <div class="stack-tier">
+            <div class="stack-tier-head green">2 · AGENT CONTROL &amp; SAFETY</div>
+            <div class="stack-pills">
+              <span class="stack-pill">Decisions API (Instant Guardrails)</span>
+              <span class="stack-pill">Google ADK 2.0 Automated Workflows</span>
+              <span class="stack-pill">Built-In Human Approval Gates</span>
+              <span class="stack-pill">Parallel Sandboxes &amp; Cloud VMs</span>
+            </div>
+          </div>
+          <div class="stack-tier">
+            <div class="stack-tier-head amber">3 · GEMINI 4 MODELS &amp; DATA CLOUD</div>
+            <div class="stack-pills">
+              <span class="stack-pill">Gemini 4 Carbon · Argon · Hydrogen</span>
+              <span class="stack-pill">Spanner Omni (Mumbai + Delhi)</span>
+              <span class="stack-pill">BigQuery Iceberg (Zero-Copy)</span>
+              <span class="stack-pill">Knowledge Catalog (Verified Schemas)</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ── SCENE 1: Carbon Architect -> Parallel Hydrogen Builders -> Remote Cloud Agent ──
     function renderScene1(t) {
       const d = TRACES.demo1;
       if (!d) return '<div class="panel">Loading Demo 1 real trace...</div>';
@@ -1107,7 +1448,7 @@
               </div>
               <div style="display:flex;gap:10px;align-items:center;flex-shrink:0;">
                 <span class="tag tag-blue">${esc(w.model)} (${esc(w.thinking_level)})</span>
-                <span class="worker-metrics">${done ? `${w.latency_ms} ms · ${w.artifact_lines}L` : 'executing in worktree...'}</span>
+                <span class="worker-metrics">${done ? `${(w.latency_ms / 1000).toFixed(1)}s · ${w.artifact_lines} lines` : 'building in sandbox...'}</span>
               </div>
             </div>
             <div class="code-box" style="font-size:12.5px;line-height:1.45;">${esc(typewriter(preview, codeProg))}</div>
@@ -1118,12 +1459,12 @@
       return `
         <div class="scene-header">
           <div>
-            <div class="scene-kicker">DEMO 01 · PLAN BIG, EXECUTE FAST · REAL GEMINI 4 API + ISOLATED GIT WORKTREES</div>
-            <div class="scene-title">Plan Big with Carbon · Execute Fast with Parallel Hydrogen <code>/swarm</code></div>
+            <div class="scene-kicker">DEMO 01 · PLAN BIG, EXECUTE FAST · LIVE GEMINI 4 ARCHITECT + 3 PARALLEL BUILDERS</div>
+            <div class="scene-title">Plan Big with Carbon · Build Fast with 3 Parallel Hydrogen Workers</div>
           </div>
           <div class="scene-meta">
             <div class="meta-stat">Carbon Plan<strong>${(carb.latency_ms / 1000).toFixed(1)}s</strong></div>
-            <div class="meta-stat green">Swarm Wall<strong>${(swarm.wall_clock_ms / 1000).toFixed(2)}s</strong></div>
+            <div class="meta-stat green">Parallel Time<strong>${(swarm.wall_clock_ms / 1000).toFixed(2)}s</strong></div>
             <div class="meta-stat amber">Speedup<strong>${swarm.parallel_speedup}x</strong></div>
           </div>
         </div>
@@ -1131,28 +1472,28 @@
         <div class="grid-42-58">
           <div class="panel">
             <div class="panel-header">
-              <span>PHASE 1 · GEMINI 4 CARBON ARCHITECT</span>
-              <span class="tag tag-blue">${carb.usage.input_tokens} in · ${carb.usage.output_tokens} out tok</span>
+              <span>STEP 1 · GEMINI 4 CARBON ARCHITECT</span>
+              <span class="tag tag-blue">${carb.usage.input_tokens} in · ${carb.usage.output_tokens} out tokens</span>
             </div>
             <div class="prose" style="color:#E2E8F0;">
               ${esc(typewriter(plan.architecture_summary || '', pCarbon))}
             </div>
             <div style="margin-top:6px;opacity:${pRisk}">
               <div style="font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--amber);margin-bottom:8px;letter-spacing:0.05em;">
-                CARBON DEEP RISK ANALYSIS (REAL API OUTPUT)
+                KEY RISKS CAUGHT BY CARBON BEFORE CODING (LIVE API)
               </div>
               <div class="code-box" style="line-height:1.52;color:#FDE68A;border-color:rgba(245,158,11,0.35);">${esc(trimWords(plan.risk_assessment || '', 440))}</div>
             </div>
             <div style="margin-top:auto;display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:13px;color:var(--text-muted);padding-top:10px;border-top:1px solid var(--border);">
-              <span>Worktree Isolation: <strong style="color:#E2E8F0;">git worktree add --detach</strong></span>
-              <span>Conflicts: <strong style="color:var(--green);">0</strong></span>
+              <span>Workspaces: <strong style="color:#E2E8F0;">3 Isolated Code Sandboxes</strong></span>
+              <span>Merge Conflicts: <strong style="color:var(--green);">0</strong></span>
             </div>
           </div>
 
           <div class="panel">
             <div class="panel-header">
-              <span>PHASE 2 · PARALLEL GEMINI 4 HYDROGEN /SWARM (3 WORKTREES)</span>
-              <span class="tag tag-green">${showSwarm ? `${swarm.wall_clock_ms} ms wall vs ${swarm.sequential_sum_ms} ms seq` : 'Waiting for Carbon plan...'}</span>
+              <span>STEP 2 · 3 PARALLEL GEMINI 4 HYDROGEN BUILDERS</span>
+              <span class="tag tag-green">${showSwarm ? `${(swarm.wall_clock_ms/1000).toFixed(1)}s parallel vs ${(swarm.sequential_sum_ms/1000).toFixed(1)}s one-by-one` : 'Waiting for Carbon plan...'}</span>
             </div>
             <div class="col-stack" style="gap:13px;flex:1;">
               ${workerCards}
@@ -1165,14 +1506,14 @@
             <span class="prompt">$</span>${esc(d.remote_agent_cmd)}
           </div>
           <div style="display:flex;gap:12px;align-items:center;flex-shrink:0;">
-            <span class="tag tag-green">pytest: ${esc(d.pytest_verification.summary)}</span>
-            <span class="tag tag-amber">LAPTOP LID CLOSED · REMOTE VM ACTIVE</span>
+            <span class="tag tag-green">Tests: ${esc(d.pytest_verification.summary)}</span>
+            <span class="tag tag-amber">LAPTOP CLOSED · CLOUD AGENT RUNNING</span>
           </div>
         </div>
       `;
     }
 
-    // ── SCENE 2: Decisions API Arena (4 Events + Live Flash/Hydrogen Race + Multimodal) ──
+    // ── SCENE 2: Decisions API Arena (4 Events + Live Flash/Hydrogen Race + Diagram Check) ──
     function renderScene2(t) {
       const d = TRACES.demo2;
       if (!d) return '<div class="panel">Loading Demo 2 real trace...</div>';
@@ -1183,18 +1524,33 @@
       const pub100 = d.round_b_head_to_head.published_100q_reference;
       const mm = d.round_c_multimodal;
 
+      const labelMap = {
+        'Indirect Prompt Injection': 'Hidden Prompt-Hacking Attack',
+        'Leaked Cloud Credentials': 'Leaked API Secret Key',
+        'Benign UI Micro-Fix': 'Simple UI Text Change',
+        'Regional Checkout Outage': 'Delhi Checkout Outage (SEV-1)',
+      };
+      const verdictMap = {
+        QUARANTINE_PROMPT_INJECTION: 'BLOCKED · ATTACK STOPPED',
+        REDACT_AND_ROTATE_SECRET: 'MASKED · KEY ROTATED',
+        FAST_LANE_HYDROGEN_WORKER: 'FAST LANE · HYDROGEN',
+        DISPATCH_CARBON_DATA_SWARM: 'ESCALATE · CARBON ARCHITECT',
+      };
+
       const rowsHtml = evs.map((ev, i) => {
         const show = t >= (0.6 + i * 0.95);
         let badgeCls = 'tag-green';
         if (ev.adk_route === 'quarantine') badgeCls = 'tag-red';
         else if (ev.adk_route === 'dlp_redact') badgeCls = 'tag-amber';
         else if (ev.adk_route === 'lakehouse_carbon' || ev.adk_route === 'multicloud_carbon') badgeCls = 'tag-blue';
+        const friendlyLabel = labelMap[ev.label] || ev.label;
+        const friendlyVerdict = verdictMap[ev.verdict] || ev.verdict;
         return `
           <tr class="${show ? '' : 'hidden-row'}">
-            <td><strong>${esc(ev.id)}</strong> · ${esc(ev.label)}</td>
-            <td><span class="tag ${badgeCls}">${esc(ev.verdict)}</span></td>
+            <td><strong>${esc(ev.id)}</strong> · ${esc(friendlyLabel)}</td>
+            <td><span class="tag ${badgeCls}">${esc(friendlyVerdict)}</span></td>
             <td style="font-family:var(--font-mono);color:#CBD5E1;">${esc(ev.selected_model)}</td>
-            <td class="num">${ev.injection_prob.toFixed(2)} / ${ev.secret_prob.toFixed(2)}</td>
+            <td class="num">${Math.round(ev.injection_prob * 100)}% / ${Math.round(ev.secret_prob * 100)}%</td>
             <td class="num" style="color:var(--green);font-weight:700;">${ev.latency_ms} ms</td>
             <td class="num" style="color:var(--green);font-weight:700;">${ev.output_tokens}</td>
           </tr>
@@ -1208,7 +1564,7 @@
       const bars8Html = b8.map((m) => {
         const pct = Math.max(8, (m.latency_ms / maxLat8) * 100 * raceProg);
         const cls = m.model.includes('decision') ? 'bar-green' : (m.model.includes('flash') ? 'bar-blue' : 'bar-amber');
-        const ratio = m.model.includes('decision') ? '1.0x BASELINE · $0 OUTPUT' : `${(m.latency_ms / b8[0].latency_ms).toFixed(1)}x slower · ${m.billed_output_tokens} out tok`;
+        const ratio = m.model.includes('decision') ? 'FASTEST · $0 OUTPUT' : `${(m.latency_ms / b8[0].latency_ms).toFixed(1)}x slower · ${m.billed_output_tokens} out tokens`;
         return `
           <div class="bar-item">
             <div class="bar-label-row">
@@ -1226,7 +1582,7 @@
       const bars50Html = b50.map((m) => {
         const pct = Math.max(6, (m.cost_per_1m_calls_usd / maxCost50) * 100 * costProg);
         const cls = m.model.includes('decision') ? 'bar-green' : (m.model.includes('flash') ? 'bar-blue' : 'bar-red');
-        const mult = m.model.includes('decision') ? '0 OUT TOK' : `${(m.cost_per_1m_calls_usd / b50[0].cost_per_1m_calls_usd).toFixed(1)}x costlier`;
+        const mult = m.model.includes('decision') ? '$0 OUTPUT COST' : `${(m.cost_per_1m_calls_usd / b50[0].cost_per_1m_calls_usd).toFixed(1)}x costlier`;
         return `
           <div class="bar-item">
             <div class="bar-label-row">
@@ -1251,29 +1607,29 @@
         <div class="scene-header">
           <div>
             <div class="scene-kicker">DEMO 03 · DECIDE SMALL · LIVE GEMINI DECISIONS API VS 3.8 FLASH VS 4 HYDROGEN</div>
-            <div class="scene-title">Single Forward Pass: Calibrated Payment Guardrail &amp; Compliance Gate</div>
+            <div class="scene-title">One Instant Check: Security Guardrails &amp; Compliance Gate ($0 Output Cost)</div>
           </div>
           <div class="scene-meta">
             <div class="meta-stat green">Output Tokens<strong>0</strong></div>
-            <div class="meta-stat green">8Q vs Flash<strong>${(b8[1].latency_ms / b8[0].latency_ms).toFixed(1)}x faster</strong></div>
-            <div class="meta-stat amber">50Q Cost vs Hydrogen<strong>${d.round_b_head_to_head.live_ratios_50q.cost_savings_vs_4_hydrogen}x cheaper</strong></div>
+            <div class="meta-stat green">8 Rules vs Flash<strong>${(b8[1].latency_ms / b8[0].latency_ms).toFixed(1)}x faster</strong></div>
+            <div class="meta-stat amber">50 Rules vs Hydrogen<strong>${d.round_b_head_to_head.live_ratios_50q.cost_savings_vs_4_hydrogen}x cheaper</strong></div>
           </div>
         </div>
 
         <div class="panel" style="flex:0 0 auto;padding:18px 24px;">
           <div class="panel-header">
-            <span>ROUND A · 4 PRODUCTION EVENTS x 8 SIMULTANEOUS BOOL / CHOICE / SCORE QUESTIONS</span>
-            <span class="tag tag-green">POST /v1beta/decisions · $0.10 / 1M input · $0.00 output</span>
+            <span>ROUND A · 4 LIVE EVENTS x 8 INSTANT SECURITY, ROUTING &amp; RISK CHECKS</span>
+            <span class="tag tag-green">DECISIONS API · $0.10 / 1M INPUT · $0.00 OUTPUT</span>
           </div>
           <table class="data-table">
             <thead>
               <tr>
-                <th>Live Event</th>
-                <th>Deterministic Gate Verdict</th>
-                <th>Routed Element</th>
-                <th class="num">Inj / Secret</th>
-                <th class="num">Latency</th>
-                <th class="num">Out Tok</th>
+                <th>Incoming Event</th>
+                <th>Automated Gate Decision</th>
+                <th>Routed Model</th>
+                <th class="num">Attack / Secret Risk</th>
+                <th class="num">Speed</th>
+                <th class="num">Output Tokens</th>
               </tr>
             </thead>
             <tbody>${rowsHtml}</tbody>
@@ -1283,33 +1639,33 @@
         <div class="grid-60-40">
           <div class="panel">
             <div class="panel-header">
-              <span>ROUND B · LIVE HEAD-TO-HEAD RACE (IDENTICAL SEV-1 PAYLOAD · SAME API)</span>
+              <span>ROUND B · LIVE SPEED &amp; COST RACE (EXACT SAME PAYMENT ALERT)</span>
               <span class="tag tag-blue">MEASURED LIVE ON GEMINI API</span>
             </div>
-            <div style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted);text-transform:uppercase;">8-Question Guardrail &amp; Routing Latency (Lower is Better)</div>
+            <div style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted);text-transform:uppercase;">8 Security &amp; Routing Checks — Response Speed (Lower is Better)</div>
             <div class="bar-group">${bars8Html}</div>
-            <div style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted);text-transform:uppercase;margin-top:8px;">50 Simultaneous RBI / PCI-DSS Compliance Questions — Cost per 1M Calls</div>
+            <div style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted);text-transform:uppercase;margin-top:8px;">50 Simultaneous RBI / PCI Compliance Checks — Cost per 1 Million Calls</div>
             <div class="bar-group">${bars50Html}</div>
           </div>
 
           <div class="panel" style="opacity:${Math.max(0.15, showMM)}">
             <div class="panel-header">
-              <span>ROUND C · MULTIMODAL + 100Q SCALING</span>
+              <span>ROUND C · DIAGRAM CHECK + 100-RULE SCALE</span>
               <span class="tag tag-green">0 OUT TOK</span>
             </div>
             <div class="mm-card">
               <img class="mm-thumb" src="${imgSrc}" alt="Google Cloud Data Platform Diagram" />
               <div style="display:flex;flex-direction:column;gap:6px;font-family:var(--font-mono);font-size:13px;">
-                <div>gcp_data_arch: <strong style="color:var(--green);">${gcpArchProb.toFixed(2)}</strong></div>
-                <div>spanner_iceberg: <strong style="color:var(--green);">${(mmAns.contains_spanner_and_iceberg?.noul ?? 0.94).toFixed(2)}</strong></div>
-                <div>leaked_secrets: <strong style="color:var(--green);">${(mmAns.contains_sensitive_passwords?.noul ?? 0.04).toFixed(2)}</strong></div>
-                <div>style: <strong style="color:#7BB1FF;">${esc(mmAns.diagram_style?.choice || 'architecture_diagram')}</strong></div>
-                <div>clarity_score: <strong style="color:var(--amber);">${(mmAns.executive_keynote_clarity?.score ?? 2.65).toFixed(2)} / 3.0</strong></div>
+                <div>Valid GCP Diagram: <strong style="color:var(--green);">${Math.round(gcpArchProb * 100)}%</strong></div>
+                <div>Spanner + BigQuery: <strong style="color:var(--green);">${Math.round((mmAns.contains_spanner_and_iceberg?.noul ?? 0.94) * 100)}%</strong></div>
+                <div>Leaked Passwords: <strong style="color:var(--green);">${Math.round((mmAns.contains_sensitive_passwords?.noul ?? 0.04) * 100)}% (Safe)</strong></div>
+                <div>Detected Type: <strong style="color:#7BB1FF;">${esc((mmAns.diagram_style?.choice || 'architecture_diagram').replace(/_/g, ' '))}</strong></div>
+                <div>Clarity Score: <strong style="color:var(--amber);">${(mmAns.executive_keynote_clarity?.score ?? 2.65).toFixed(2)} / 3.0</strong></div>
               </div>
             </div>
             <div style="margin-top:auto;background:#080C15;border:1px solid var(--border);border-radius:10px;padding:14px 16px;">
               <div style="font-family:var(--font-mono);font-size:12px;color:var(--amber);font-weight:700;margin-bottom:8px;">
-                GOOGLE PUBLISHED 100-QUESTION SINGLE-PASS BENCHMARK
+                GOOGLE PUBLISHED 100-RULE INSTANT CHECK BENCHMARK
               </div>
               <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-family:var(--font-mono);font-size:14px;">
                 <span>Decision-1: <strong style="color:var(--green);">${pub100.gemini_decision_1_ms} ms</strong></span>
@@ -1322,7 +1678,7 @@
       `;
     }
 
-    // ── SCENE 3: Real Google ADK 2.14.1 DAG + DuckDB Zero-Copy Spanner x BigQuery Iceberg ──
+    // ── SCENE 3: Real Google ADK 2.0 Automated Workflow + Live Spanner x BigQuery Join ──
     function renderScene3(t) {
       const d = TRACES.demo3;
       if (!d) return '<div class="panel">Loading Demo 3 real trace...</div>';
@@ -1339,9 +1695,9 @@
       let activeSpeaker = 'Standby';
       let waveColor = '#4285F4';
       let isSpeaking = false;
-      if (t >= t1Start && t <= t1End) { activeSpeaker = 'MANI (ARCHITECT CHECK-IN)'; waveColor = '#4285F4'; isSpeaking = true; }
-      else if (t >= t2Start && t <= t2End) { activeSpeaker = 'GEMINI 3.8 LIVE · IMMEDIATE TRACK'; waveColor = '#34A853'; isSpeaking = true; }
-      else if (t >= t3Start && t <= t3End) { activeSpeaker = 'GEMINI 3.8 LIVE · ADK LAKEHOUSE REPORT'; waveColor = '#34A853'; isSpeaking = true; }
+      if (t >= t1Start && t <= t1End) { activeSpeaker = 'MANI (VOICE CHECK-IN)'; waveColor = '#4285F4'; isSpeaking = true; }
+      else if (t >= t2Start && t <= t2End) { activeSpeaker = 'GEMINI 3.8 LIVE · INSTANT REPLY'; waveColor = '#34A853'; isSpeaking = true; }
+      else if (t >= t3Start && t <= t3End) { activeSpeaker = 'GEMINI 3.8 LIVE · DATA REPORT'; waveColor = '#34A853'; isSpeaking = true; }
 
       const bars = [];
       for (let i = 0; i < 48; i++) {
@@ -1359,33 +1715,33 @@
       const stepTimes = [t2Start + 0.6, t2Start + 2.5, t2Start + 4.4, t2Start + 7.2, t3Start + 6.5];
       const dagRows = [
         {
-          name: '1. decision_gate_node',
+          name: '1. Instant Security & Routing Gate',
           meta: 'LIVE gemini-decision-1',
-          detail: `route="lakehouse_carbon" · ${traceSteps[0]?.output?.latency_ms || 320} ms · 0 output tokens`,
+          detail: `Verified safe -> routed to Cloud Data Analyst · ${traceSteps[0]?.output?.latency_ms || 320} ms · 0 output tokens`,
           isHitl: false,
         },
         {
-          name: '2. knowledge_catalog_node',
-          meta: 'Universal Context Engine',
-          detail: 'Verified semantic join key: trace_span_id · 4x SQL accuracy · -75% tokens',
+          name: '2. Knowledge Catalog Schema Lookup',
+          meta: 'Verified Join Key',
+          detail: 'Auto-discovered exact join key (trace_span_id) — 4x higher SQL accuracy, 75% fewer tokens',
           isHitl: false,
         },
         {
-          name: '3. lakehouse_mcp_sql_node',
-          meta: 'RetryConfig(max_attempts=3)',
-          detail: `Zero-Copy Join: ${(sql.rows_correlated || 40000).toLocaleString()} rows in ${sql.query_latency_ms} ms (0 ETL copy)`,
+          name: '3. Live Spanner + BigQuery Data Join',
+          meta: 'Zero Data Copying',
+          detail: `Correlated ${(sql.rows_correlated || 40000).toLocaleString()} live payment & gateway records in ${sql.query_latency_ms} ms`,
           isHitl: false,
         },
         {
-          name: '4. swarm_status_node',
-          meta: 'Remote VM Check',
-          detail: `Patched p99: ${swarm.before_patch_p99_ms} ms -> ${swarm.after_patch_p99_ms} ms (-${swarm.p99_reduction_pct}%)`,
+          name: '4. Cloud Worker Progress Check',
+          meta: 'Remote VM Status',
+          detail: `Peak checkout delay improved: ${swarm.before_patch_p99_ms} ms -> ${swarm.after_patch_p99_ms} ms (-${swarm.p99_reduction_pct}%)`,
           isHitl: false,
         },
         {
-          name: '5. hitl_pr_approval_node',
-          meta: 'require_confirmation=True',
-          detail: 'PAUSED via adk_request_input — Waiting for Mani to review Pull Request #1',
+          name: '5. Built-In Human Approval Gate',
+          meta: 'Paused for Human',
+          detail: 'Workflow safely paused — waiting for Mani to review & approve Pull Request #1',
           isHitl: true,
         },
       ].map((n, idx) => {
@@ -1410,9 +1766,12 @@
       const showSqlTable = t >= t2Start + 5.0;
       const regionRows = regions.map(r => {
         const isHot = r.p99_commit_ms > 100;
+        const friendlyRegion = r.cloud_region === 'gcp:asia-south2'
+          ? 'Delhi (asia-south2)'
+          : (r.cloud_region === 'gcp:asia-south1' ? 'Mumbai (asia-south1)' : r.cloud_region);
         return `
           <tr>
-            <td style="font-family:var(--font-mono);font-weight:700;color:${isHot ? '#F87171' : '#6CE08A'};">${esc(r.cloud_region)}</td>
+            <td style="font-family:var(--font-mono);font-weight:700;color:${isHot ? '#F87171' : '#6CE08A'};">${esc(friendlyRegion)}</td>
             <td class="num">${r.joined_events.toLocaleString()}</td>
             <td class="num" style="font-weight:700;color:${isHot ? '#F87171' : '#6CE08A'};">${r.p99_commit_ms} ms</td>
             <td class="num">${r.avg_truetime_drift_ms} ms</td>
@@ -1424,34 +1783,34 @@
       return `
         <div class="scene-header">
           <div>
-            <div class="scene-kicker">DEMO 04 · GOOGLE ADK ${esc(d.adk_version)} + ZERO-COPY DATA CLOUD + GEMINI 3.8 HD AUDIO</div>
-            <div class="scene-title">Spanner Omni x BigQuery Borderless Iceberg · Native ADK 2.0 HITL Gate</div>
+            <div class="scene-kicker">DEMO 04 · GOOGLE ADK ${esc(d.adk_version)} + UNIFIED DATA CLOUD + GEMINI 3.8 HD VOICE</div>
+            <div class="scene-title">Live Voice Check-In · Zero-Copy Cloud Data Join · Human Approval Gate</div>
           </div>
           <div class="scene-meta">
-            <div class="meta-stat green">ADK DAG Total<strong>${d.adk_total_ms} ms</strong></div>
-            <div class="meta-stat">Zero-Copy Join<strong>${(sql.rows_correlated || 40000).toLocaleString()} rows</strong></div>
-            <div class="meta-stat amber">Gate<strong>HITL PAUSED</strong></div>
+            <div class="meta-stat green">Workflow Time<strong>${d.adk_total_ms} ms</strong></div>
+            <div class="meta-stat">Records Joined<strong>${(sql.rows_correlated || 40000).toLocaleString()}</strong></div>
+            <div class="meta-stat amber">Safety Gate<strong>HUMAN APPROVAL</strong></div>
           </div>
         </div>
 
         <div class="grid-46-54">
           <div class="panel">
             <div class="panel-header">
-              <span>TRACK 1 · GEMINI 3.8 HD VOICE SESSION</span>
+              <span>TRACK 1 · GEMINI 3.8 HD VOICE CONVERSATION</span>
               <span class="tag ${isSpeaking ? 'tag-green' : 'tag-blue'}">${activeSpeaker}</span>
             </div>
             <div class="wave-container">${bars.join('')}</div>
             <div class="col-stack" style="gap:12px;">
               <div class="transcript-bubble" style="opacity:${t >= t1Start ? 1 : 0.15}">
-                <div class="transcript-speaker">Mani (Principal Architect, Google Cloud · Orus)</div>
+                <div class="transcript-speaker">Mani (Google Cloud · Spoken Question)</div>
                 <div class="transcript-text">${esc(turns[0]?.transcript || '')}</div>
               </div>
               <div class="transcript-bubble gemini" style="opacity:${t >= t2Start ? 1 : 0.12}">
-                <div class="transcript-speaker">Gemini 3.8 Live · Immediate Spoken Track (Puck)</div>
+                <div class="transcript-speaker">Gemini 3.8 Live · Instant Spoken Acknowledgment</div>
                 <div class="transcript-text">${esc(turns[1]?.transcript || '')}</div>
               </div>
               <div class="transcript-bubble gemini" style="opacity:${t >= t3Start ? 1 : 0.12}">
-                <div class="transcript-speaker">Gemini 3.8 Live · Grounded ADK 2.0 Report (Puck)</div>
+                <div class="transcript-speaker">Gemini 3.8 Live · Grounded Root-Cause Report</div>
                 <div class="transcript-text">${esc(turns[2]?.transcript || '')}</div>
               </div>
             </div>
@@ -1460,25 +1819,25 @@
           <div class="col-stack">
             <div class="panel" style="flex:1;">
               <div class="panel-header">
-                <span>TRACK 2 · REAL GOOGLE ADK 2.14.1 WORKFLOW RUNTIME</span>
-                <span class="tag tag-blue">ASYNC PARALLEL TOOLS</span>
+                <span>TRACK 2 · GOOGLE ADK 2.0 AUTOMATED WORKFLOW</span>
+                <span class="tag tag-blue">PARALLEL CLOUD TOOLS</span>
               </div>
               <div class="dag-list">${dagRows}</div>
             </div>
 
             <div class="panel" style="flex:0 0 auto;padding:16px 22px;opacity:${showSqlTable ? 1 : 0.18}">
               <div class="panel-header">
-                <span>ZERO-COPY FEDERATED SQL (SPANNER OMNI + BIGQUERY ICEBERG PARQUET)</span>
+                <span>LIVE DATA JOIN (SPANNER TRANSACTIONS + BIGQUERY LOGS · ZERO COPYING)</span>
                 <span class="tag tag-green">${sql.query_latency_ms} ms</span>
               </div>
               <table class="data-table">
                 <thead>
                   <tr>
                     <th>Google Cloud Region</th>
-                    <th class="num">Joined Rows</th>
-                    <th class="num">p99 Commit</th>
-                    <th class="num">TrueTime Drift</th>
-                    <th class="num">Envoy Retries</th>
+                    <th class="num">Matched Rows</th>
+                    <th class="num">Peak Delay (p99)</th>
+                    <th class="num">Clock Sync</th>
+                    <th class="num">Gateway Retries</th>
                   </tr>
                 </thead>
                 <tbody>${regionRows}</tbody>
@@ -1489,7 +1848,7 @@
       `;
     }
 
-    // ── SCENE 4: Review Everything (SLA Benchmark + Pytest + Live Carbon Security Audit) ──
+    // ── SCENE 4: Review Everything (Load Test + Automated Tests + Live Carbon Security Audit) ──
     function renderScene4(t) {
       const d = TRACES.demo4;
       if (!d) return '<div class="panel">Loading Demo 4 real trace...</div>';
@@ -1523,17 +1882,18 @@
 
       const testList = (pt.test_cases || []).slice(0, 10).map(ln => `  ✔ ${ln.replace(/\s+\[\s*\d+%\]/, '')}`).join('\n');
       const warnCount = checks.filter(c => c.status !== 'PASS').length;
+      const verdictText = audit.overall_verdict === 'CHANGES_REQUESTED' ? 'CHANGES REQUESTED' : (audit.overall_verdict || 'REVIEWED');
 
       return `
         <div class="scene-header">
           <div>
-            <div class="scene-kicker">DEMO 05 · REVIEW EVERYTHING · LIVE SLA PROOF + GEMINI 4 CARBON ADVERSARIAL VERIFIER</div>
-            <div class="scene-title">p99 Dropped ${sla.p99_reduction_pct}% &amp; Pytest Passed — Carbon Caught ${warnCount || checks.length} Pre-Merge Findings</div>
+            <div class="scene-kicker">DEMO 05 · REVIEW EVERYTHING · 500-USER LOAD PROOF + INDEPENDENT AI SECURITY AUDIT</div>
+            <div class="scene-title">Checkout Delay Cut ${sla.p99_reduction_pct}% &amp; All Tests Passed — Yet Carbon Caught ${warnCount || checks.length} Pre-Launch Risks</div>
           </div>
           <div class="scene-meta">
-            <div class="meta-stat green">p99 Drop<strong>-${sla.p99_reduction_pct}%</strong></div>
-            <div class="meta-stat green">Pytest<strong>${pt.passed_count}/${pt.passed_count} PASS</strong></div>
-            <div class="meta-stat amber">Verdict<strong>${esc(audit.overall_verdict)}</strong></div>
+            <div class="meta-stat green">Delay Cut<strong>-${sla.p99_reduction_pct}%</strong></div>
+            <div class="meta-stat green">Tests<strong>${pt.passed_count}/${pt.passed_count} PASS</strong></div>
+            <div class="meta-stat amber">AI Verdict<strong>${esc(verdictText)}</strong></div>
           </div>
         </div>
 
@@ -1541,34 +1901,34 @@
           <div class="col-stack">
             <div class="panel">
               <div class="panel-header">
-                <span>500-REQUEST GOOGLE CLOUD ASIA-SOUTH2 FLASH-SALE BURST</span>
-                <span class="tag tag-green">VERIFIED LOCALLY</span>
+                <span>500-USER DELHI FLASH-SALE LOAD TEST</span>
+                <span class="tag tag-green">MEASURED LOCALLY</span>
               </div>
               <div class="kpi-row">
                 <div class="kpi-box">
-                  <div class="kpi-label">Legacy p99</div>
+                  <div class="kpi-label">Before (Peak Delay)</div>
                   <div class="kpi-value" style="color:var(--red);">${sla.before.p99_ms}ms</div>
                 </div>
                 <div class="kpi-box">
-                  <div class="kpi-label">Swarm Patch p99</div>
+                  <div class="kpi-label">After AI Fix</div>
                   <div class="kpi-value" style="color:var(--green);">${sla.after.p99_ms}ms</div>
                 </div>
                 <div class="kpi-box">
-                  <div class="kpi-label">Reduction</div>
+                  <div class="kpi-label">Speed Boost</div>
                   <div class="kpi-value" style="color:var(--blue);">-${sla.p99_reduction_pct}%</div>
                 </div>
               </div>
               <div class="bar-group" style="margin-top:6px;">
                 <div class="bar-item">
                   <div class="bar-label-row">
-                    <span>Before · 64-slot Cloud Run / Envoy (unbounded retries)</span>
+                    <span>Before · Small 64-connection queue (retry overload)</span>
                     <strong style="color:var(--red);">${sla.before.p99_ms} ms</strong>
                   </div>
                   <div class="bar-track"><div class="bar-fill bar-red" style="width:${beforeW.toFixed(1)}%">${sla.before.p99_ms} ms</div></div>
                 </div>
                 <div class="bar-item">
                   <div class="bar-label-row">
-                    <span>After · 512-slot Breaker + TrueTime Stale-Read</span>
+                    <span>After · 512-connection auto-protected queue + smart failover</span>
                     <strong style="color:var(--green);">${sla.after.p99_ms} ms (-${sla.p99_reduction_pct}%)</strong>
                   </div>
                   <div class="bar-track"><div class="bar-fill bar-green" style="width:${afterW.toFixed(1)}%"></div></div>
@@ -1578,7 +1938,7 @@
 
             <div class="panel" style="flex:1;opacity:${showTests ? 1 : 0.15}">
               <div class="panel-header">
-                <span>REAL PYTEST VERIFICATION SUITE</span>
+                <span>AUTOMATED TEST SUITE</span>
                 <span class="tag tag-green">${pt.passed_count} PASSED IN ${(pt.duration_ms / 1000).toFixed(2)}s</span>
               </div>
               <div class="code-box" style="flex:1;color:#86EFAC;line-height:1.55;">${esc(testList)}</div>
@@ -1587,8 +1947,8 @@
 
           <div class="panel">
             <div class="panel-header">
-              <span>LIVE GEMINI 4 CARBON ADVERSARIAL SECURITY AUDIT (${(ca.latency_ms/1000).toFixed(1)}s)</span>
-              <span class="tag tag-amber">${esc(audit.overall_verdict)}</span>
+              <span>LIVE GEMINI 4 CARBON SECURITY REVIEW (${(ca.latency_ms/1000).toFixed(1)}s)</span>
+              <span class="tag tag-amber">${esc(verdictText)}</span>
             </div>
             <div class="col-stack" style="gap:10px;flex:1;">
               ${checksHtml}
@@ -1598,15 +1958,15 @@
 
         <div class="cmd-strip amber" style="opacity:${showFooter ? 1 : 0.15}">
           <div class="cmd-text">
-            <strong>PR #${pr.number || 1}:</strong> ${esc(pr.title || 'MonsoonPay Spanner Omni Circuit Breaker')}
+            <strong>Pull Request #${pr.number || 1}:</strong> ${esc(pr.title || 'MonsoonPay Spanner Omni Circuit Breaker')}
             <span style="color:var(--text-muted);margin-left:14px;">(${esc(pr.headRefName)} -&gt; ${esc(pr.baseRefName)})</span>
           </div>
-          <span class="tag tag-amber">HUMAN ARCHITECT MERGES ONLY AFTER CARBON AUDIT</span>
+          <span class="tag tag-amber">HUMAN ARCHITECT APPROVES ONLY AFTER SECURITY REVIEW</span>
         </div>
       `;
     }
 
-    // ── SCENE 5: Enterprise Code Modernization (1M Context + Long Decode + /teamwork Falsifier) ──
+    // ── SCENE 5: Enterprise Code Modernization (Plain-English Zero-Error Verified Rewrite) ──
     function renderScene5(t) {
       const d = TRACES.demo5;
       if (!d) return '<div class="panel">Loading Demo 5 Code Modernization trace...</div>';
@@ -1622,9 +1982,9 @@
       const invHtml = invs.map((item, idx) => {
         const vis = clamp01((t - (0.8 + idx * 0.55)) / 0.45);
         return `
-          <div class="finding-row" style="opacity:${vis};padding:9px 13px;">
-            <span class="tag tag-blue" style="flex-shrink:0;">INV-${idx + 1}</span>
-            <div class="finding-desc" style="margin-top:0;color:#E2E8F0;">${esc(item)}</div>
+          <div class="finding-row" style="opacity:${vis};padding:7px 11px;">
+            <span class="tag tag-blue" style="flex-shrink:0;">RULE ${idx + 1}</span>
+            <div class="finding-desc" style="margin-top:0;color:#E2E8F0;">${esc(humanizeRule(item))}</div>
           </div>
         `;
       }).join('');
@@ -1638,12 +1998,12 @@
       return `
         <div class="scene-header">
           <div>
-            <div class="scene-kicker">DEMO 02 · ENTERPRISE CODE MODERNIZATION · 1M CONTEXT + LONG DECODE + /TEAMWORK FALSIFIER</div>
-            <div class="scene-title">Legacy O(N&sup2;) UPI Settlement Monolith -&gt; Bit-Exact O(N) Google Cloud Service</div>
+            <div class="scene-kicker">DEMO 02 · LEGACY CODE MODERNIZATION · WHOLE-CODEBASE REWRITE · ZERO-ERROR PROOF</div>
+            <div class="scene-title">Slow Legacy UPI Settlement System -&gt; Fast Modern Google Cloud Service</div>
           </div>
           <div class="scene-meta">
-            <div class="meta-stat">Legacy<strong>${bench.legacy_ms} ms</strong></div>
-            <div class="meta-stat green">Modernized<strong>${bench.modern_ms} ms</strong></div>
+            <div class="meta-stat">Old Legacy<strong>${bench.legacy_ms} ms</strong></div>
+            <div class="meta-stat green">AI Rewrite<strong>${bench.modern_ms} ms</strong></div>
             <div class="meta-stat amber">Speedup<strong>${bench.speedup_factor}x FASTER</strong></div>
           </div>
         </div>
@@ -1652,37 +2012,37 @@
           <div class="col-stack">
             <div class="panel" style="flex:1;">
               <div class="panel-header">
-                <span>PHASE 1 · CARBON INVARIANT EXTRACTION (${(carb.latency_ms/1000).toFixed(1)}s)</span>
-                <span class="tag tag-blue">${esc(plan.bottleneck_complexity || 'O(N^2) -> O(N)')}</span>
+                <span>STEP 1 · HIDDEN BUSINESS RULES DISCOVERED BY CARBON (${(carb.latency_ms/1000).toFixed(1)}s)</span>
+                <span class="tag tag-blue">SLOW SCAN -&gt; INSTANT LOOKUP</span>
               </div>
-              <div class="col-stack" style="gap:8px;">
+              <div class="col-stack" style="gap:6px;">
                 ${invHtml}
               </div>
             </div>
 
             <div class="panel" style="flex:0 0 auto;opacity:${t >= 7.4 ? 1 : 0.16}">
               <div class="panel-header">
-                <span>PHASE 3 · UNMODIFIED GOLDEN CONFORMANCE FALSIFIER (${(ds.total_records || 8000).toLocaleString()} TXNS)</span>
-                <span class="tag tag-green">0.00 INR DRIFT</span>
+                <span>STEP 3 · EXACT ACCURACY CHECK (${(ds.total_records || 8000).toLocaleString()} REAL PAYMENTS)</span>
+                <span class="tag tag-green">0.00 INR DIFFERENCE</span>
               </div>
               <div class="bar-group">
                 <div class="bar-item">
                   <div class="bar-label-row">
-                    <span>Legacy Monolith · O(N&sup2;) linear UTR scan + Decimal</span>
+                    <span>Old Legacy Code · Slow one-by-one duplicate check</span>
                     <strong style="color:var(--red);">${bench.legacy_ms} ms</strong>
                   </div>
                   <div class="bar-track"><div class="bar-fill bar-red" style="width:${legW.toFixed(1)}%">${bench.legacy_ms} ms</div></div>
                 </div>
                 <div class="bar-item">
                   <div class="bar-label-row">
-                    <span>Modernized (${esc(synth.model)}) · O(1) hash-set + exact integer paise</span>
+                    <span>AI-Modernized (${esc(synth.model)}) · Instant lookup + exact paisa math</span>
                     <strong style="color:var(--green);">${bench.modern_ms} ms (${bench.speedup_factor}x faster!)</strong>
                   </div>
                   <div class="bar-track"><div class="bar-fill bar-green" style="width:${modW.toFixed(1)}%"></div></div>
                 </div>
               </div>
               <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-family:var(--font-mono);font-size:12.5px;color:var(--text-muted);padding-top:6px;">
-                <span>SHA-256 Digest: <strong style="color:var(--green);">${esc((fals.sha256_parity_digest || '').slice(0, 22))}… (MATCH)</strong></span>
+                <span>Output Fingerprint: <strong style="color:var(--green);">${esc((fals.sha256_parity_digest || '').slice(0, 22))}… (100% MATCH)</strong></span>
                 <span>Net Payout: <strong style="color:#E2E8F0;">INR ${((fals.total_net_payout_paise || 0) / 100).toLocaleString('en-IN', {minimumFractionDigits: 2})}</strong></span>
               </div>
             </div>
@@ -1690,22 +2050,22 @@
 
           <div class="panel">
             <div class="panel-header">
-              <span>PHASE 2 · LIVE SYNTHESIZED MODULE (${esc(synth.model)} · ${(synth.latency_ms/1000).toFixed(1)}s)</span>
-              <span class="tag tag-green">${synth.code_lines} lines · attempt ${synth.attempts}</span>
+              <span>STEP 2 · AI-GENERATED MODERN ENGINE (${esc(synth.model)} · ${(synth.latency_ms/1000).toFixed(1)}s)</span>
+              <span class="tag tag-green">${synth.code_lines} lines · pass #${synth.attempts}</span>
             </div>
-            <div class="code-box" style="flex:1;line-height:1.48;color:#DCE8FA;">${esc(typewriter(synth.code_preview || '', codeProg))}</div>
+            <div class="code-box" style="flex:1;line-height:1.48;color:#DCE8FA;">${esc(typewriter(humanizeRule(synth.code_preview || ''), codeProg))}</div>
             <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:12.5px;color:var(--text-muted);padding-top:6px;border-top:1px solid var(--border);">
-              <span>Unique: <strong style="color:#E2E8F0;">${(ds.unique_records || 0).toLocaleString()}</strong> · Dups Skipped: <strong style="color:#E2E8F0;">${ds.duplicate_utrs || 0}</strong></span>
-              <span>Edge Cases Verified: <strong style="color:var(--green);">${ds.edge_cases_verified || 6}/6 PASS</strong></span>
+              <span>Unique Payments: <strong style="color:#E2E8F0;">${(ds.unique_records || 0).toLocaleString()}</strong> · Duplicates Blocked: <strong style="color:#E2E8F0;">${ds.duplicate_utrs || 0}</strong></span>
+              <span>Boundary Checks: <strong style="color:var(--green);">${ds.edge_cases_verified || 6}/6 PASS</strong></span>
             </div>
           </div>
         </div>
 
         <div class="cmd-strip green" style="opacity:${showFooter ? 1 : 0.15}">
           <div class="cmd-text">
-            <strong>UNMODIFIED GOLDEN FALSIFIER:</strong> 100% Bit-Exact SHA-256 Parity (${bench.speedup_factor}x faster, -${bench.latency_reduction_pct}% latency)
+            <strong>VERIFIED ZERO-ERROR REWRITE:</strong> 100% Identical Payouts to the Last Paisa (${bench.speedup_factor}x faster, -${bench.latency_reduction_pct}% runtime)
           </div>
-          <span class="tag tag-green">ZERO BEHAVIOR DRIFT · READY FOR CLOUD RUN GEN2</span>
+          <span class="tag tag-green">ZERO FINANCIAL DRIFT · READY FOR CLOUD RUN</span>
         </div>
       `;
     }
@@ -1715,12 +2075,12 @@
       return `
         <div class="scene-header">
           <div>
-            <div class="scene-kicker">DEMO 06 · GEMINI 3.8 LIVE &amp; VOICEAI · REAL RECORDED MULTIMODAL &amp; INDIAN TELEPHONY DEMOS</div>
-            <div class="scene-title">Dual-Track Voice Agents That Reason While They Speak — Zero Dead Air</div>
+            <div class="scene-kicker">DEMO 06 · GEMINI 3.8 LIVE &amp; VOICEAI · REAL RECORDED MULTIMODAL &amp; INDIAN PHONE-LINE DEMOS</div>
+            <div class="scene-title">Voice Agents That Reason While They Speak — Zero Awkward Silence</div>
           </div>
           <div class="scene-meta">
-            <div class="meta-stat green">Track 1<strong>16kHz Voice</strong></div>
-            <div class="meta-stat">Track 2<strong>Async SQL / Tools</strong></div>
+            <div class="meta-stat green">Voice Track<strong>Live Natural Speech</strong></div>
+            <div class="meta-stat">Background<strong>Live Cloud Lookups</strong></div>
             <div class="meta-stat amber">Languages<strong>EN · HI · TA · KN · TE</strong></div>
           </div>
         </div>
@@ -1729,15 +2089,15 @@
           <div class="panel">
             <div class="panel-header">
               <span>DEMO 4A · GEMINI 3.8 LIVE EXTENDED THINKING</span>
-              <span class="tag tag-green">CAMERA + VOICE + NON_BLOCKING SQL</span>
+              <span class="tag tag-green">LIVE CAMERA + VOICE + BACKGROUND DATA</span>
             </div>
             <img class="voice-poster" src="/assets/videos/demo4a_gemini38_live_flight_poster.png" alt="Gemini 3.8 Live Extended Thinking Flight Cancellation Rebooking Demo" />
             <div class="arch-steps">
-              <div class="arch-step"><strong>LIVE INPUT:</strong> 1 FPS camera feed + 16kHz bidirectional voice session on cancelled Frankfurt flight <code>PNR LH8942X</code>.</div>
-              <div class="arch-step"><strong>ASYNC EXECUTION:</strong> Fires <code>NON_BLOCKING</code> BigQuery + Firestore queries and EU261 compensation rules while continuing natural conversation with zero dead air.</div>
+              <div class="arch-step"><strong>LIVE INPUT:</strong> Streams live camera video + natural voice for cancelled Frankfurt flight <code>PNR LH8942X</code>.</div>
+              <div class="arch-step"><strong>NO DEAD AIR:</strong> Runs background BigQuery &amp; Firestore database lookups and EU261 compensation checks while keeping the conversation flowing naturally.</div>
             </div>
             <div style="margin-top:auto;display:flex;justify-content:space-between;align-items:center;padding-top:8px;">
-              <span class="tag tag-blue">BidiGenerateContent WebSocket</span>
+              <span class="tag tag-blue">Real-Time Voice + Video Stream</span>
               <a class="drive-launch-btn" href="https://drive.google.com/file/d/1KkvhldhlXGUEYQMLs28EMQXsSeAbZRZO/view" target="_blank" rel="noopener noreferrer">
                 ▶ Launch Full Recording on Google Drive ↗
               </a>
@@ -1746,16 +2106,16 @@
 
           <div class="panel">
             <div class="panel-header">
-              <span>DEMO 4B · GEMINI VOICEAI — INDIAN PSTN TELEPHONY</span>
-              <span class="tag tag-amber">REAL CARRIER CALL · ASIA-SOUTH1</span>
+              <span>DEMO 4B · GEMINI VOICEAI — INDIAN PHONE TELEPHONY</span>
+              <span class="tag tag-amber">REAL CARRIER CALL · MUMBAI CLOUD RUN</span>
             </div>
             <img class="voice-poster" src="/assets/videos/demo4b_gemini_voiceai_pstn_poster.png" alt="Gemini VoiceAI Indian PSTN Telephony Integration Demo" />
             <div class="arch-steps">
-              <div class="arch-step"><strong>GOOGLE CLOUD ARCHITECTURE:</strong> Indian PSTN / VoLTE SIP trunk -&gt; Cloud Load Balancing + Cloud Armor -&gt; Cloud Run Gen2 (<code>asia-south1</code>) -&gt; Firestore.</div>
-              <div class="arch-step"><strong>MULTILINGUAL COMPARISON:</strong> Compares Direct Speech-to-Speech vs. Cascading Listen-Think-Speak natively across English, Hindi, Tamil, Kannada, Telugu &amp; Hinglish.</div>
+              <div class="arch-step"><strong>GOOGLE CLOUD FLOW:</strong> Real Indian phone / mobile call -&gt; Cloud Load Balancing + Cloud Armor -&gt; Cloud Run (<code>asia-south1</code> Mumbai) -&gt; Firestore.</div>
+              <div class="arch-step"><strong>6 INDIAN LANGUAGES:</strong> Compares Direct Voice-to-Voice vs. Step-by-Step pipelines across English, Hindi, Tamil, Kannada, Telugu &amp; Hinglish.</div>
             </div>
             <div style="margin-top:auto;display:flex;justify-content:space-between;align-items:center;padding-top:8px;">
-              <span class="tag tag-green">Direct S2S &amp; Cascading Modes</span>
+              <span class="tag tag-green">Direct Voice-to-Voice &amp; Step-by-Step</span>
               <a class="drive-launch-btn" href="https://drive.google.com/file/d/1kv3NheXiAbhIBhYuBDUMRBCa054gIE9M/view" target="_blank" rel="noopener noreferrer">
                 ▶ Launch Full Recording on Google Drive ↗
               </a>
@@ -1768,7 +2128,8 @@
     window.renderDemoAt = function (sceneId, t) {
       currentScene = sceneId;
       const stage = document.getElementById('stage');
-      if (sceneId === 1) stage.innerHTML = renderScene1(t);
+      if (sceneId === 0) stage.innerHTML = renderScene0();
+      else if (sceneId === 1) stage.innerHTML = renderScene1(t);
       else if (sceneId === 2) stage.innerHTML = renderScene2(t);
       else if (sceneId === 3) stage.innerHTML = renderScene3(t);
       else if (sceneId === 4) stage.innerHTML = renderScene4(t);
@@ -1787,8 +2148,8 @@
 
     function playInteractive(sceneId) {
       stopPlayback();
-      if (sceneId === 6) {
-        window.renderDemoAt(6, 0);
+      if (sceneId === 0 || sceneId === 6) {
+        window.renderDemoAt(sceneId, 0);
         return;
       }
 
@@ -1831,6 +2192,7 @@
 
     // ── Interactive Stage Command Center Logic (disabled in ?record=1) ──
     if (!IS_RECORD_MODE) {
+      const btnStartDemo1 = document.getElementById('btnStartDemo1');
       const btnRunLive = document.getElementById('btnRunLive');
       const btnReplay = document.getElementById('btnReplay');
       const btnAudioToggle = document.getElementById('btnAudioToggle');
@@ -1930,11 +2292,14 @@
       }
 
       function syncControlsForScene(sceneId) {
+        const isArchOverview = sceneId === 0;
         const isVoiceShowcase = sceneId === 6;
+        const isStaticScene = isArchOverview || isVoiceShowcase;
         const isRunning = Boolean(activeEventSource);
+        btnStartDemo1.style.display = isArchOverview ? 'inline-flex' : 'none';
         btnAudioToggle.style.display = sceneId === 3 ? 'inline-flex' : 'none';
-        btnReplay.style.display = isVoiceShowcase ? 'none' : 'inline-flex';
-        btnRunLive.style.display = isVoiceShowcase ? 'none' : 'inline-flex';
+        btnReplay.style.display = isStaticScene ? 'none' : 'inline-flex';
+        btnRunLive.style.display = isStaticScene ? 'none' : 'inline-flex';
         if (!isRunning) {
           btnRunLive.className = 'ctrl-btn primary';
           btnRunLive.textContent = '⚡ Run LIVE';
@@ -2133,13 +2498,24 @@
         btn.addEventListener('click', () => switchScene(Number(btn.dataset.scene)));
       });
 
-      btnReplay.addEventListener('click', () => playInteractive(currentScene));
+      btnStartDemo1.addEventListener('click', () => switchScene(1));
+
+      document.getElementById('stage').addEventListener('click', (e) => {
+        const card = e.target.closest('.flow-card[data-jump-scene]');
+        if (card) {
+          switchScene(Number(card.dataset.jumpScene));
+        }
+      });
+
+      btnReplay.addEventListener('click', () => {
+        if (currentScene !== 0 && currentScene !== 6) playInteractive(currentScene);
+      });
 
       btnRunLive.addEventListener('click', () => {
         if (activeEventSource) {
           cleanupLiveStream();
           liveSpinner.style.display = 'none';
-          liveTitleText.textContent = 'Live Run Cancelled (pruning any worktrees...)';
+          liveTitleText.textContent = 'Live Run Cancelled (cleaning temporary sandboxes...)';
           showToast('Live Run Cancelled', 'Cancelled stream cleanly.');
           fetch('/api/status').then(r => r.json()).then(updateStatusUI).catch(() => {});
         } else {
@@ -2149,7 +2525,7 @@
 
       btnAudioToggle.addEventListener('click', () => {
         audioEnabled = !audioEnabled;
-        btnAudioToggle.textContent = audioEnabled ? '🔊 Audio: ON' : '🔇 Audio: OFF';
+        btnAudioToggle.textContent = audioEnabled ? '🔊 Audio' : '🔇 Muted';
         if (!audioEnabled) {
           liveAudios.forEach(a => { try { a.pause(); } catch {} });
         } else if (currentScene === 3) {
@@ -2172,30 +2548,32 @@
       btnQuickReset.addEventListener('click', () => performReset({ restoreTraces: false, verifyTests: false }));
       btnFactoryReset.addEventListener('click', () => performReset({ restoreTraces: true, verifyTests: true }));
 
-      // Stage keyboard shortcuts (1-6 tabs, R replay, B behind the scenes)
+      // Stage keyboard shortcuts (0 overview, 1-6 demos, R replay, B behind the scenes)
       document.addEventListener('keydown', (e) => {
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
         const tabOrder = [1, 5, 2, 3, 4, 6];
-        if (e.key >= '1' && e.key <= '6') {
+        if (e.key === '0') {
+          switchScene(0);
+        } else if (e.key >= '1' && e.key <= '6') {
           switchScene(tabOrder[Number(e.key) - 1]);
-        } else if (e.key.toLowerCase() === 'r') {
+        } else if (e.key.toLowerCase() === 'r' && currentScene !== 0 && currentScene !== 6) {
           playInteractive(currentScene);
         } else if (e.key.toLowerCase() === 'b') {
           setBtsOpen(!btsOpen);
         }
       });
 
-      // Initial data hydration
+      // Initial data hydration — land on Tab 00 (Architecture & Flow)
       fetch('/api/traces')
         .then(r => r.json())
         .then(data => {
           TRACES = data.traces || {};
           if (data.audio_bust) audioBust = data.audio_bust;
           updateStatusUI(data.status || { live_key_configured: data.live_key_configured, backend_clean: true, spanner_rows: 10000, iceberg_rows: 40000 });
-          switchScene(1);
+          switchScene(0);
         })
         .catch(() => {
-          window.renderDemoAt(1, 12.0);
+          window.renderDemoAt(0, 0);
         });
     }
   </script>

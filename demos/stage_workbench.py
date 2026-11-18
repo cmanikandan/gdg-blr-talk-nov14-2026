@@ -45,11 +45,11 @@ DEMO_REGISTRY: Dict[str, Dict[str, Any]] = {
     "demo1": {
         "script": "demo1_antigravity_swarm.py",
         "trace": "demo1_trace.json",
-        "title": "Plan Big with Carbon + Parallel Hydrogen /swarm",
+        "title": "Plan Big with Carbon + 3 Parallel Hydrogen Builders",
         "steps": [
-            "Phase 1: Gemini 4 Carbon Architect Plan",
-            "Phase 2: 3x Parallel Hydrogen Git Worktrees",
-            "Phase 3: Pytest Suite & Trace Capture",
+            "Step 1: Gemini 4 Carbon Plans the Fix",
+            "Step 2: 3 Parallel Hydrogen Workers Build in Sandboxes",
+            "Step 3: Automated Tests & Result Capture",
         ],
         "phase_markers": [
             ("Phase 1:", 0),
@@ -61,11 +61,11 @@ DEMO_REGISTRY: Dict[str, Dict[str, Any]] = {
     "demo5": {
         "script": "demo5_code_modernization.py",
         "trace": "demo5_trace.json",
-        "title": "Enterprise Code Modernization (1M Context + Golden Falsifier)",
+        "title": "Modernize Legacy UPI Engine (Verified Zero-Error Rewrite)",
         "steps": [
-            "Phase 1: Lock Legacy O(N^2) Golden Digest (8,000 txns)",
-            "Phase 2: Gemini 4 Carbon Invariant Extraction",
-            "Phase 3: Synthesize O(N) Engine & Prove 0.00 INR Drift",
+            "Step 1: Measure Slow Legacy Code (8,000 Payments)",
+            "Step 2: Carbon Extracts Hidden RBI & GST Rules",
+            "Step 3: Generate Fast Code & Prove 0.00 INR Drift",
         ],
         "phase_markers": [
             ("Phase 1:", 0),
@@ -77,11 +77,11 @@ DEMO_REGISTRY: Dict[str, Dict[str, Any]] = {
     "demo2": {
         "script": "demo2_decisions_arena.py",
         "trace": "demo2_trace.json",
-        "title": "Gemini Decisions API Arena (0 Output Tokens)",
+        "title": "Instant Security & Compliance Guardrails ($0 Output Cost)",
         "steps": [
-            "Round A: 4 Production Events x 8 Guardrail Questions",
-            "Round B: Live Race vs 3.8 Flash & 4 Hydrogen (8Q + 50Q)",
-            "Round C: Single-Pass Multimodal Architecture Audit",
+            "Round A: 4 Live Events x 8 Instant Security Checks",
+            "Round B: Live Speed & Cost Race vs Flash & Hydrogen",
+            "Round C: Instant Architecture Diagram Check",
         ],
         "phase_markers": [
             ("Round A:", 0),
@@ -93,11 +93,11 @@ DEMO_REGISTRY: Dict[str, Dict[str, Any]] = {
     "demo3": {
         "script": "demo3_voice_adk_multicloud.py",
         "trace": "demo3_trace.json",
-        "title": "Google ADK 2.14.1 DAG + Zero-Copy Lakehouse + Gemini 3.8 HD Audio",
+        "title": "Voice Check-In + Automated Workflow + Unified Cloud Data",
         "steps": [
-            "Phase 1: Real ADK 2.0 Workflow + DuckDB Spanner x Iceberg SQL",
-            "Phase 2: Synthesize 3x Gemini 3.8 HD Audio Tracks",
-            "Phase 3: Save Grounded Trace & HITL Pause State",
+            "Step 1: Run Google ADK 2.0 + Live Spanner & BigQuery Join",
+            "Step 2: Generate Gemini 3.8 HD Voice Response",
+            "Step 3: Pause at Human Approval Gate",
         ],
         "phase_markers": [
             ("Phase 1:", 0),
@@ -108,11 +108,11 @@ DEMO_REGISTRY: Dict[str, Dict[str, Any]] = {
     "demo4": {
         "script": "demo4_review_shipped_pr.py",
         "trace": "demo4_trace.json",
-        "title": "Review Everything: SLA Proof + Pytest + Carbon Adversarial Audit",
+        "title": "Review Everything: Load Test + Automated Tests + AI Security Audit",
         "steps": [
-            "Phase 1: 500-Request Flash-Sale SLA Burst Benchmark",
-            "Phase 2: Real Pytest Suite (10/10 Tests)",
-            "Phase 3: Live Gemini 4 Carbon Security Audit & PR #1",
+            "Step 1: 500-User Flash-Sale Load Test",
+            "Step 2: Run Full Automated Test Suite (10 Tests)",
+            "Step 3: Live Gemini 4 Carbon Security Review",
         ],
         "phase_markers": [
             ("500-Request Burst", 0),

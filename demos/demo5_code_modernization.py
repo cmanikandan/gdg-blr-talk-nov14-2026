@@ -89,9 +89,10 @@ def run_carbon_invariant_analysis(client: Any, legacy_src: str) -> Dict[str, Any
     from google.genai import types
 
     prompt = (
-        "You are a Principal Cloud Architect at Google Cloud leading an Antigravity `/teamwork` legacy code modernization.\n"
-        "Analyze the legacy procedural Indian UPI/Merchant settlement monolith below and return STRICT JSON (no fences):\n"
-        '{"bottleneck_complexity": "O(N^2) -> O(N)", '
+        "You are a Principal Cloud Architect at Google Cloud leading a legacy payment system modernization.\n"
+        "Analyze the legacy Indian UPI/Merchant settlement code below and return STRICT JSON (no fences).\n"
+        "Write each hidden_invariants item in clear, concise plain English (<=20 words each) that both business leaders and engineers understand (avoid Big-O math notation like O(N^2)):\n"
+        '{"bottleneck_complexity": "Slow full-list scan -> Instant lookup", '
         '"primary_bottleneck": str, '
         '"hidden_invariants": [str, str, str, str, str], '
         '"modernization_strategy": str, '
@@ -113,11 +114,11 @@ def run_carbon_invariant_analysis(client: Any, legacy_src: str) -> Dict[str, Any
         plan = json.loads((resp.text or "{}").strip())
     except json.JSONDecodeError:
         plan = {
-            "bottleneck_complexity": "O(N^2) -> O(N)",
-            "primary_bottleneck": "Linear list scan over seen_utrs causes quadratic O(N^2) growth per batch.",
+            "bottleneck_complexity": "Slow full-list scan -> Instant lookup",
+            "primary_bottleneck": "Checking every previous transaction one by one slows down dramatically as batch size grows.",
             "hidden_invariants": [
-                "First-seen UTR idempotency (duplicates skipped strictly)",
-                "REVERSAL decrements gross & net payout with 0 MDR / 0 GST and no RBI flag",
+                "Duplicate payment IDs are skipped automatically so merchants are never charged or credited twice",
+                "Payment reversals deduct from merchant totals with zero fee, zero GST, and no high-value alert",
                 "UPI <= 200,000 paise carries 0% MDR (RBI zero-MDR mandate)",
                 "Exact integer-paise ROUND_HALF_UP for MDR (45/85 bps) and 18% GST",
                 "CAPTURE gross >= 5,000,000 paise appends UTR to sorted rbi_flagged_utrs",
