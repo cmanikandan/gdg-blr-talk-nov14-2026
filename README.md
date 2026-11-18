@@ -55,8 +55,9 @@ Every slide, architecture diagram, live Gemini 4 (`Carbon`, `Argon`, `Hydrogen`)
 │   ├── demo3_voice_adk_multicloud.py # Real ADK 2.14.1 + DuckDB + Gemini 3.8 HD Audio (+ --live-mic)
 │   ├── demo4_review_shipped_pr.py    # SLA burst benchmark + pytest + Live Carbon adversarial PR review
 │   ├── demo5_code_modernization.py   # Live Carbon invariant extraction + Argon O(N) synthesis + Golden Falsifier
-│   ├── stage_workbench.py            # FastAPI live/replay stage server (http://127.0.0.1:8765)
-│   ├── studio.html                   # 1920x1080 cinema workbench UI driven by real JSON traces
+│   ├── reset_environment.py          # Clean reset utility (git worktrees, code, Spanner/Iceberg DB, optional traces)
+│   ├── stage_workbench.py            # FastAPI Stage Command Center (SSE live streaming + Reset API on :8765)
+│   ├── studio.html                   # Interactive Web UI + 1920x1080 cinema recorder (`?record=1`)
 │   ├── record_demos.mjs              # 1080p 30fps CDP + FFmpeg MP4 & Gemini 3.8 audio muxer
 │   └── traces/                       # Real captured API traces + mastered Gemini 3.8 HD WAV tracks
 ├── assets/
@@ -84,26 +85,32 @@ python3 -m venv .venv
 .venv/bin/pytest -v
 ```
 
-### 2. Present the 25-Slide Keynote Deck (Offline-Safe, Embedded 1080p 30fps Videos + Audio)
+### 2. Launch the Interactive Stage Command Center Web UI (Recommended — No CLI on Stage!)
+Export `GEMINI_API_KEY` transiently in your shell and launch the Web UI on your laptop:
+```bash
+export GEMINI_API_KEY="<your-gemini-api-key>"
+.venv/bin/python demos/stage_workbench.py --open
+# Opens http://127.0.0.1:8765 automatically
+```
+Inside the Web UI:
+- **6 Keynote Tabs (`1`–`6`)**: `/swarm Outage`, `Code Modernize`, `Decisions Arena`, `ADK + Lakehouse`, `Carbon PR Audit`, and `Voice AI Live` (1-click Google Drive launch for Demos 4A & 4B).
+- **`⚡ Run LIVE`**: Executes real Gemini APIs with a live visual phase stepper & event stream — then renders fresh live results directly on the visual stage.
+- **`▶ Replay` (`R`)**: Instant zero-Wi-Fi animated replay from the latest verified trace (including synchronized Gemini 3.8 HD audio with **`🔊 Audio ON/OFF`** on Tab 4).
+- **`? Behind the Scenes` (`B`)**: Plain-English 4-card breakdown explaining what executes live vs. local fixtures and the exact stage takeaway for every demo.
+- **`Auto-Reset` toggle + `⟲ Reset ▾` menu**: Automatically prunes stale git worktrees, verifies clean `monsoonpay/` code, and re-seeds Spanner Omni (`10k` rows) + BigQuery Iceberg (`40k` rows) after every live demo — or trigger **Reset Code & Backend** / **Full Factory Reset (+ Traces & Pytest)** anytime with one click.
+
+### 3. Clean Reset via CLI (Optional)
+```bash
+# Quick reset: prune git worktrees, restore clean monsoonpay/ code, re-seed 10k Spanner + 40k Iceberg
+.venv/bin/python demos/reset_environment.py
+
+# Full Factory Reset: also restore committed baseline traces & audio + run 10/10 pytest
+.venv/bin/python demos/reset_environment.py --restore-traces --verify-tests
+```
+
+### 4. Present the 25-Slide Keynote Deck (Offline-Safe, Embedded 1080p 30fps Videos + Audio)
 Open [`presentation/keynote_deck.html`](presentation/keynote_deck.html) in Chrome/Edge:
 - **`ArrowRight` / `Space`** — Next slide
 - **`F`** — Fullscreen auditorium mode
 - **`S`** — Private Speaker Teleprompter & 30:00 keynote timer
 - **`G`** — 25-slide jump grid
-
-### 3. Run Live Demos or Launch the Stage Workbench
-Never hardcode API keys—export `GEMINI_API_KEY` transiently in your shell:
-```bash
-export GEMINI_API_KEY="<your-gemini-api-key>"
-
-# Run individual live demos (writes fresh traces to demos/traces/)
-.venv/bin/python demos/demo1_antigravity_swarm.py
-.venv/bin/python demos/demo5_code_modernization.py
-.venv/bin/python demos/demo2_decisions_arena.py
-.venv/bin/python demos/demo3_voice_adk_multicloud.py       # add --live-mic on stage laptop for live WebSocket
-.venv/bin/python demos/demo4_review_shipped_pr.py
-
-# Or launch the interactive Stage Workbench (Live API + Instant Trace Replay)
-.venv/bin/python demos/stage_workbench.py
-# Open http://127.0.0.1:8765
-```
