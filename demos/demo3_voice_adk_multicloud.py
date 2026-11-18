@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-DEMO 3 — Mid-Talk Voice Check-In: Gemini 3.8 HD Audio + Real Google ADK 2.14.1 Workflow + DuckDB Zero-Copy Multicloud Join.
+DEMO 3 — Real Google ADK 2.14.1 Workflow + Zero-Copy Spanner Omni x BigQuery Apache Iceberg Join + Gemini 3.8 HD Audio.
 
 Runs LIVE against:
   - Google ADK 2.14.1 (`Workflow`, `@node`, `Edge`, `RetryConfig`, `require_confirmation=True`)
   - Live `gemini-decision-1` inside ADK `decision_gate_node`
-  - Real DuckDB zero-copy federated SQL join (10,000 Spanner Omni SQLite commits x 40,000 AWS S3 Iceberg Parquet logs)
+  - Real DuckDB zero-copy federated SQL join (10,000 Spanner Omni commits x 40,000 BigQuery Borderless Iceberg logs)
   - Live `gemini-3.8-flash-tts` synthesizing studio-grade HD voice tracks for the voice check-in & recorded MP4 video!
   - Optional `--live-mic` flag: real `gemini-3.8-live-extended-thinking` WebSocket (`BidiGenerateContent`) for stage laptop use!
 """
@@ -35,7 +35,7 @@ console = Console()
 
 ALERT_INCIDENT = (
     "Hey Gemini — I closed my laptop 12 minutes ago after launching the Antigravity remote swarm. "
-    "Check our Spanner Omni checkout commits against AWS S3 Iceberg Envoy logs in ap-south-1, "
+    "Check our Spanner Omni checkout commits against BigQuery Borderless Apache Iceberg Envoy logs in asia-south2, "
     "confirm the root cause, and tell me if Pull Request #1 is ready for my approval."
 )
 
@@ -174,8 +174,8 @@ async def run_live_websocket_session() -> None:
 async def run_demo3(skip_tts: bool = False) -> Dict[str, Any]:
     console.print(
         Panel.fit(
-            "[bold green]DEMO 3 · VOICE CHECK-IN + REAL ADK 2.14.1 + ZERO-COPY MULTICLOUD[/bold green]\n"
-            "Gemini 3.8 HD Voice + Google ADK 2.0 Workflow DAG + DuckDB (Spanner Omni x AWS S3 Iceberg) + HITL Pause",
+            "[bold green]DEMO 3 · REAL GOOGLE ADK 2.14.1 + ZERO-COPY SPANNER x BIGQUERY ICEBERG[/bold green]\n"
+            "Google ADK 2.0 Workflow DAG + DuckDB (Spanner Omni x BigQuery Borderless Iceberg) + HITL Pause + Gemini 3.8 HD Voice",
             border_style="green",
         )
     )
@@ -212,10 +212,9 @@ async def run_demo3(skip_tts: bool = False) -> Dict[str, Any]:
     console.print(tbl)
 
     # Extract exact verified numbers from the real ADK execution to feed into Gemini 3.8 voice synthesis!
-    sql_node = next(s["output"] for s in adk_trace if "multicloud_mcp_sql_node" in s["node_path"])
+    sql_node = next(s["output"] for s in adk_trace if "lakehouse_mcp_sql_node" in s["node_path"])
     swarm_node = next(s["output"] for s in adk_trace if "swarm_status_node" in s["node_path"])
     hotspot = sql_node["regional_breakdown"][0]
-    healthy = sql_node["regional_breakdown"][1]
 
     voice_turns: List[Dict[str, Any]] = []
     if not skip_tts:
@@ -226,14 +225,14 @@ async def run_demo3(skip_tts: bool = False) -> Dict[str, Any]:
             (
                 "turn1_mani_checkin.wav",
                 "Orus",
-                "Mani (Principal Architect)",
-                "Hey Gemini, my laptop's been closed ten minutes. Did our remote swarm find the AWS Mumbai checkout spike, and is PR one ready?",
+                "Mani (Principal Architect, Google Cloud)",
+                "Hey Gemini, my laptop's been closed ten minutes. Did our remote swarm isolate the Delhi checkout spike, and is PR one ready?",
             ),
             (
                 "turn2_gemini_ack.wav",
                 "Puck",
                 "Gemini 3.8 Live (Immediate Track)",
-                "On it, Mani! Your remote Antigravity VM is still running. I'm firing ADK 2.0 right now to join Spanner Omni with your S3 Iceberg Envoy logs.",
+                "On it, Mani! Your remote Antigravity VM is still running. I'm firing ADK 2.0 right now to join Spanner Omni with your BigQuery Iceberg Envoy logs.",
             ),
             (
                 "turn3_gemini_report.wav",
@@ -242,7 +241,7 @@ async def run_demo3(skip_tts: bool = False) -> Dict[str, Any]:
                 (
                     f"Done! Zero-copy SQL joined {sql_node['rows_correlated']:,} events in {int(round(sql_node['query_latency_ms']))} milliseconds. "
                     f"Spanner Omni TrueTime is rock solid at {hotspot['avg_truetime_drift_ms']} milliseconds drift. "
-                    f"The culprit is AWS Mumbai's 64-slot Envoy pool triggering {hotspot['total_sync_retries']:,} retries and a {int(round(hotspot['p99_commit_ms']))} millisecond spike. "
+                    f"The culprit is Delhi asia-south2's 64-slot Cloud Run Envoy pool triggering {hotspot['total_sync_retries']:,} retries and a {int(round(hotspot['p99_commit_ms']))} millisecond spike. "
                     f"Your remote swarm patch cuts p99 to {int(round(swarm_node['after_patch_p99_ms']))} milliseconds, and ADK 2.0 is paused at your confirmation gate for PR one."
                 ),
             ),
@@ -264,6 +263,7 @@ async def run_demo3(skip_tts: bool = False) -> Dict[str, Any]:
         "alert_incident": ALERT_INCIDENT,
         "adk_total_ms": adk_total_ms,
         "adk_trace": adk_trace,
+        "lakehouse_finding": sql_node,
         "multicloud_finding": sql_node,
         "swarm_summary": swarm_node,
         "voice_turns": voice_turns,

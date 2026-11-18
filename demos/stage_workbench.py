@@ -42,6 +42,7 @@ def get_all_traces():
         ("demo2", "demo2_trace.json"),
         ("demo3", "demo3_trace.json"),
         ("demo4", "demo4_trace.json"),
+        ("demo5", "demo5_trace.json"),
     ]:
         p = TRACES_DIR / name
         if p.exists():
@@ -56,6 +57,7 @@ async def run_live_demo(demo_id: str):
         "demo2": ("demo2_decisions_arena.py", "demo2_trace.json"),
         "demo3": ("demo3_voice_adk_multicloud.py", "demo3_trace.json"),
         "demo4": ("demo4_review_shipped_pr.py", "demo4_trace.json"),
+        "demo5": ("demo5_code_modernization.py", "demo5_trace.json"),
     }
     if demo_id not in script_map:
         raise HTTPException(status_code=404, detail=f"Unknown demo: {demo_id}")

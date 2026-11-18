@@ -1,6 +1,6 @@
 {
   "demo": "demo4_review_shipped_pr",
-  "timestamp_utc": "2026-11-17T16:02:24Z",
+  "timestamp_utc": "2026-11-18T05:12:18Z",
   "live_api": true,
   "sla_benchmark": {
     "before": {
@@ -23,26 +23,27 @@
   },
   "pytest": {
     "exit_code": 0,
-    "duration_ms": 2228,
-    "passed_count": 9,
+    "duration_ms": 1877,
+    "passed_count": 10,
     "test_cases": [
-      "test_multicloud_dataset_integrity PASSED       [ 11%]",
-      "test_circuit_breaker_sla_improvement PASSED    [ 22%]",
-      "test_circuit_breaker_truetime_uncertainty_guard PASSED [ 33%]",
-      "test_circuit_breaker_state_transitions PASSED  [ 44%]",
-      "test_decisions_policy_gate_routes_and_zero_output_cost PASSED [ 55%]",
-      "test_make_image_input_block PASSED             [ 66%]",
-      "test_adk_workflow_graph_structure PASSED       [ 77%]",
-      "test_adk_workflow_offline_multicloud_and_hitl PASSED [ 88%]",
-      "test_adk_workflow_offline_quarantine_and_fast_lane PASSED [100%]"
+      "test_google_cloud_dataset_integrity PASSED     [ 10%]",
+      "test_circuit_breaker_sla_improvement PASSED    [ 20%]",
+      "test_circuit_breaker_truetime_uncertainty_guard PASSED [ 30%]",
+      "test_circuit_breaker_state_transitions PASSED  [ 40%]",
+      "test_decisions_policy_gate_routes_and_zero_output_cost PASSED [ 50%]",
+      "test_make_image_input_block PASSED             [ 60%]",
+      "test_adk_workflow_graph_structure PASSED       [ 70%]",
+      "test_adk_workflow_offline_lakehouse_and_hitl PASSED [ 80%]",
+      "test_adk_workflow_offline_quarantine_and_fast_lane PASSED [ 90%]",
+      "test_legacy_settlement_golden_invariants PASSED [100%]"
     ]
   },
   "carbon_security_audit": {
     "model": "gemini-4-carbon",
-    "latency_ms": 17256,
+    "latency_ms": 10076,
     "usage": {
-      "input_tokens": 3776,
-      "output_tokens": 435,
+      "input_tokens": 3809,
+      "output_tokens": 315,
       "thoughts_tokens": 0
     },
     "audit": {
@@ -51,37 +52,32 @@
       "confidence_pct": 94,
       "checks": [
         {
-          "category": "Gray Swan IPI & Policy Bypass",
+          "category": "Gray Swan IPI & Policy Gate",
           "status": "WARN",
-          "finding": "Evaluated human_approval and autonomy_readiness signals are completely ignored in apply_policy_gate branching."
+          "finding": "apply_policy_gate ignores requires_human_approval and autonomy_readiness outputs, permitting unverified production mutation routing."
         },
         {
-          "category": "Multimodal IPI Evasion",
+          "category": "Gray Swan IPI & Policy Gate",
           "status": "WARN",
-          "finding": "Default low image resolution in make_image_input_block permits micro-font visual prompt injection bypasses."
+          "finding": "call_decisions_api lacks fail-closed exception handling and make_image_input_block permits unbounded local path reads."
         },
         {
-          "category": "Secret Handling & Credential Exposure",
+          "category": "Secret Handling & Credentials",
           "status": "PASS",
-          "finding": "API key securely passed via x-goog-api-key header without URL query logging or hardcoded secrets."
+          "finding": "GEMINI_API_KEY transmitted securely via x-goog-api-key header over HTTPS without URL query or log exposure."
         },
         {
           "category": "Spanner Omni TrueTime Bounds",
           "status": "WARN",
-          "finding": "Negative or NaN truetime_drift_ms bypasses >7.0ms check, skewing simulated commit latencies downward."
+          "finding": "execute_checkout fails to validate negative or NaN truetime_drift_ms values, risking invalid latency calculations."
         },
         {
-          "category": "Circuit-Breaker State Transitions",
+          "category": "Circuit Breaker & Thundering Herd",
           "status": "WARN",
-          "finding": "HALF_OPEN saturated failure does not immediately re-open breaker unless consecutive_failures meets threshold."
-        },
-        {
-          "category": "Concurrency & Thundering-Herd Safety",
-          "status": "WARN",
-          "finding": "Unlocked state mutations and deterministic 4-request HALF_OPEN probing risk concurrent thundering herds."
+          "finding": "HALF_OPEN failure leaves consecutive_failures >= threshold without immediately re-opening, allowing concurrent probe stampedes."
         }
       ],
-      "architect_followup": "Enforce human_approval/autonomy_readiness gates, validate non-negative finite TrueTime drift, immediately re-open failed HALF_OPEN probes, and add thread-safe single-probe locking."
+      "architect_followup": "Enforce requires_human_approval and autonomy_readiness in apply_policy_gate, immediately re-open failed HALF_OPEN probes, and reject non-positive/NaN TrueTime drift."
     }
   },
   "github_pr": {
@@ -94,8 +90,8 @@
     "baseRefName": "main",
     "headRefName": "feat/omnipulse-agent-mesh",
     "number": 1,
-    "state": "OPEN",
-    "title": "feat(omnipulse): multi-cloud ADK 2.0 mesh, Decisions API gate & Spanner Omni circuit breaker",
+    "state": "MERGED",
+    "title": "feat(monsoonpay): Spanner Omni circuit breaker, ADK 2.14.1 workflow & Decisions API control plane",
     "url": "https://github.com/cmanikandan/gdg-blr-talk-nov14-2026/pull/1"
   }
 }

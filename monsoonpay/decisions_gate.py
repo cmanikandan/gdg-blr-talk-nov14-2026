@@ -3,7 +3,7 @@ MonsoonPay Production Control Plane powered by Google's Gemini Decisions API (`g
 
 Calls the real REST endpoint `POST https://generativelanguage.googleapis.com/v1beta/decisions`:
   - Single forward pass (NO autoregressive token decoding!)
-  - Evaluates up to 1,000 independent `noul`, `choice`, and `score` questions in 1 call
+  - Evaluates up to 1,000 independent binary (`noul`), `choice`, and `score` questions in 1 call
   - Supports multimodal inputs (text, images, audio, video, PDFs)
   - $0.10 / 1M input tokens · $0.00 output tokens billed!
 """
@@ -28,11 +28,11 @@ CONTROL_PLANE_QUESTIONS: Dict[str, Dict[str, Any]] = {
     },
     "leaked_secret_or_pii": {
         "type": "noul",
-        "instructions": "Does the input expose raw API keys (AKIA..., sk_live_..., AQ...), tokens, or unmasked card/SSN data?",
+        "instructions": "Does the input expose raw API keys (AIza..., sk_live_..., private_key_id), tokens, or unmasked card/PAN data?",
     },
-    "requires_multicloud_data": {
+    "requires_lakehouse_data": {
         "type": "noul",
-        "instructions": "Does resolving this require correlating operational database state (Spanner/AlloyDB) with AWS/Azure lakehouse logs?",
+        "instructions": "Does resolving this require correlating live Spanner Omni transactions with BigQuery Apache Iceberg telemetry logs?",
     },
     "requires_human_approval": {
         "type": "noul",
@@ -44,16 +44,16 @@ CONTROL_PLANE_QUESTIONS: Dict[str, Dict[str, Any]] = {
         "criteria": {
             "gemini-4-hydrogen": "Fast everyday coding, CSS/UI adjustment, boilerplate, or single-file test update.",
             "gemini-4-argon": "Standard multi-package service refactor, SQL pipeline, or domain analysis.",
-            "gemini-4-carbon": "Deep multi-subsystem outage root-cause, security audit, or cross-cloud architecture fix.",
+            "gemini-4-carbon": "Deep multi-subsystem outage root-cause, security audit, or multi-region architecture fix.",
         },
     },
     "mcp_data_target": {
         "type": "choice",
-        "instructions": "Which Agentic Data Cloud MCP toolset should Google ADK 2.0 bind?",
+        "instructions": "Which Google Cloud Agentic Data Platform MCP toolset should ADK 2.0 bind?",
         "criteria": {
             "none_code_only": "Pure UI/code change requiring no live database access.",
             "alloydb_express_sandbox": "Needs a <2s ephemeral PostgreSQL + ScaNN test database.",
-            "spanner_omni_plus_iceberg": "Cross-cloud transaction correlation joining Spanner Omni (GCP+AWS) with S3 Apache Iceberg.",
+            "spanner_omni_plus_iceberg": "Zero-copy federated correlation joining Spanner Omni with BigQuery Apache Iceberg.",
         },
     },
     "blast_severity": {
@@ -63,7 +63,7 @@ CONTROL_PLANE_QUESTIONS: Dict[str, Dict[str, Any]] = {
             "Benign cosmetic or informational request.",
             "Minor localized bug with clean workaround.",
             "Regional latency degradation or elevated error rate.",
-            "Critical multi-cloud production outage or active security threat.",
+            "Critical multi-region production outage or active security threat.",
         ],
     },
     "autonomy_readiness": {
@@ -143,7 +143,8 @@ def apply_policy_gate(api_response: Dict[str, Any]) -> PolicyVerdict:
     usage = api_response.get("usage", {})
     inj = float(ans["prompt_injection"]["noul"])
     sec = float(ans["leaked_secret_or_pii"]["noul"])
-    mc = float(ans["requires_multicloud_data"]["noul"])
+    data_q = ans.get("requires_lakehouse_data") or ans.get("requires_multicloud_data") or {"noul": 0.0}
+    mc = float(data_q["noul"])
     sev = float(ans["blast_severity"]["score"])
     model_choice = str(ans["target_element"]["choice"])
     mcp_choice = str(ans["mcp_data_target"]["choice"])
@@ -158,8 +159,8 @@ def apply_policy_gate(api_response: Dict[str, Any]) -> PolicyVerdict:
         verdict = "REDACT_AND_ROTATE_SECRET"
         adk_route = "dlp_redact"
     elif model_choice == "gemini-4-carbon" or mc >= 0.70:
-        verdict = "DISPATCH_CARBON_MULTICLOUD_SWARM"
-        adk_route = "multicloud_carbon"
+        verdict = "DISPATCH_CARBON_DATA_SWARM"
+        adk_route = "lakehouse_carbon"
     else:
         verdict = "FAST_LANE_HYDROGEN_WORKER"
         adk_route = "fast_hydrogen"

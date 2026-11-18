@@ -123,7 +123,7 @@ def fetch_github_pr() -> Dict[str, Any]:
             pass
     return {
         "number": 1,
-        "title": "feat(monsoonpay): Spanner Omni circuit breaker + ADK 2.0 multicloud triage",
+        "title": "feat(monsoonpay): Spanner Omni circuit breaker + ADK 2.0 lakehouse triage",
         "url": "https://github.com/cmanikandan/gdg-blr-talk-nov14-2026/pull/1",
         "state": "OPEN",
         "headRefName": "feat/monsoonpay-swarm-fix",
@@ -134,7 +134,7 @@ def fetch_github_pr() -> Dict[str, Any]:
 def run_demo4() -> Dict[str, Any]:
     console.print(
         Panel.fit(
-            "[bold yellow]DEMO 4 · REVIEW EVERYTHING (CLOSE THE LOOP)[/bold yellow]\n"
+            "[bold yellow]DEMO 4 · REVIEW EVERYTHING (ADVERSARIAL VERIFICATION)[/bold yellow]\n"
             "Before/After Checkout SLA Benchmark + Real Pytest Suite + LIVE Gemini 4 Carbon Adversarial Security Review + GitHub PR #1",
             border_style="yellow",
         )
@@ -145,7 +145,7 @@ def run_demo4() -> Dict[str, Any]:
     after = benchmark_policy(SHIPPED_SWARM_POLICY, num_requests=500)
     p99_drop_pct = round((1.0 - after["p99_ms"] / before["p99_ms"]) * 100.0, 1)
 
-    tbl_sla = Table(title="Real 500-Request Burst Simulation (AWS ap-south-1 Flash Sale)")
+    tbl_sla = Table(title="Real 500-Request Burst Simulation (Google Cloud asia-south2 Flash Sale)")
     tbl_sla.add_column("Metric", style="bold")
     tbl_sla.add_column("Before (Legacy 64-slot)", justify="right", style="red")
     tbl_sla.add_column("After (Swarm 512-slot + TrueTime)", justify="right", style="green bold")

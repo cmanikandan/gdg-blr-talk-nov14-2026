@@ -1,0 +1,60 @@
+{
+  "demo": "demo5_code_modernization",
+  "timestamp_utc": "2026-11-18T05:11:58Z",
+  "live_api": true,
+  "dataset": {
+    "total_records": 8000,
+    "unique_records": 7530,
+    "duplicate_utrs": 470,
+    "rbi_flagged": 170,
+    "edge_cases_verified": 6
+  },
+  "carbon_analysis": {
+    "model": "gemini-4-carbon",
+    "latency_ms": 8505,
+    "usage": {
+      "input_tokens": 2075,
+      "output_tokens": 525,
+      "thoughts_tokens": 0
+    },
+    "plan": {
+      "bottleneck_complexity": "O(N^2) -> O(N)",
+      "primary_bottleneck": "Linear O(N) membership scan across a Python list (seen_utrs) for every transaction record, yielding O(N^2) total deduplication time coupled with repeated Decimal object instantiations and nested dictionary lookups.",
+      "hidden_invariants": [
+        "Idempotent first-seen-wins UTR deduplication: duplicate UTRs increment duplicate_count and are skipped completely without affecting merchant ledgers or RBI flags.",
+        "REVERSAL transactions increment txn_count and subtract gross_paise from both gross_paise and net_payout_paise with 0 MDR, 0 GST, and strictly bypass RBI high-value flagging even if amount_paise >= 5,000,000.",
+        "RBI zero-MDR mandate: non-REVERSAL UPI transactions with amount_paise <= 200,000 incur 0 MDR and 0 GST; UPI > 200,000 and all CARD/NETBANKING transactions apply 45 bps for ENTERPRISE tier and 85 bps for all other tiers.",
+        "Exact integer-paise ROUND_HALF_UP arithmetic: MDR is rounded half-up to the nearest integer paise before computing 18% GST, which is also rounded half-up independently; net_payout_paise = gross_paise - mdr_paise - gst_paise.",
+        "RBI compliance flagging and canonical digest parity: only non-duplicate, non-REVERSAL transactions with gross_paise >= 5,000,000 are appended to rbi_flagged_utrs, and the SHA-256 parity digest requires sorted merchant keys, sorted rbi_flagged_utrs, and compact JSON separators (',', ':')."
+      ],
+      "modernization_strategy": "Replace the O(N) list scan with an O(1) hash-set lookup for UTR deduplication, replace slow Decimal instantiations with exact integer-math half-up rounding ((val * num + den // 2) // den), aggregate merchant ledgers via local dataclass/slots or vectorized Polars/PyArrow structures, and verify bit-exact SHA-256 digest parity against unmodified golden batch tests via Antigravity /teamwork falsifiers.",
+      "target_gcp_runtime": "Cloud Run Jobs (for containerized batch execution up to millions of rows) or Google Cloud Dataflow (Apache Beam) for horizontally scaled streaming/massive-batch UPI settlement."
+    }
+  },
+  "modernization_synthesis": {
+    "model": "gemini-4-argon",
+    "latency_ms": 11141,
+    "usage": {
+      "input_tokens": 2736,
+      "output_tokens": 878,
+      "thoughts_tokens": 0
+    },
+    "attempts": 1,
+    "code_lines": 87,
+    "code_preview": "from __future__ import annotations\n\nimport hashlib\nimport json\nfrom typing import Any, Dict, List, Set\n\n\ndef modern_settle_batch(records: List[Dict[str, Any]]) -> Dict[str, Any]:\n    \"\"\"Fast O(N) settlement engine with exact integer-paise arithmetic and O(1) deduplication.\"\"\"\n    seen_utrs: Set[str] = set()\n    merchant_totals: Dict[str, Dict[str, int]] = {}\n    duplicate_count = 0\n    rbi_flagged_utrs: List[str] = []\n\n    total_net_payout_paise = 0\n    total_mdr_paise = 0\n    total_gst_paise = 0\n\n    for rec in records:\n        utr = rec[\"utr\"]\n        if utr in seen_utrs:\n            duplicate_count += 1\n            continue\n        seen_utrs.add(utr)\n\n        mid = rec[\"merchant_id\"]\n        ledger = merchant_totals.get(mid)\n        if ledger is None:"
+  },
+  "benchmark": {
+    "legacy_ms": 358.4,
+    "modern_ms": 3.8,
+    "speedup_factor": 94.3,
+    "latency_reduction_pct": 98.94
+  },
+  "golden_falsifier": {
+    "bit_exact_match": true,
+    "financial_drift_inr": 0.0,
+    "sha256_parity_digest": "93a9313ee3d5e807b9c9308845732d8b64a213c51fe86f03a0e444bd448a73fc",
+    "total_net_payout_paise": 5623206619,
+    "total_mdr_paise": 44252171,
+    "total_gst_paise": 7965460
+  }
+}

@@ -27,8 +27,12 @@ function loadTraces() {
     ['demo2', 'demo2_trace.json'],
     ['demo3', 'demo3_trace.json'],
     ['demo4', 'demo4_trace.json'],
+    ['demo5', 'demo5_trace.json'],
   ]) {
-    traces[k] = JSON.parse(fs.readFileSync(path.join(TRACES_DIR, f), 'utf8'));
+    const p = path.join(TRACES_DIR, f);
+    if (fs.existsSync(p)) {
+      traces[k] = JSON.parse(fs.readFileSync(p, 'utf8'));
+    }
   }
   return traces;
 }
@@ -129,6 +133,7 @@ async function main() {
     { id: 2, name: 'demo2_decisions_api_arena', duration: 15.0, posterAt: 13.8, hasAudio: false },
     { id: 3, name: 'demo3_live38_voice_multicloud_adk', duration: demo3Dur, posterAt: Math.max(12, demo3Dur - 4.0), hasAudio: true },
     { id: 4, name: 'demo4_review_shipped_pr', duration: 13.5, posterAt: 12.4, hasAudio: false },
+    { id: 5, name: 'demo5_code_modernization', duration: 14.0, posterAt: 12.6, hasAudio: false },
   ].filter(s => !onlyId || s.id === onlyId);
 
   console.log(`Launching headless Chromium 1920x1080 @ ${FPS}fps...`);

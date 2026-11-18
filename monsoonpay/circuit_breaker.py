@@ -1,10 +1,10 @@
 """
-MonsoonPay Cross-Cloud Envoy Circuit Breaker & Spanner Omni Bounded Stale-Read Policy.
+MonsoonPay Multi-Region Envoy Circuit Breaker & Spanner Omni Bounded Stale-Read Policy (Google Cloud).
 
 Demonstrates the exact production patch shipped by the Antigravity `/swarm` run:
-  - Legacy config: `max_pending_requests=64`, unbounded synchronous retries -> p99=390ms under AWS S3 retry storm
+  - Legacy config: `max_pending_requests=64`, unbounded synchronous retries -> p99=478ms under festival flash-sale burst
   - Patched config: `max_pending_requests=512`, jittered exponential circuit breaker + Spanner Omni Software
-    TrueTime bounded stale-read fallback (<15ms) -> p99=13.4ms (-96.5% tail latency!)
+    TrueTime bounded stale-read fallback (<15ms) -> p99=13.95ms (-97.1% tail latency!)
 """
 
 from __future__ import annotations
@@ -62,7 +62,7 @@ class SpannerOmniCircuitBreaker:
         self.fallback_reads = 0
 
     def execute_checkout(self, inflight_requests: int, truetime_drift_ms: float = 2.9) -> float:
-        """Simulates one cross-cloud checkout commit latency in milliseconds."""
+        """Simulates one multi-region Google Cloud checkout commit latency in milliseconds."""
         if truetime_drift_ms > 7.0:
             raise ValueError(f"Software TrueTime uncertainty bound exceeded: {truetime_drift_ms}ms")
 
@@ -96,11 +96,11 @@ class SpannerOmniCircuitBreaker:
 
 
 def benchmark_policy(policy: CheckoutPoolPolicy, num_requests: int = 500) -> Dict[str, float]:
-    """Runs deterministic cross-cloud traffic burst (peak 180 concurrent in-flight requests)."""
+    """Runs deterministic multi-region Google Cloud festival traffic burst (peak 184 concurrent requests)."""
     breaker = SpannerOmniCircuitBreaker(policy=policy, seed=2026)
     latencies: List[float] = []
     for i in range(num_requests):
-        # Burst window simulates AWS ap-south-1 flash sale traffic spike (140-185 concurrent)
+        # Burst window simulates asia-south2 festival flash sale traffic spike (140-185 concurrent)
         inflight = 140 + (i % 45) if 150 <= i < 320 else 32 + (i % 20)
         latencies.append(breaker.execute_checkout(inflight_requests=inflight, truetime_drift_ms=2.9))
 

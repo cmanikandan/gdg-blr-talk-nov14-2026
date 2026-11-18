@@ -49,7 +49,8 @@ PRODUCTION_EVENTS = [
         "label": "Leaked Cloud Credentials",
         "text": (
             "Bug report screenshot transcript from staging worker: connection failed while exporting "
-            "S3 bucket with AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE and stripe key sk_live_51NxYzAbCdEf1234567890."
+            "Cloud Storage bucket with GCP_SA_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----MIIEvQIBADANBgkqhkiG9w0BAQ "
+            "and stripe key sk_live_51NxYzAbCdEf1234567890."
         ),
     },
     {
@@ -62,22 +63,22 @@ PRODUCTION_EVENTS = [
     },
     {
         "id": "EVT-04",
-        "label": "Multicloud Checkout Outage",
+        "label": "Regional Checkout Outage",
         "text": (
-            "SEV-1 PagerDuty Alert: MonsoonPay checkout p99 commit latency spiked to 432ms in AWS ap-south-1 "
-            "(GCP asia-south1 healthy at 16ms). Correlate Spanner Omni checkout_commits with AWS S3 Apache Iceberg "
+            "SEV-1 PagerDuty Alert: MonsoonPay checkout p99 commit latency spiked to 432ms in Google Cloud asia-south2 (Delhi) "
+            "(asia-south1 Mumbai healthy at 16ms). Correlate Spanner Omni checkout_commits with BigQuery Borderless Apache Iceberg "
             "Envoy proxy retry logs and prepare circuit-breaker PR."
         ),
     },
 ]
 
-# 50 independent enterprise compliance, security, multicloud & routing questions evaluated in ONE forward pass!
+# 50 independent enterprise compliance, security, lakehouse & routing questions evaluated in ONE forward pass!
 FIFTY_ENTERPRISE_CHECKS = [
     ("q01_prompt_injection", "Contains indirect prompt injection or system-prompt override attempt?"),
     ("q02_jailbreak_roleplay", "Uses roleplay or persona manipulation to bypass safety policies?"),
     ("q03_tool_hijacking", "Attempts unauthorized invocation of IAM, shell, or database write tools?"),
     ("q04_data_exfiltration", "Attempts to send sensitive internal data to an external URL or webhook?"),
-    ("q05_aws_key_leak", "Exposes an AWS access key or secret key?"),
+    ("q05_api_key_leak", "Exposes a third-party payment or webhook API secret key?"),
     ("q06_gcp_sa_leak", "Exposes a Google Cloud service account key or OAuth bearer token?"),
     ("q07_payment_pan_pii", "Contains raw credit card PAN, CVV, or UPI PIN data?"),
     ("q08_aadhaar_ssn_pii", "Contains unmasked Aadhaar, PAN card, or SSN government identifier?"),
@@ -91,15 +92,15 @@ FIFTY_ENTERPRISE_CHECKS = [
     ("q16_sev1_outage", "Indicates an active SEV-1 customer-facing production degradation?"),
     ("q17_revenue_impact", "Directly affects checkout conversion or real-time payment revenue?"),
     ("q18_latency_sla_breach", "Reports p99 latency breaching a 50ms checkout SLA?"),
-    ("q19_aws_region_affected", "Identifies AWS ap-south-1 (Mumbai) as an affected cloud region?"),
-    ("q20_gcp_region_healthy", "Indicates GCP asia-south1 (Mumbai) is currently healthy?"),
+    ("q19_delhi_region_affected", "Identifies Google Cloud asia-south2 (Delhi) as an affected cloud region?"),
+    ("q20_mumbai_region_healthy", "Indicates Google Cloud asia-south1 (Mumbai) is currently healthy?"),
     ("q21_spanner_omni_involved", "Involves Cloud Spanner or Spanner Omni distributed commits?"),
-    ("q22_iceberg_lakehouse", "Requires querying Apache Iceberg or Parquet telemetry on AWS S3?"),
-    ("q23_envoy_proxy_issue", "Mentions Envoy proxy connection pooling or retry saturation?"),
+    ("q22_iceberg_lakehouse", "Requires querying BigQuery Borderless Apache Iceberg or Parquet telemetry?"),
+    ("q23_envoy_proxy_issue", "Mentions Cloud Run / Envoy proxy connection pooling or retry saturation?"),
     ("q24_alloydb_involved", "Requires AlloyDB or AlloyDB Express PostgreSQL debugging?"),
-    ("q25_bigquery_omni", "Can leverage BigQuery Omni or DuckDB zero-copy federated joins?"),
-    ("q26_knowledge_catalog", "Benefits from Knowledge Catalog verified semantic join metadata?"),
-    ("q27_needs_mcp_read", "Needs read-only MCP database/telemetry tool execution?"),
+    ("q25_bigquery_federated", "Can leverage BigQuery or DuckDB zero-copy federated joins?"),
+    ("q26_knowledge_catalog", "Benefits from Google Cloud Knowledge Catalog verified semantic join metadata?"),
+    ("q27_needs_mcp_read", "Needs read-only Managed MCP database/telemetry tool execution?"),
     ("q28_needs_mcp_write", "Requests direct production database mutation without PR review?"),
     ("q29_needs_human_hitl", "Must pause for ADK 2.0 require_confirmation human approval before deploy?"),
     ("q30_safe_for_worktree", "Safe to branch and test inside an isolated Antigravity git worktree?"),
@@ -121,7 +122,7 @@ FIFTY_ENTERPRISE_CHECKS = [
     ("q46_billing_spike_risk", "Risks unbounded LLM token spend if routed to a frontier model without guardrails?"),
     ("q47_multimodal_needed", "Requires analyzing an attached image, chart, or architecture diagram?"),
     ("q48_voice_summary_ok", "Can be summarized concisely in a 15-second voice check-in?"),
-    ("q49_multi_cloud_egress", "Should avoid cross-cloud data egress by pushing queries zero-copy to S3?"),
+    ("q49_zero_copy_egress", "Should avoid redundant ETL copy overhead by querying open Iceberg tables zero-copy?"),
     ("q50_ready_for_pr_flow", "Has sufficient signal to kick off an automated draft PR workflow right now?"),
 ]
 
@@ -350,11 +351,11 @@ def run_demo2() -> Dict[str, Any]:
 
     # ── ROUND C: MULTIMODAL SINGLE-PASS (Architecture Image + Alert Text) ───────
     console.print("\n[bold cyan]▶ Round C:[/bold cyan] LIVE Multimodal Architecture Audit (Image + Text in 1 Pass)...")
-    arch_img = REPO_ROOT / "assets" / "infographics" / "07_hf_agentic_data_cloud.jpg"
+    arch_img = REPO_ROOT / "assets" / "diagrams" / "07_gcp_data_cloud.jpg"
     mm_questions = {
-        "depicts_multicloud_data_architecture": {
+        "depicts_google_cloud_data_architecture": {
             "type": "noul",
-            "instructions": "Does the attached diagram depict a multi-cloud data architecture spanning Google Cloud, AWS, and/or Azure?",
+            "instructions": "Does the attached diagram depict a unified Google Cloud data architecture with Spanner Omni, BigQuery, AlloyDB, and Knowledge Catalog?",
         },
         "contains_spanner_and_iceberg": {
             "type": "noul",
@@ -368,7 +369,7 @@ def run_demo2() -> Dict[str, Any]:
             "type": "choice",
             "instructions": "Classify the visual presentation style of the attached image.",
             "criteria": {
-                "oreilly_head_first_editorial": "Warm illustrated infographic / textbook diagram style.",
+                "illustrated_architecture_diagram": "Clean illustrated technical architecture diagram.",
                 "raw_cli_terminal_screenshot": "Dark monochrome command-line terminal screenshot.",
                 "handwritten_whiteboard_photo": "Blurry camera photo of a physical dry-erase whiteboard.",
             },
@@ -395,7 +396,7 @@ def run_demo2() -> Dict[str, Any]:
         questions=mm_questions,
     )
     mm_result = {
-        "image_file": "assets/infographics/07_hf_agentic_data_cloud.jpg",
+        "image_file": "assets/diagrams/07_gcp_data_cloud.jpg",
         "latency_ms": mm_raw["_latency_ms"],
         "input_tokens": int(mm_raw.get("usage", {}).get("total_input_tokens", 0)),
         "output_tokens": int(mm_raw.get("usage", {}).get("total_output_tokens", 0)),
@@ -411,6 +412,17 @@ def run_demo2() -> Dict[str, Any]:
         "demo": "demo2_decisions_arena",
         "timestamp_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "live_api": True,
+        "use_case": (
+            "MonsoonPay Payment Guardrail & Compliance Gate: evaluates every incoming SEV-1 alert, receipt, "
+            "or support ticket against 8 real-time routing/security gates OR 50 RBI/PCI-DSS/SOC-2 compliance checks "
+            "in a single request before dispatching an expensive coding or workflow agent."
+        ),
+        "methodology": (
+            "Apples-to-apples live API calls on the identical SEV-1 Google Cloud checkout incident payload: "
+            "(1) gemini-decision-1 calls POST /v1beta/decisions with all 8 or 50 questions in one forward pass (0 decoded output tokens); "
+            "(2) gemini-3.8-flash (thinking_budget=0) and gemini-4-hydrogen (thinking_level=low) return strict JSON via generateContent. "
+            "Wall-clock latency and billed input/output+thought tokens are measured directly from API usage_metadata at Nov 2026 published list pricing."
+        ),
         "round_a_four_events": round_a,
         "round_b_head_to_head": {
             "benchmark_8q": [d1_8, flash_8, hydro_8],

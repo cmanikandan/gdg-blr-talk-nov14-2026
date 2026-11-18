@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-DEMO 1 — Minute 1 Kickoff: Gemini 4 Carbon Architect -> Parallel Gemini 4 Hydrogen `/swarm` in Real Git Worktrees -> Remote Agent.
+DEMO 1 — Plan Big, Execute Fast: Gemini 4 Carbon Architect -> Parallel Gemini 4 Hydrogen `/swarm` in Real Git Worktrees -> Remote Agent.
 
 Runs LIVE against:
   - `gemini-4-carbon`   (deep architecture planner)
@@ -47,9 +47,9 @@ async def run_carbon_architect(client: Any) -> Dict[str, Any]:
 
     cb_code = (REPO_ROOT / "monsoonpay" / "circuit_breaker.py").read_text(encoding="utf-8")
     prompt = (
-        "You are a Principal Cloud Architect using Google Antigravity Orchestrator.\n"
-        "Incident: MonsoonPay cross-cloud checkouts in AWS ap-south-1 are spiking to p99=430ms because "
-        "Envoy max_pending_requests=64 triggers synchronous retry storms, while Spanner Omni Software TrueTime stays healthy (<3ms).\n"
+        "You are a Principal Cloud Architect at Google Cloud using Antigravity Orchestrator.\n"
+        "Incident: MonsoonPay checkouts in Google Cloud asia-south2 (Delhi) are spiking to p99=430ms during a festival flash sale because "
+        "Cloud Run / Envoy max_pending_requests=64 triggers synchronous retry storms, while Spanner Omni Software TrueTime and asia-south1 (Mumbai) stay healthy (<3ms drift).\n"
         "Review this module and output STRICT JSON (no markdown fences) matching:\n"
         '{"architecture_summary": str, "risk_assessment": str, "workers": ['
         '{"id": "W1", "branch": str, "element": "gemini-4-hydrogen", "thinking_level": "low", "owner": str, "task": str, "target_file": str},'
@@ -66,7 +66,7 @@ async def run_carbon_architect(client: Any) -> Dict[str, Any]:
         config=types.GenerateContentConfig(
             thinking_config=types.ThinkingConfig(thinking_level="low"),
             response_mime_type="application/json",
-            max_output_tokens=1400,
+            max_output_tokens=2048,
         ),
     )
     elapsed_ms = int((time.perf_counter() - t0) * 1000)
@@ -76,7 +76,7 @@ async def run_carbon_architect(client: Any) -> Dict[str, Any]:
     except json.JSONDecodeError:
         plan_json = {
             "architecture_summary": plan_text[:280],
-            "risk_assessment": "Medium — production Envoy connection pool and TrueTime fallback policy.",
+            "risk_assessment": "Medium — production Cloud Run / Envoy connection pool and Spanner Omni TrueTime fallback policy.",
             "workers": [
                 {
                     "id": "W1",
@@ -84,7 +84,7 @@ async def run_carbon_architect(client: Any) -> Dict[str, Any]:
                     "element": "gemini-4-hydrogen",
                     "thinking_level": "low",
                     "owner": "Envoy & Spanner Policy Worker",
-                    "task": "Emit Envoy cluster YAML with max_pending_requests=512 and jittered retry budget.",
+                    "task": "Emit Cloud Run / Envoy cluster YAML with max_pending_requests=512 and jittered retry budget.",
                     "target_file": "envoy_pool_patch.yaml",
                 },
                 {
@@ -92,9 +92,9 @@ async def run_carbon_architect(client: Any) -> Dict[str, Any]:
                     "branch": "swarm/w2-iceberg-sql",
                     "element": "gemini-4-hydrogen",
                     "thinking_level": "low",
-                    "owner": "Multicloud Lakehouse SQL Worker",
-                    "task": "Write zero-copy BigQuery Omni / DuckDB SQL correlating Spanner Omni with S3 Iceberg.",
-                    "target_file": "multicloud_correlate.sql",
+                    "owner": "Lakehouse SQL Worker",
+                    "task": "Write zero-copy BigQuery / DuckDB SQL correlating Spanner Omni with BigQuery Borderless Apache Iceberg telemetry.",
+                    "target_file": "lakehouse_correlate.sql",
                 },
                 {
                     "id": "W3",
@@ -191,7 +191,7 @@ async def run_hydrogen_worker(
 async def run_demo1() -> Dict[str, Any]:
     console.print(
         Panel.fit(
-            "[bold cyan]DEMO 1 · MINUTE 1 KICKOFF[/bold cyan]\n"
+            "[bold cyan]DEMO 1 · PLAN BIG, EXECUTE FAST[/bold cyan]\n"
             "Gemini 4 Carbon Architect -> Parallel Gemini 4 Hydrogen `/swarm` (Real Git Worktrees) -> Remote Agent Handoff",
             border_style="cyan",
         )
@@ -199,7 +199,7 @@ async def run_demo1() -> Dict[str, Any]:
     client = get_genai_client()
 
     # 1. Plan Big with Gemini 4 Carbon
-    console.print("[bold yellow]▶ Phase 1:[/bold yellow] Calling LIVE [bold]gemini-4-carbon[/bold] to architect the cross-cloud fix...")
+    console.print("[bold yellow]▶ Phase 1:[/bold yellow] Calling LIVE [bold]gemini-4-carbon[/bold] to architect the Google Cloud regional recovery...")
     carbon_res = await run_carbon_architect(client)
     workers = carbon_res["plan"].get("workers", [])[:3]
     console.print(

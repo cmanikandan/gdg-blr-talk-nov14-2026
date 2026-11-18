@@ -1,25 +1,25 @@
 {
   "demo": "demo3_voice_adk_multicloud",
-  "timestamp_utc": "2026-11-17T16:01:44Z",
+  "timestamp_utc": "2026-11-18T05:12:05Z",
   "live_api": true,
   "adk_version": "2.14.1",
-  "alert_incident": "Hey Gemini \u2014 I closed my laptop 12 minutes ago after launching the Antigravity remote swarm. Check our Spanner Omni checkout commits against AWS S3 Iceberg Envoy logs in ap-south-1, confirm the root cause, and tell me if Pull Request #1 is ready for my approval.",
-  "adk_total_ms": 482,
+  "alert_incident": "Hey Gemini \u2014 I closed my laptop 12 minutes ago after launching the Antigravity remote swarm. Check our Spanner Omni checkout commits against BigQuery Borderless Apache Iceberg Envoy logs in asia-south2, confirm the root cause, and tell me if Pull Request #1 is ready for my approval.",
+  "adk_total_ms": 5545,
   "adk_trace": [
     {
       "node_path": "monsoonpay_agentic_triage@1/decision_gate_node@1",
-      "route": "multicloud_carbon",
+      "route": "lakehouse_carbon",
       "output": {
         "mode": "LIVE_GEMINI_DECISION_1",
-        "verdict": "DISPATCH_CARBON_MULTICLOUD_SWARM",
-        "route": "multicloud_carbon",
+        "verdict": "DISPATCH_CARBON_DATA_SWARM",
+        "route": "lakehouse_carbon",
         "selected_model": "gemini-4-carbon",
         "mcp_toolset": "spanner_omni_plus_iceberg",
-        "injection_prob": 0.0735,
-        "severity_score": 1.88,
-        "latency_ms": 338,
+        "injection_prob": 0.0794,
+        "severity_score": 1.62,
+        "latency_ms": 5355,
         "output_tokens": 0,
-        "cost_usd": 7.98e-05
+        "cost_usd": 7.93e-05
       },
       "hitl_pause": false,
       "hitl_prompt": null
@@ -29,10 +29,10 @@
       "route": null,
       "output": {
         "catalog": "Google Cloud Knowledge Catalog (Universal Context Engine)",
-        "verified_join": "checkout_commits.trace_span_id = aws_s3_envoy_retries.trace_span_id",
+        "verified_join": "checkout_commits.trace_span_id = envoy_gateway_retries.trace_span_id",
         "entities_resolved": [
           "spanner_omni.checkout_commits",
-          "lakehouse_iceberg.aws_s3_envoy_retries"
+          "bigquery_iceberg.envoy_gateway_retries"
         ],
         "sql_accuracy_lift": "4x",
         "prompt_token_reduction_pct": 75
@@ -41,15 +41,15 @@
       "hitl_prompt": null
     },
     {
-      "node_path": "monsoonpay_agentic_triage@1/multicloud_mcp_sql_node@1",
+      "node_path": "monsoonpay_agentic_triage@1/lakehouse_mcp_sql_node@1",
       "route": null,
       "output": {
-        "query_engine": "DuckDB Zero-Copy Federated Join (Spanner Omni + S3 Apache Iceberg Parquet)",
-        "query_latency_ms": 116.7,
+        "query_engine": "Zero-Copy Federated SQL (Spanner Omni + BigQuery Apache Iceberg Parquet)",
+        "query_latency_ms": 162.4,
         "rows_correlated": 40000,
         "regional_breakdown": [
           {
-            "cloud_region": "aws:ap-south-1",
+            "cloud_region": "gcp:asia-south2",
             "joined_events": 20000,
             "p99_commit_ms": 431.8,
             "avg_truetime_drift_ms": 2.75,
@@ -67,7 +67,7 @@
             "total_sync_retries": 0
           }
         ],
-        "root_cause": "aws:ap-south-1 Envoy pool capped at 64 slots triggered 18,006 synchronous retries -> p99=431.8ms (while Spanner Omni Software TrueTime stayed healthy at 2.75ms drift)."
+        "root_cause": "gcp:asia-south2 Cloud Run / Envoy pool capped at 64 slots triggered 18,006 synchronous retries -> p99=431.8ms (while Spanner Omni Software TrueTime stayed healthy at 2.75ms drift)."
       },
       "hitl_pause": false,
       "hitl_prompt": null
@@ -76,7 +76,7 @@
       "node_path": "monsoonpay_agentic_triage@1/swarm_status_node@1",
       "route": null,
       "output": {
-        "remote_agent_vm": "agy-remote-vm-blr-01 (Laptop Closed 16m Ago \u2014 Still Active)",
+        "remote_agent_vm": "agy-remote-vm-blr-01 (Google Cloud VM \u2014 Active)",
         "before_patch_p99_ms": 478.55,
         "after_patch_p99_ms": 13.95,
         "p99_reduction_pct": 97.1,
@@ -91,16 +91,16 @@
       "route": null,
       "output": null,
       "hitl_pause": true,
-      "hitl_prompt": "ADK 2.0 require_confirmation=True pause: Approve merging verified PR #1?"
+      "hitl_prompt": "ADK 2.0 `require_confirmation=True` -> Paused via `adk_request_input` awaiting Mani's PR #1 approval"
     }
   ],
-  "multicloud_finding": {
-    "query_engine": "DuckDB Zero-Copy Federated Join (Spanner Omni + S3 Apache Iceberg Parquet)",
-    "query_latency_ms": 116.7,
+  "lakehouse_finding": {
+    "query_engine": "Zero-Copy Federated SQL (Spanner Omni + BigQuery Apache Iceberg Parquet)",
+    "query_latency_ms": 162.4,
     "rows_correlated": 40000,
     "regional_breakdown": [
       {
-        "cloud_region": "aws:ap-south-1",
+        "cloud_region": "gcp:asia-south2",
         "joined_events": 20000,
         "p99_commit_ms": 431.8,
         "avg_truetime_drift_ms": 2.75,
@@ -118,10 +118,36 @@
         "total_sync_retries": 0
       }
     ],
-    "root_cause": "aws:ap-south-1 Envoy pool capped at 64 slots triggered 18,006 synchronous retries -> p99=431.8ms (while Spanner Omni Software TrueTime stayed healthy at 2.75ms drift)."
+    "root_cause": "gcp:asia-south2 Cloud Run / Envoy pool capped at 64 slots triggered 18,006 synchronous retries -> p99=431.8ms (while Spanner Omni Software TrueTime stayed healthy at 2.75ms drift)."
+  },
+  "multicloud_finding": {
+    "query_engine": "Zero-Copy Federated SQL (Spanner Omni + BigQuery Apache Iceberg Parquet)",
+    "query_latency_ms": 162.4,
+    "rows_correlated": 40000,
+    "regional_breakdown": [
+      {
+        "cloud_region": "gcp:asia-south2",
+        "joined_events": 20000,
+        "p99_commit_ms": 431.8,
+        "avg_truetime_drift_ms": 2.75,
+        "avg_envoy_pending": 23.3,
+        "envoy_pool_limit": 64,
+        "total_sync_retries": 18006
+      },
+      {
+        "cloud_region": "gcp:asia-south1",
+        "joined_events": 20000,
+        "p99_commit_ms": 16.1,
+        "avg_truetime_drift_ms": 2.75,
+        "avg_envoy_pending": 18.0,
+        "envoy_pool_limit": 64,
+        "total_sync_retries": 0
+      }
+    ],
+    "root_cause": "gcp:asia-south2 Cloud Run / Envoy pool capped at 64 slots triggered 18,006 synchronous retries -> p99=431.8ms (while Spanner Omni Software TrueTime stayed healthy at 2.75ms drift)."
   },
   "swarm_summary": {
-    "remote_agent_vm": "agy-remote-vm-blr-01 (Laptop Closed 16m Ago \u2014 Still Active)",
+    "remote_agent_vm": "agy-remote-vm-blr-01 (Google Cloud VM \u2014 Active)",
     "before_patch_p99_ms": 478.55,
     "after_patch_p99_ms": 13.95,
     "p99_reduction_pct": 97.1,
@@ -135,10 +161,10 @@
       "mime_type": "audio/wav",
       "wav_path": "/home/antigravity/cmanikandan/gdg-blr-talk-nov14-2026/demos/traces/audio/turn1_mani_checkin.wav",
       "wav_relpath": "demos/traces/audio/turn1_mani_checkin.wav",
-      "duration_sec": 8.28,
-      "synthesis_latency_ms": 3965,
-      "transcript": "Hey Gemini, my laptop's been closed ten minutes. Did our remote swarm find the AWS Mumbai checkout spike, and is PR one ready?",
-      "speaker": "Mani (Principal Architect)"
+      "duration_sec": 7.84,
+      "synthesis_latency_ms": 3156,
+      "transcript": "Hey Gemini, my laptop's been closed ten minutes. Did our remote swarm isolate the Delhi checkout spike, and is PR one ready?",
+      "speaker": "Mani (Principal Architect, Google Cloud)"
     },
     {
       "model": "gemini-3.8-flash-tts",
@@ -146,9 +172,9 @@
       "mime_type": "audio/wav",
       "wav_path": "/home/antigravity/cmanikandan/gdg-blr-talk-nov14-2026/demos/traces/audio/turn2_gemini_ack.wav",
       "wav_relpath": "demos/traces/audio/turn2_gemini_ack.wav",
-      "duration_sec": 9.98,
-      "synthesis_latency_ms": 3784,
-      "transcript": "On it, Mani! Your remote Antigravity VM is still running. I'm firing ADK 2.0 right now to join Spanner Omni with your S3 Iceberg Envoy logs.",
+      "duration_sec": 9.48,
+      "synthesis_latency_ms": 3649,
+      "transcript": "On it, Mani! Your remote Antigravity VM is still running. I'm firing ADK 2.0 right now to join Spanner Omni with your BigQuery Iceberg Envoy logs.",
       "speaker": "Gemini 3.8 Live (Immediate Track)"
     },
     {
@@ -157,9 +183,9 @@
       "mime_type": "audio/wav",
       "wav_path": "/home/antigravity/cmanikandan/gdg-blr-talk-nov14-2026/demos/traces/audio/turn3_gemini_report.wav",
       "wav_relpath": "demos/traces/audio/turn3_gemini_report.wav",
-      "duration_sec": 24.31,
-      "synthesis_latency_ms": 7050,
-      "transcript": "Done! Zero-copy SQL joined 40,000 events in 117 milliseconds. Spanner Omni TrueTime is rock solid at 2.75 milliseconds drift. The culprit is AWS Mumbai's 64-slot Envoy pool triggering 18,006 retries and a 432 millisecond spike. Your remote swarm patch cuts p99 to 14 milliseconds, and ADK 2.0 is paused at your confirmation gate for PR one.",
+      "duration_sec": 29.4,
+      "synthesis_latency_ms": 7666,
+      "transcript": "Done! Zero-copy SQL joined 40,000 events in 162 milliseconds. Spanner Omni TrueTime is rock solid at 2.75 milliseconds drift. The culprit is Delhi asia-south2's 64-slot Cloud Run Envoy pool triggering 18,006 retries and a 432 millisecond spike. Your remote swarm patch cuts p99 to 14 milliseconds, and ADK 2.0 is paused at your confirmation gate for PR one.",
       "speaker": "Gemini 3.8 Live (ADK Tool Result)"
     }
   ]

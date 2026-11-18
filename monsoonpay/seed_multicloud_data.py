@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
 """
-Seeds real queryable multi-cloud datasets for the DevFest Keynote ADK 2.0 + Data Cloud demo:
-  1. monsoonpay/data/spanner_omni_commits.db   -> Operational Spanner Omni commits (GCP asia-south1 + AWS ap-south-1)
-  2. monsoonpay/data/aws_s3_iceberg_envoy.parquet -> 40,000 AWS S3 Apache Iceberg/Parquet Envoy edge telemetry rows
-  3. monsoonpay/data/knowledge_catalog.json    -> Semantic layer mapping verified joins & SLAs
+Seeds real queryable Google Cloud multi-region & open lakehouse datasets for the DevFest Keynote ADK 2.0 demo:
+  1. monsoonpay/data/spanner_omni_commits.db       -> Operational Spanner Omni commits (gcp:asia-south1 + gcp:asia-south2)
+  2. monsoonpay/data/bigquery_iceberg_envoy.parquet -> 40,000 BigQuery Apache Iceberg / Parquet gateway telemetry rows
+  3. monsoonpay/data/knowledge_catalog.json        -> Semantic layer mapping verified joins & SLAs
 """
 
 from __future__ import annotations
 
 import json
-import os
 import random
 import sqlite3
 from pathlib import Path
@@ -24,7 +23,12 @@ def seed_all(seed: int = 20261114) -> dict:
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     rng = random.Random(seed)
 
-    # 1. SQLite representing Spanner Omni operational table (GCP + AWS active-active)
+    # Remove any legacy parquet filename if present
+    legacy_pq = DATA_DIR / "aws_s3_iceberg_envoy.parquet"
+    if legacy_pq.exists():
+        legacy_pq.unlink()
+
+    # 1. SQLite representing Spanner Omni operational table (Mumbai asia-south1 + Delhi asia-south2)
     db_path = DATA_DIR / "spanner_omni_commits.db"
     if db_path.exists():
         db_path.unlink()
@@ -53,13 +57,13 @@ def seed_all(seed: int = 20261114) -> dict:
     for i in range(10_000):
         span_id = f"tr-{i:06d}"
         span_ids.append(span_id)
-        is_aws = (i % 2 == 1)
-        region = "aws:ap-south-1" if is_aws else "gcp:asia-south1"
+        is_delhi = (i % 2 == 1)
+        region = "gcp:asia-south2" if is_delhi else "gcp:asia-south1"
         tier = "ENTERPRISE" if i % 5 == 0 else "STANDARD"
         drift = round(rng.uniform(2.1, 3.4), 2)
 
-        # Inject authentic cross-cloud Envoy retry burst in AWS ap-south-1 for the last 1,200 spans
-        if is_aws and i >= 8800:
+        # Inject festival flash-sale Cloud Run / Envoy retry burst in asia-south2 for the last 1,200 spans
+        if is_delhi and i >= 8800:
             latency = round(rng.uniform(285.0, 445.0), 1)
             status = "RETRY_DEGRADED" if latency > 350 else "OK_SLOW"
         else:
@@ -77,8 +81,8 @@ def seed_all(seed: int = 20261114) -> dict:
     conn.commit()
     conn.close()
 
-    # 2. Apache Parquet (Iceberg table layout) representing AWS S3 Envoy edge telemetry (40,000 rows)
-    parquet_path = DATA_DIR / "aws_s3_iceberg_envoy.parquet"
+    # 2. Apache Parquet (Iceberg table layout) representing BigQuery Borderless Iceberg gateway logs (40,000 rows)
+    parquet_path = DATA_DIR / "bigquery_iceberg_envoy.parquet"
     trace_col = []
     edge_region_col = []
     envoy_pool_used_col = []
@@ -91,7 +95,7 @@ def seed_all(seed: int = 20261114) -> dict:
         span_id = span_ids[idx]
         is_burst = (idx % 2 == 1) and (idx >= 8800)
         trace_col.append(span_id)
-        edge_region_col.append("aws:ap-south-1" if idx % 2 == 1 else "gcp:asia-south1")
+        edge_region_col.append("gcp:asia-south2" if idx % 2 == 1 else "gcp:asia-south1")
         if is_burst:
             envoy_pool_used_col.append(rng.randint(60, 64))
             envoy_pool_limit_col.append(64)
@@ -118,22 +122,22 @@ def seed_all(seed: int = 20261114) -> dict:
     # 3. Knowledge Catalog Semantic Contract
     catalog = {
         "catalog": "Google Cloud Knowledge Catalog (Universal Context Engine)",
-        "domain": "monsoonpay_multicloud_checkout",
+        "domain": "monsoonpay_gcp_checkout",
         "verified_entities": [
             {
                 "entity": "spanner_omni.checkout_commits",
-                "engine": "Spanner Omni (GA — GCP asia-south1 + AWS ap-south-1)",
+                "engine": "Spanner Omni (GA — Google Cloud asia-south1 + asia-south2)",
                 "local_uri": str(db_path),
                 "primary_join_key": "trace_span_id",
             },
             {
-                "entity": "lakehouse_iceberg.aws_s3_envoy_retries",
-                "engine": "Cross-Cloud Apache Iceberg / BigQuery Omni (Zero-Copy AWS S3)",
+                "entity": "bigquery_iceberg.envoy_gateway_retries",
+                "engine": "BigQuery Borderless Apache Iceberg (Zero-Copy Lakehouse)",
                 "local_uri": str(parquet_path),
                 "primary_join_key": "trace_span_id",
             },
         ],
-        "verified_join": "checkout_commits.trace_span_id = aws_s3_envoy_retries.trace_span_id",
+        "verified_join": "checkout_commits.trace_span_id = envoy_gateway_retries.trace_span_id",
         "slos": {"checkout_p99_ms": 25.0, "truetime_max_drift_ms": 7.0},
     }
     catalog_path = DATA_DIR / "knowledge_catalog.json"
@@ -149,4 +153,4 @@ def seed_all(seed: int = 20261114) -> dict:
 
 if __name__ == "__main__":
     stats = seed_all()
-    print("Seeded real MonsoonPay multi-cloud data:", json.dumps(stats, indent=2))
+    print("Seeded real Google Cloud Spanner + BigQuery Iceberg data:", json.dumps(stats, indent=2))

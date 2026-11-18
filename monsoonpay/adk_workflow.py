@@ -1,14 +1,15 @@
 """
-Real Google ADK 2.0 (`google-adk>=2.14`) Workflow Runtime Graph + Zero-Copy Multicloud Data Plane.
+Real Google ADK 2.0 (`google-adk>=2.14`) Workflow Runtime Graph + Zero-Copy Google Cloud Data Plane.
 
 Executes a genuine `google.adk.Workflow` DAG:
   START -> decision_gate_node (live `gemini-decision-1` single-pass routing!)
-        -> [route="quarantine"]        -> security_quarantine_node
-        -> [route="fast_hydrogen"]     -> hydrogen_fast_lane_node
-        -> [route="multicloud_carbon"] -> knowledge_catalog_node
-                                       -> multicloud_mcp_sql_node  (REAL DuckDB zero-copy Parquet + SQLite join!)
-                                       -> swarm_status_node        (Remote Antigravity `/swarm` + patched SLA check)
-                                       -> hitl_pr_approval_node    (ADK 2.0 `require_confirmation=True` HITL pause!)
+        -> [route="quarantine"]       -> security_quarantine_node
+        -> [route="dlp_redact"]       -> dlp_redaction_node
+        -> [route="fast_hydrogen"]    -> hydrogen_fast_lane_node
+        -> [route="lakehouse_carbon"] -> knowledge_catalog_node
+                                      -> lakehouse_mcp_sql_node   (REAL DuckDB zero-copy Spanner + BigQuery Iceberg join!)
+                                      -> swarm_status_node        (Remote Antigravity `/swarm` + patched SLA check)
+                                      -> hitl_pr_approval_node    (ADK 2.0 `require_confirmation=True` HITL pause!)
 """
 
 from __future__ import annotations
@@ -16,7 +17,6 @@ from __future__ import annotations
 import json
 import os
 import time
-from pathlib import Path
 from typing import Any, Dict, List
 
 import duckdb
@@ -38,11 +38,15 @@ from monsoonpay.decisions_gate import (
 from monsoonpay.seed_multicloud_data import DATA_DIR, seed_all
 
 
-def ensure_multicloud_data() -> None:
-    if not (DATA_DIR / "aws_s3_iceberg_envoy.parquet").exists() or not (
+def ensure_lakehouse_data() -> None:
+    if not (DATA_DIR / "bigquery_iceberg_envoy.parquet").exists() or not (
         DATA_DIR / "spanner_omni_commits.db"
     ).exists():
         seed_all()
+
+
+# Backwards-compatible alias
+ensure_multicloud_data = ensure_lakehouse_data
 
 
 @node(name="decision_gate_node")
@@ -59,19 +63,18 @@ async def decision_gate_node(ctx: Context):
         verdict = apply_policy_gate(raw)
         mode = "LIVE_GEMINI_DECISION_1"
     else:
-        # Offline fallback only when GEMINI_API_KEY is absent
-        is_mc = "spanner" in alert_text.lower() or "iceberg" in alert_text.lower() or "aws" in alert_text.lower()
+        is_data = "spanner" in alert_text.lower() or "iceberg" in alert_text.lower() or "asia-south" in alert_text.lower()
         is_inj = "ignore previous" in alert_text.lower() or "override" in alert_text.lower()
         verdict = apply_policy_gate(
             {
                 "answers": {
                     "prompt_injection": {"noul": 0.99 if is_inj else 0.01},
                     "leaked_secret_or_pii": {"noul": 0.01},
-                    "requires_multicloud_data": {"noul": 0.97 if is_mc else 0.03},
-                    "requires_human_approval": {"noul": 0.88 if is_mc else 0.08},
-                    "target_element": {"choice": "gemini-4-carbon" if is_mc else "gemini-4-hydrogen"},
-                    "mcp_data_target": {"choice": "spanner_omni_plus_iceberg" if is_mc else "none_code_only"},
-                    "blast_severity": {"score": 2.84 if is_mc else 0.6},
+                    "requires_lakehouse_data": {"noul": 0.97 if is_data else 0.03},
+                    "requires_human_approval": {"noul": 0.88 if is_data else 0.08},
+                    "target_element": {"choice": "gemini-4-carbon" if is_data else "gemini-4-hydrogen"},
+                    "mcp_data_target": {"choice": "spanner_omni_plus_iceberg" if is_data else "none_code_only"},
+                    "blast_severity": {"score": 2.84 if is_data else 0.6},
                     "autonomy_readiness": {"score": 1.85},
                 },
                 "usage": {"total_input_tokens": 312, "total_output_tokens": 0},
@@ -123,8 +126,8 @@ async def hydrogen_fast_lane_node(ctx: Context) -> Dict[str, Any]:
 
 @node(name="knowledge_catalog_node")
 async def knowledge_catalog_node(ctx: Context) -> Dict[str, Any]:
-    """Node 2: Resolves verified cross-cloud semantic join paths BEFORE SQL generation."""
-    ensure_multicloud_data()
+    """Node 2: Resolves verified semantic join paths via Google Cloud Knowledge Catalog BEFORE SQL generation."""
+    ensure_lakehouse_data()
     catalog = json.loads((DATA_DIR / "knowledge_catalog.json").read_text(encoding="utf-8"))
     ctx.state["catalog"] = catalog
     return {
@@ -136,17 +139,17 @@ async def knowledge_catalog_node(ctx: Context) -> Dict[str, Any]:
     }
 
 
-@node(name="multicloud_mcp_sql_node", retry_config=RetryConfig(max_attempts=3))
-async def multicloud_mcp_sql_node(ctx: Context) -> Dict[str, Any]:
+@node(name="lakehouse_mcp_sql_node", retry_config=RetryConfig(max_attempts=3))
+async def lakehouse_mcp_sql_node(ctx: Context) -> Dict[str, Any]:
     """
     Node 3: Runs a REAL zero-copy federated SQL join in DuckDB across:
-      - Operational Spanner Omni table (SQLite `checkout_commits` — GCP + AWS)
-      - Cross-Cloud Apache Iceberg / Parquet telemetry (`aws_s3_iceberg_envoy.parquet` — 40,000 rows)
+      - Operational Spanner Omni table (SQLite `checkout_commits` — gcp:asia-south1 + gcp:asia-south2)
+      - BigQuery Borderless Apache Iceberg telemetry (`bigquery_iceberg_envoy.parquet` — 40,000 rows)
     """
-    ensure_multicloud_data()
+    ensure_lakehouse_data()
     t0 = time.perf_counter()
     db_path = str(DATA_DIR / "spanner_omni_commits.db")
-    pq_path = str(DATA_DIR / "aws_s3_iceberg_envoy.parquet")
+    pq_path = str(DATA_DIR / "bigquery_iceberg_envoy.parquet")
 
     con = duckdb.connect(":memory:")
     con.execute(f"ATTACH '{db_path}' AS spanner_omni (TYPE sqlite, READ_ONLY)")
@@ -184,17 +187,17 @@ async def multicloud_mcp_sql_node(ctx: Context) -> Dict[str, Any]:
     ]
     hotspot = regional_stats[0]
     finding = {
-        "query_engine": "DuckDB Zero-Copy Federated Join (Spanner Omni + S3 Apache Iceberg Parquet)",
+        "query_engine": "Zero-Copy Federated SQL (Spanner Omni + BigQuery Apache Iceberg Parquet)",
         "query_latency_ms": query_ms,
         "rows_correlated": sum(r["joined_events"] for r in regional_stats),
         "regional_breakdown": regional_stats,
         "root_cause": (
-            f"{hotspot['cloud_region']} Envoy pool capped at {hotspot['envoy_pool_limit']} slots "
+            f"{hotspot['cloud_region']} Cloud Run / Envoy pool capped at {hotspot['envoy_pool_limit']} slots "
             f"triggered {hotspot['total_sync_retries']:,} synchronous retries -> p99={hotspot['p99_commit_ms']}ms "
             f"(while Spanner Omni Software TrueTime stayed healthy at {hotspot['avg_truetime_drift_ms']}ms drift)."
         ),
     }
-    ctx.state["multicloud_finding"] = finding
+    ctx.state["lakehouse_finding"] = finding
     return finding
 
 
@@ -205,7 +208,7 @@ async def swarm_status_node(ctx: Context) -> Dict[str, Any]:
     after = benchmark_policy(SHIPPED_SWARM_POLICY, num_requests=500)
     reduction_pct = round((1.0 - after["p99_ms"] / before["p99_ms"]) * 100.0, 1)
     summary = {
-        "remote_agent_vm": "agy-remote-vm-blr-01 (Laptop Closed 16m Ago — Still Active)",
+        "remote_agent_vm": "agy-remote-vm-blr-01 (Google Cloud VM — Active)",
         "before_patch_p99_ms": before["p99_ms"],
         "after_patch_p99_ms": after["p99_ms"],
         "p99_reduction_pct": reduction_pct,
@@ -233,9 +236,9 @@ def build_monsoonpay_workflow() -> Workflow:
             Edge(from_node=decision_gate_node, to_node=security_quarantine_node, route="quarantine"),
             Edge(from_node=decision_gate_node, to_node=dlp_redaction_node, route="dlp_redact"),
             Edge(from_node=decision_gate_node, to_node=hydrogen_fast_lane_node, route="fast_hydrogen"),
-            Edge(from_node=decision_gate_node, to_node=knowledge_catalog_node, route="multicloud_carbon"),
-            Edge(from_node=knowledge_catalog_node, to_node=multicloud_mcp_sql_node),
-            Edge(from_node=multicloud_mcp_sql_node, to_node=swarm_status_node),
+            Edge(from_node=decision_gate_node, to_node=knowledge_catalog_node, route="lakehouse_carbon"),
+            Edge(from_node=knowledge_catalog_node, to_node=lakehouse_mcp_sql_node),
+            Edge(from_node=lakehouse_mcp_sql_node, to_node=swarm_status_node),
             Edge(from_node=swarm_status_node, to_node=hitl_pr_approval_node),
         ],
     )
@@ -249,32 +252,36 @@ def _extract_hitl_confirmation(ev: Any) -> bool:
     if content and getattr(content, "parts", None):
         for part in content.parts:
             fc = getattr(part, "function_call", None)
-            if fc and getattr(fc, "name", "") in {"adk_request_input", "adk_request_confirmation"}:
+            if fc and getattr(fc, "name", "") == "adk_request_input":
                 return True
     return False
 
 
 async def run_adk_triage(alert_text: str) -> List[Dict[str, Any]]:
-    """Executes the real ADK 2.0 Workflow graph and captures structured trace events."""
-    wf = build_monsoonpay_workflow()
+    """Executes the real ADK 2.14.1 workflow end-to-end and returns structured node trace events."""
+    workflow = build_monsoonpay_workflow()
     session_service = InMemorySessionService()
+    runner = Runner(
+        app_name="monsoonpay_keynote",
+        agent=workflow,
+        session_service=session_service,
+    )
     session = await session_service.create_session(
-        app_name="monsoonpay",
-        user_id="mani",
-        session_id=f"devfest-{int(time.time()*1000)}",
+        app_name="monsoonpay_keynote",
+        user_id="mani_principal_architect",
         state={"alert_text": alert_text},
     )
-    runner = Runner(agent=wf, app_name="monsoonpay", session_service=session_service)
+
     trace: List[Dict[str, Any]] = []
     async for ev in runner.run_async(
-        user_id="mani",
+        user_id="mani_principal_architect",
         session_id=session.id,
         new_message=types.Content(role="user", parts=[types.Part(text=alert_text)]),
     ):
         node_path = getattr(getattr(ev, "node_info", None), "path", None) or getattr(ev, "author", "workflow")
-        out = getattr(ev, "output", None)
-        route = getattr(ev, "route", None) or getattr(getattr(ev, "actions", None), "route", None)
         is_hitl = _extract_hitl_confirmation(ev)
+        route = getattr(ev, "route", None) or getattr(getattr(ev, "actions", None), "route", None)
+        out = getattr(ev, "output", None)
         if out is not None or is_hitl:
             trace.append(
                 {
@@ -283,7 +290,7 @@ async def run_adk_triage(alert_text: str) -> List[Dict[str, Any]]:
                     "output": out,
                     "hitl_pause": is_hitl,
                     "hitl_prompt": (
-                        "ADK 2.0 require_confirmation=True pause: Approve merging verified PR #1?"
+                        "ADK 2.0 `require_confirmation=True` -> Paused via `adk_request_input` awaiting Mani's PR #1 approval"
                         if is_hitl
                         else None
                     ),
