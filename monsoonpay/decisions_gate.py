@@ -11,13 +11,13 @@ Calls the real REST endpoint `POST https://generativelanguage.googleapis.com/v1b
 from __future__ import annotations
 
 import base64
-import json
 import os
 import time
-import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+import httpx
 
 DECISIONS_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/decisions"
 
@@ -109,18 +109,19 @@ def call_decisions_api(
         "input": input_blocks,
         "questions": questions,
     }
-    req = urllib.request.Request(
-        DECISIONS_ENDPOINT,
-        data=json.dumps(payload).encode("utf-8"),
-        headers={
-            "x-goog-api-key": key,
-            "Content-Type": "application/json",
-        },
-        method="POST",
-    )
+    headers = {
+        "x-goog-api-key": key,
+        "Content-Type": "application/json",
+    }
     t0 = time.perf_counter()
-    with urllib.request.urlopen(req, timeout=timeout) as resp:
-        data = json.loads(resp.read().decode("utf-8"))
+    resp = httpx.post(
+        DECISIONS_ENDPOINT,
+        json=payload,
+        headers=headers,
+        timeout=timeout,
+    )
+    resp.raise_for_status()
+    data = resp.json()
     elapsed_ms = int((time.perf_counter() - t0) * 1000)
     data["_latency_ms"] = elapsed_ms
     return data
