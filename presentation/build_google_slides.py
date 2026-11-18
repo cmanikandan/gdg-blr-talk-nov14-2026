@@ -298,9 +298,9 @@ def build_deck_ops(tr: Dict[str, Any], drive: Dict[str, Any]) -> tuple[List[Dict
         {"op": "add-textbox", "slide": "S06", "text": "Match the Element to the Reasoning Horizon", "x": 42, "y": 42, "width": 636, "height": 30, "font_size": 22.5, "bold": True, "color": WHITE, "font_family": "Montserrat"},
     ])
     specs = [
-        ("C", "Gemini 4 Carbon", "Deep Architect & Verifier", "$2 / $10 per 1M  ·  95% Cache Off", "• 1M unified context + Long Decode >64K\n• 0% bypass on Gray Swan prompt injection\n• #1 CursorBench 4.0 multi-file diffs\n• Best for: Architecture, RCA, PR audit", BLUE_LIGHT),
-        ("Ar", "Gemini 4 Argon", "Enterprise Workhorse", "$2 / $10 per 1M  ·  95% Cache Off", "• 50 AA Index · rock-solid consistency\n• Powers Google's /teamwork code rewrites\n• Ideal for large migrations & core services\n• Best for: Modernization, SQL, domain RAG", MUTED),
-        ("H", "Gemini 4 Hydrogen", "Sub-Second Fuel", "$1.50 / $7.50 flat  ·  95% Cache Off", "• 4 Thinking Tiers: low · med · high · xhigh\n• 54 AA Index at xhigh · 2.5x faster vs 3.8F\n• 43/43 PlotlyDataAnalyticsBench\n• Best for: Parallel /swarm workers, tests", GREEN_LIGHT),
+        ("C", "Gemini 4 Carbon", "Deep Architect & Verifier", "$2/$10 per 1M · 95% Cache Off", "• 1M unified context + Long Decode >64K\n• 0% bypass on Gray Swan prompt injection\n• #1 CursorBench 4.0 multi-file diffs\n• Best for: Architecture, RCA, PR audit", BLUE_LIGHT),
+        ("Ar", "Gemini 4 Argon", "Enterprise Workhorse", "$2/$10 per 1M · 95% Cache Off", "• 50 AA Index · rock-solid consistency\n• Powers Google's /teamwork code rewrites\n• Ideal for large migrations & core services\n• Best for: Modernization, SQL, domain RAG", MUTED),
+        ("H", "Gemini 4 Hydrogen", "Sub-Second Fuel", "$1.50/$7.50 flat · 95% Cache Off", "• 4 Thinking Tiers: low · med · high · xhigh\n• 54 AA Index at xhigh · 2.5x faster vs 3.8F\n• 43/43 PlotlyDataAnalyticsBench\n• Best for: Parallel /swarm workers, tests", GREEN_LIGHT),
     ]
     for i, (sym, name, role, price, bullets, col) in enumerate(specs):
         x = 42 + i * 218
@@ -310,7 +310,7 @@ def build_deck_ops(tr: Dict[str, Any], drive: Dict[str, Any]) -> tuple[List[Dict
             {"op": "add-textbox", "slide": "S06", "text": sym, "x": x + 14, "y": 104, "width": 44, "height": 36, "font_size": 21, "bold": True, "color": col, "font_family": "Montserrat", "background_color": BG_DARK, "alignment": "center", "content_alignment": "MIDDLE"},
             {"op": "add-textbox", "slide": "S06", "text": name, "x": x + 64, "y": 104, "width": 128, "height": 20, "font_size": 11, "bold": True, "color": WHITE, "font_family": "Montserrat"},
             {"op": "add-textbox", "slide": "S06", "text": role, "x": x + 64, "y": 125, "width": 128, "height": 18, "font_size": 8.5, "color": MUTED, "font_family": "Roboto Mono"},
-            {"op": "add-textbox", "slide": "S06", "text": price, "x": x + 14, "y": 150, "width": 174, "height": 22, "font_size": 8.5, "bold": True, "color": WHITE, "font_family": "Roboto Mono"},
+            {"op": "add-textbox", "slide": "S06", "text": price, "x": x + 14, "y": 150, "width": 174, "height": 22, "font_size": 8.0, "bold": True, "color": WHITE, "font_family": "Roboto Mono"},
             {"op": "add-shape", "slide": "S06", "shape_type": "RECTANGLE", "x": x + 14, "y": 178, "width": 174, "height": 1, "background_color": "#25334D"},
             {"op": "add-textbox", "slide": "S06", "text": bullets, "x": x + 14, "y": 188, "width": 174, "height": 176, "font_size": 9.8, "color": TEXT_SOFT, "font_family": "Roboto", "line_spacing": 142},
         ])
@@ -325,7 +325,7 @@ def build_deck_ops(tr: Dict[str, Any], drive: Dict[str, Any]) -> tuple[List[Dict
     mod_kpis = [
         ("1,048,576", "Unified Token Budget", "Shared across repo input + reasoning + output. Load entire legacy modules, schemas & tests in one shot.", BLUE_LIGHT),
         ("64K -> 1M", "Long Decode Output", "Interactions API streams past the 64K cap in background — rewriting multi-file packages without truncation.", GREEN_LIGHT),
-        ("95% OFF", "Implicit Context Cache", "Keep 500K tokens of legacy COBOL / Java / C++ warm for $0.075–$0.10/1M per iterative refactor pass.", AMBER_LIGHT),
+        ("95% OFF", "Implicit Context Cache", "Keep 500K tokens of legacy COBOL/Java/C++ warm for $0.075–$0.10/1M per refactor pass.", AMBER_LIGHT),
     ]
     for i, (num, title_k, desc, col) in enumerate(mod_kpis):
         x = 42 + i * 218
@@ -420,7 +420,7 @@ def build_deck_ops(tr: Dict[str, Any], drive: Dict[str, Any]) -> tuple[List[Dict
         ops.extend([
             {"op": "add-shape", "slide": "S09", "shape_type": "RECTANGLE", "x": x, "y": y, "width": 310, "height": 106, "background_color": SURF_DARK},
             {"op": "add-shape", "slide": "S09", "shape_type": "RECTANGLE", "x": x, "y": y, "width": 310, "height": 4, "background_color": col},
-            {"op": "add-textbox", "slide": "S09", "text": metric, "x": x + 14, "y": y + 10, "width": 124, "height": 24, "font_size": 15.5, "bold": True, "color": col, "font_family": "Montserrat"},
+            {"op": "add-textbox", "slide": "S09", "text": metric, "x": x + 14, "y": y + 10, "width": 282, "height": 24, "font_size": 15.5, "bold": True, "color": col, "font_family": "Montserrat"},
             {"op": "add-textbox", "slide": "S09", "text": h, "x": x + 14, "y": y + 34, "width": 282, "height": 18, "font_size": 10.5, "bold": True, "color": WHITE, "font_family": "Montserrat"},
             {"op": "add-textbox", "slide": "S09", "text": desc, "x": x + 14, "y": y + 54, "width": 282, "height": 48, "font_size": 9.2, "color": TEXT_SOFT, "font_family": "Roboto", "line_spacing": 130},
         ])
@@ -428,8 +428,8 @@ def build_deck_ops(tr: Dict[str, Any], drive: Dict[str, Any]) -> tuple[List[Dict
     ops.extend([
         {"op": "add-shape", "slide": "S09", "shape_type": "RECTANGLE", "x": 42, "y": 318, "width": 636, "height": 68, "background_color": "#0F1A2C"},
         {"op": "add-shape", "slide": "S09", "shape_type": "RECTANGLE", "x": 42, "y": 318, "width": 5, "height": 68, "background_color": AMBER},
-        {"op": "add-textbox", "slide": "S09", "text": "WHY /TEAMWORK SUCCEEDS WHERE SINGLE-CHAT AGENTS COLLAPSE", "x": 58, "y": 325, "width": 608, "height": 15, "font_size": 8.8, "bold": True, "color": AMBER_LIGHT, "font_family": "Roboto Mono"},
-        {"op": "add-textbox", "slide": "S09", "text": "1. Context Partitioning by Construction (zero context rot)   ·   2. Fresh Coordinator Handoffs (durable git/file memory)\n3. Independent Falsifiers & Clean-Context Critics (agents verify against unmodified benchmarks & formal proofs — never grade their own homework)", "x": 58, "y": 343, "width": 608, "height": 38, "font_size": 9.5, "color": TEXT_SOFT, "font_family": "Roboto", "line_spacing": 135},
+        {"op": "add-textbox", "slide": "S09", "text": "WHY /TEAMWORK SUCCEEDS WHERE SINGLE-CHAT AGENTS COLLAPSE", "x": 58, "y": 324, "width": 608, "height": 14, "font_size": 8.6, "bold": True, "color": AMBER_LIGHT, "font_family": "Roboto Mono"},
+        {"op": "add-textbox", "slide": "S09", "text": "1. Context Partitioning by Construction (zero context rot)  ·  2. Fresh Coordinator Handoffs (durable git/file memory)\n3. Independent Falsifiers & Clean Critics (verify against unmodified benchmarks & formal proofs — never grade own homework)", "x": 58, "y": 340, "width": 608, "height": 40, "font_size": 9.0, "color": TEXT_SOFT, "font_family": "Roboto", "line_spacing": 126},
         {"op": "set-notes", "slide": "S09", "text": "Share the landmark Nov 13, 2026 Google Research `/teamwork` results: ~800K LoC Zircon microkernel rewritten to Rust booting arm64; 170K LoC libgav1 AV1 decoder rewritten to Rust and then optimized 20–30% FASTER than hand-tuned C++ & assembly; >1 PiB RAM saved & 24% less Borg TPU preemption; 4.09x JAXBench & 2.99x vLLM TPU Pallas kernels. Secret sauce: context partitioning + independent unmodified falsifiers!"},
     ])
 
@@ -448,7 +448,7 @@ def build_deck_ops(tr: Dict[str, Any], drive: Dict[str, Any]) -> tuple[List[Dict
     add_demo_slide(
         ops, imgs, "S11",
         "DEMO 02 · LIVE GEMINI 4 CARBON + ARGON + UNMODIFIED GOLDEN FALSIFIER",
-        f"Legacy O(N²) UPI Monolith -> O(N) Modern Service: {m5['speedup_factor']}x Faster ({m5['legacy_ms']}ms -> {m5['modern_ms']}ms), 0.00 INR Drift",
+        f"Legacy O(N²) UPI Monolith -> O(N) Service: {m5['speedup_factor']}x Faster ({m5['legacy_ms']}ms -> {m5['modern_ms']}ms), 0.00 Drift",
         "demo5_code_modernization_poster.png",
         "▶  Watch 1080p 30fps Demo 2 Code Modernization Recording (Google Drive)",
         vids.get("demo5_code_modernization", drive.get("folder_url", "")),
@@ -473,10 +473,12 @@ def build_deck_ops(tr: Dict[str, Any], drive: Dict[str, Any]) -> tuple[List[Dict
         # Explicit Use Case & Methodology Box (Mani's explicit ask!)
         {"op": "add-shape", "slide": "S13", "shape_type": "RECTANGLE", "x": 42, "y": 60, "width": 636, "height": 68, "background_color": SURF_ALT},
         {"op": "add-shape", "slide": "S13", "shape_type": "RECTANGLE", "x": 42, "y": 60, "width": 4, "height": 68, "background_color": AMBER},
-        {"op": "add-textbox", "slide": "S13", "text": "USE CASE & BENCHMARK METHODOLOGY (HOW THESE NUMBERS WERE MEASURED)", "x": 54, "y": 65, "width": 616, "height": 14, "font_size": 8.2, "bold": True, "color": AMBER_LIGHT, "font_family": "Roboto Mono"},
-        {"op": "add-textbox", "slide": "S13", "text": "Use Case: MonsoonPay incoming SEV-1 payment alert gated on 8 real-time security/routing rules OR 50 simultaneous RBI/PCI-DSS/SOC-2 checks before invoking an agent.\nMethodology: Identical alert payload called live on Gemini API — Decision-1 uses POST /v1beta/decisions (1 forward pass, 0 output tokens); 3.8 Flash (thinking_budget=0) & 4 Hydrogen (thinking_level=low) output strict JSON via generateContent. Cost computed from exact API usage_metadata at Nov 2026 list prices.", "x": 54, "y": 80, "width": 616, "height": 45, "font_size": 8.6, "color": TEXT_SOFT, "font_family": "Roboto", "line_spacing": 124},
+        {"op": "add-textbox", "slide": "S13", "text": "USE CASE & BENCHMARK METHODOLOGY (HOW THESE NUMBERS WERE MEASURED)", "x": 54, "y": 64, "width": 616, "height": 14, "font_size": 8.0, "bold": True, "color": AMBER_LIGHT, "font_family": "Roboto Mono"},
+        {"op": "add-textbox", "slide": "S13", "text": "Use Case: MonsoonPay SEV-1 payment alert gated on 8 security/routing rules OR 50 simultaneous RBI/PCI-DSS checks before agent launch.\nMethodology: Identical payload live on Gemini API — Decision-1 (/v1beta/decisions, 0 output tokens) vs 3.8 Flash (b=0) & 4 Hydrogen (low) strict JSON via generateContent. Costs use exact API usage_metadata at Nov 2026 list prices.", "x": 54, "y": 78, "width": 616, "height": 46, "font_size": 8.0, "color": TEXT_SOFT, "font_family": "Roboto", "line_spacing": 118},
         # Table
         {"op": "add-table", "slide": "S13", "rows": 4, "cols": 7, "id": "TBL_BENCH", "x": 42, "y": 136, "width": 636, "height": 176},
+        {"op": "updateTableColumnProperties", "updateTableColumnProperties": {"objectId": "TBL_BENCH", "columnIndices": [0], "tableColumnProperties": {"columnWidth": {"magnitude": 120, "unit": "PT"}}, "fields": "columnWidth"}},
+        {"op": "updateTableColumnProperties", "updateTableColumnProperties": {"objectId": "TBL_BENCH", "columnIndices": [1, 2, 3, 4, 5, 6], "tableColumnProperties": {"columnWidth": {"magnitude": 86, "unit": "PT"}}, "fields": "columnWidth"}},
     ])
     headers = ["Model", "8Q Latency", "8Q Out", "8Q $/1M", "50Q Latency", "50Q Out", "50Q $/1M"]
     rows_data = [
@@ -490,7 +492,7 @@ def build_deck_ops(tr: Dict[str, Any], drive: Dict[str, Any]) -> tuple[List[Dict
             f"${b50[0]['cost_per_1m_calls_usd']:,.0f} (Base)",
         ],
         [
-            "gemini-3.8-flash (b=0)",
+            "gemini-3.8-flash\n(budget=0)",
             f"{b8[1]['latency_ms']:,}ms ({sp8_f}x)",
             str(b8[1]["billed_output_tokens"]),
             f"${b8[1]['cost_per_1m_calls_usd']:,.0f} ({c8_f}x)",
@@ -499,7 +501,7 @@ def build_deck_ops(tr: Dict[str, Any], drive: Dict[str, Any]) -> tuple[List[Dict
             f"${b50[1]['cost_per_1m_calls_usd']:,.0f} ({r50['cost_savings_vs_3_8_flash']}x)",
         ],
         [
-            "gemini-4-hydrogen (low)",
+            "gemini-4-hydrogen\n(low)",
             f"{b8[2]['latency_ms']:,}ms ({sp8_h}x)",
             str(b8[2]["billed_output_tokens"]),
             f"${b8[2]['cost_per_1m_calls_usd']:,.0f} ({c8_h}x)",
@@ -515,7 +517,7 @@ def build_deck_ops(tr: Dict[str, Any], drive: Dict[str, Any]) -> tuple[List[Dict
         bg = "#0E291A" if is_win else ("#121B2D" if r_idx == 2 else "#172033")
         fg = GREEN_LIGHT if is_win else TEXT_SOFT
         for c_idx, val in enumerate(r_vals):
-            ops.append({"op": "set-table-cell", "table": "TBL_BENCH", "row": r_idx, "col": c_idx, "text": val, "bold": is_win or c_idx == 0, "font_size": 9, "color": fg, "background_color": bg, "font_family": "Roboto Mono" if c_idx > 0 else "Roboto"})
+            ops.append({"op": "set-table-cell", "table": "TBL_BENCH", "row": r_idx, "col": c_idx, "text": val, "bold": is_win or c_idx == 0, "font_size": 8.8, "color": fg, "background_color": bg, "font_family": "Roboto Mono" if c_idx > 0 else "Roboto"})
 
     ops.extend([
         {"op": "add-shape", "slide": "S13", "shape_type": "RECTANGLE", "x": 42, "y": 324, "width": 636, "height": 58, "background_color": "#0F1D2E"},
@@ -529,7 +531,7 @@ def build_deck_ops(tr: Dict[str, Any], drive: Dict[str, Any]) -> tuple[List[Dict
     add_demo_slide(
         ops, imgs, "S14",
         "DEMO 03 · LIVE DECISIONS API ARENA",
-        f"4 Live Events x 8 Qs · 50Q Race ({r50['speedup_vs_3_8_flash']}x vs Flash, {r50['cost_savings_vs_4_hydrogen']}x Cheaper vs Hydrogen) · Multimodal Check",
+        f"4 Live Events x 8Q · 50Q Race ({r50['speedup_vs_3_8_flash']}x vs Flash · {r50['cost_savings_vs_4_hydrogen']}x Cheaper vs Hydrogen) · Multimodal",
         "demo2_decisions_api_arena_poster.png",
         "▶  Watch 1080p 30fps Demo 3 Recording (Google Drive)",
         vids.get("demo2_decisions_api_arena", drive.get("folder_url", "")),
@@ -622,7 +624,7 @@ def build_deck_ops(tr: Dict[str, Any], drive: Dict[str, Any]) -> tuple[List[Dict
     add_blank_slide(ops, "S20", BG_DARK)
     ops.extend([
         {"op": "add-textbox", "slide": "S20", "text": "GOOGLE CLOUD DATA PLATFORM  ·  BUILT FOR PRODUCTION AGENTS", "x": 42, "y": 22, "width": 636, "height": 16, "font_size": 9.5, "bold": True, "color": BLUE_LIGHT, "font_family": "Roboto Mono"},
-        {"op": "add-textbox", "slide": "S20", "text": "Zero-Copy Operational, Lakehouse & Vector Data Access", "x": 42, "y": 42, "width": 636, "height": 30, "font_size": 21.5, "bold": True, "color": WHITE, "font_family": "Montserrat"},
+        {"op": "add-textbox", "slide": "S20", "text": "Zero-Copy Operational, Lakehouse & Vector Data Access", "x": 42, "y": 42, "width": 636, "height": 30, "font_size": 19.0, "bold": True, "color": WHITE, "font_family": "Montserrat"},
     ])
     data_cards = [
         ("TRANSACTIONAL EVERYWHERE", "Spanner Omni (GA)", "Globally consistent distributed SQL with Software TrueTime running natively across Google Cloud, Kubernetes, on-prem, and hybrid clouds.", BLUE),
