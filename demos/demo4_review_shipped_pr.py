@@ -12,11 +12,15 @@ Runs LIVE against:
 from __future__ import annotations
 
 import json
+import os
+import shutil
 import subprocess
 import sys
 import time
 from pathlib import Path
 from typing import Any, Dict
+
+import httpx
 
 from rich.console import Console
 from rich.panel import Panel
@@ -102,30 +106,59 @@ def run_carbon_security_audit(client: Any) -> Dict[str, Any]:
 
 
 def fetch_github_pr() -> Dict[str, Any]:
-    proc = subprocess.run(
-        [
-            "gh",
-            "pr",
-            "view",
-            "1",
-            "--json",
-            "number,title,url,state,headRefName,baseRefName,author",
-        ],
-        cwd=REPO_ROOT,
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-    if proc.returncode == 0 and proc.stdout.strip():
-        try:
-            return json.loads(proc.stdout)
-        except json.JSONDecodeError:
-            pass
+    gh_bin = shutil.which("gh")
+    if gh_bin:
+        proc = subprocess.run(
+            [
+                gh_bin,
+                "pr",
+                "view",
+                "1",
+                "--json",
+                "number,title,url,state,headRefName,baseRefName,author",
+            ],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if proc.returncode == 0 and proc.stdout.strip():
+            try:
+                return json.loads(proc.stdout)
+            except json.JSONDecodeError:
+                pass
+
+    # Fallback: query GitHub REST API directly via httpx (works without `gh` CLI installed)
+    headers = {"Accept": "application/vnd.github+json"}
+    token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    try:
+        resp = httpx.get(
+            "https://api.github.com/repos/cmanikandan/gdg-blr-talk-nov14-2026/pulls/1",
+            headers=headers,
+            timeout=8.0,
+        )
+        if resp.status_code == 200:
+            raw = resp.json()
+            state = "MERGED" if raw.get("merged_at") else str(raw.get("state", "OPEN")).upper()
+            return {
+                "number": raw.get("number", 1),
+                "title": raw.get("title", ""),
+                "url": raw.get("html_url", "https://github.com/cmanikandan/gdg-blr-talk-nov14-2026/pull/1"),
+                "state": state,
+                "headRefName": (raw.get("head") or {}).get("ref", "feat/monsoonpay-swarm-fix"),
+                "baseRefName": (raw.get("base") or {}).get("ref", "main"),
+                "author": {"login": (raw.get("user") or {}).get("login", "cmanikandan")},
+            }
+    except Exception:
+        pass
+
     return {
         "number": 1,
-        "title": "feat(monsoonpay): Spanner Omni circuit breaker + ADK 2.0 lakehouse triage",
+        "title": "feat(monsoonpay): Google Cloud Spanner Omni circuit breaker, ADK 2.14.1 workflow, Decisions API & Argon UPI modernization",
         "url": "https://github.com/cmanikandan/gdg-blr-talk-nov14-2026/pull/1",
-        "state": "OPEN",
+        "state": "MERGED",
         "headRefName": "feat/monsoonpay-swarm-fix",
         "baseRefName": "main",
     }
