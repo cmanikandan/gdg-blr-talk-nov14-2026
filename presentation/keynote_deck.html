@@ -78,7 +78,40 @@
 
     /* ── SLIDE 1 COVER ── */
     .s-cover { display: flex; flex-direction: column; height: 100%; justify-content: space-between; padding: 12px 0; }
-    .elem-row { display: flex; gap: 16px; margin-top: 28px; flex-wrap: wrap; }
+    .cover-top {
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 32px;
+    }
+    .cover-title-col { flex: 1; min-width: 0; }
+    .qr-pair {
+      display: flex; gap: 14px; flex-shrink: 0; align-items: stretch;
+    }
+    .qr-card {
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+      width: 152px; padding: 12px 12px 11px; border-radius: 16px; text-decoration: none;
+      background: var(--surface-2); border: 1px solid var(--hairline-strong);
+      border-top-width: 3px; transition: transform 180ms ease, border-color 180ms ease;
+    }
+    .qr-card:hover { transform: translateY(-2px); }
+    .qr-card.neon { border-top-color: var(--neon); }
+    .qr-card.blue { border-top-color: var(--blue); }
+    .qr-card img {
+      width: 120px; height: 120px; display: block; border-radius: 10px;
+      background: #FFFFFF; padding: 3px; object-fit: contain;
+    }
+    .qr-card strong {
+      display: block; margin-top: 9px; font-family: var(--font-mono);
+      font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--ink);
+    }
+    .qr-card.neon strong { color: var(--neon-bright); }
+    .qr-card.blue strong { color: var(--blue-bright); }
+    .qr-card span {
+      display: block; margin-top: 2px; font-size: 11px; color: var(--ink-muted);
+      white-space: nowrap;
+    }
+    .closing-qrs .qr-card { width: 164px; padding: 12px 12px 10px; }
+    .closing-qrs .qr-card img { width: 132px; height: 132px; }
+    .elem-row { display: flex; gap: 16px; margin-top: 24px; flex-wrap: wrap; }
     .elem-tile {
       width: 122px; padding: 14px 16px; border-radius: 16px;
       background: var(--surface); border: 1px solid var(--hairline-strong);
