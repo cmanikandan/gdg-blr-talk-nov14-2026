@@ -106,17 +106,37 @@ def build_slides(tr: Dict[str, Any]) -> List[Dict[str, Any]]:
         {
             "title": "The Periodic Table of Agents",
             "notes": (
-                "Good morning DevFest Bengaluru! Today is an electric moment to build with Gemini. "
-                "Just days ago Google launched Gemini 4 Neon — frontier-level intelligence built for speed. "
-                "Over the next 40 minutes, I will give you ONE simple mental model and 6 real demos — "
-                "zero fluff, 100% live Google Cloud architecture — whether you shipped your first API call yesterday "
-                "or run banking infrastructure at scale."
+                "ENERGY: Walk out smiling, high energy, scan the whole auditorium.\n"
+                "OPENER: 'Good morning DevFest Bengaluru! How many of you braved Outer Ring Road or Silk Board traffic to be here today? "
+                "Honestly, routing a multi-agent swarm across Google Cloud is easier than routing out of Silk Board at 6 PM!'\n"
+                "HOOK: 'Today is genuinely the most electric week to be building with Gemini. Just days ago Google launched Gemini 4 Neon — "
+                "frontier-level intelligence engineered for speed. Over the next 30 minutes, whether you shipped your very first API call "
+                "yesterday or you run mission-critical UPI banking systems at scale, I am going to leave you with ONE simple mental model "
+                "and 6 real demos — zero fluff, 100% live Google Cloud architecture.'\n"
+                "QR CALLOUT: 'Phones up if you want to bookmark it right now — top-right QR codes go straight to my LinkedIn and the full "
+                "open-source GitHub repo with every slide, trace, and web UI you will see today.'"
             ),
             "html": f"""
             <div class="s-cover">
-              <div class="eyebrow">DEVFEST BENGALURU 2026 · KEYNOTE</div>
-              <h1 class="display-xl">The Periodic Table<br/>of Agents</h1>
-              <p class="lead">Building Production AI Systems with <strong>Gemini 4 Neon</strong> &amp; Google Antigravity</p>
+              <div class="cover-top">
+                <div class="cover-title-col">
+                  <div class="eyebrow">DEVFEST BENGALURU 2026 · KEYNOTE</div>
+                  <h1 class="display-xl">The Periodic Table<br/>of Agents</h1>
+                  <p class="lead">Building Production AI Systems with <strong>Gemini 4 Neon</strong> &amp; Google Antigravity</p>
+                </div>
+                <div class="qr-pair">
+                  <a class="qr-card neon" href="{LINKEDIN_URL}" target="_blank" rel="noopener">
+                    <img src="../assets/diagrams/qr_linkedin.png" alt="QR Code for Mani LinkedIn" />
+                    <strong>LinkedIn</strong>
+                    <span>/in/cmanikandan</span>
+                  </a>
+                  <a class="qr-card blue" href="{GITHUB_URL}" target="_blank" rel="noopener">
+                    <img src="../assets/diagrams/qr_github.png" alt="QR Code for GitHub Repo" />
+                    <strong>GitHub Repo</strong>
+                    <span>Slides &amp; Live Code</span>
+                  </a>
+                </div>
+              </div>
               <div class="elem-row">
                 <div class="elem-tile blue"><span class="en">1</span><span class="es">H</span><span class="el">Hydrogen</span></div>
                 <div class="elem-tile neon"><span class="en">10</span><span class="es">Ne</span><span class="el">Neon</span></div>
@@ -140,9 +160,13 @@ def build_slides(tr: Dict[str, Any]) -> List[Dict[str, Any]]:
         {
             "title": "Full Disclosure — Fresh Badge",
             "notes": (
-                "Hold up your badge! 'Full disclosure: I am so new to Google Cloud that my badge is literally still warm "
-                "from the printer — I asked Gemini 4 Hydrogen how to find the micro-kitchen this morning! "
-                "The good news for you: I built, broke, and live-tested every single demo myself from scratch.'"
+                "PHYSICAL PROP: Hold up your Google badge with a big grin!\n"
+                "JOKE: 'Full disclosure before we talk distributed systems: I am SO new to Google Cloud that my badge is literally "
+                "still warm from the printer! In fact, my very first production agent prompt this morning was asking Gemini 4 Hydrogen "
+                "how to find the best filter coffee micro-kitchen on campus without looking lost.'\n"
+                "WHY THIS MATTERS TO THE AUDIENCE: 'The awesome upside for you? You get zero canned corporate slideware today. "
+                "I built, broke, debugged, and live-tested every single demo and benchmark in this deck from scratch myself — including "
+                "the mistakes that almost tripped me up at 2 AM!'"
             ),
             "html": """
             <div class="s-visual">
@@ -161,10 +185,15 @@ def build_slides(tr: Dict[str, Any]) -> List[Dict[str, Any]]:
         {
             "title": "Introducing Gemini 4 Neon",
             "notes": (
-                "Pause for 3 seconds and let the room soak in that neon glow! "
-                "Introducing Gemini 4 Neon — frontier-level intelligence engineered for fast end-to-end task completion. "
-                "At $3 input and $15 output per million tokens — with a 1-million-token context window and 95% savings "
-                "on cached context ($0.15/1M) — Neon hits the sweet spot developers have been begging for."
+                "PAUSE 3 FULL SECONDS — let the glowing neon glass tubes fill the hall!\n"
+                "STORY: 'For the last year, every architect I talk to in Bengaluru has asked the exact same question: "
+                "Why do I have to choose between a genius model that makes my users stare at a spinner, or a fast model that misses subtle bugs? "
+                "Meet Gemini 4 Neon — frontier-level intelligence engineered for fast end-to-end task completion.'\n"
+                "LITTLE-KNOWN FACT #1 (95% CACHE ECONOMICS): 'Don't skim past that third stat: $3 input / $15 output per million tokens, "
+                "with a full 1-million-token context window — AND cached input drops 95% all the way to $0.15 per million tokens! "
+                "That means keeping your entire microservice repo warm across a 20-turn agent session costs fractions of a cent per turn.'\n"
+                "LITTLE-KNOWN FACT #2 (4 THINKING TIERS): 'You don't even swap models as task complexity shifts — just dial Neon's "
+                "thinking level between low, medium, high, and xhigh per call.'"
             ),
             "html": f"""
             <div class="s-neon-hero">
@@ -204,11 +233,13 @@ def build_slides(tr: Dict[str, Any]) -> List[Dict[str, Any]]:
         {
             "title": "The Periodic Table of Agents",
             "notes": (
-                "If you are new to Gemini 4, forget model numbers — remember elements! "
-                "Hydrogen is fast everyday execution ($1.50/$7.50). Neon — glowing right in the center — is your fast "
-                "frontier orchestrator ($3/$15). Carbon handles the deepest multi-week research; Argon delivers enterprise "
-                "stability. Below them sit two superpowers: Decisions API for instant $0-output guardrails, and Gemini 3.8 Live "
-                "for voice that thinks while speaking."
+                "JOVIAL ANALOGY: 'Remember high school chemistry when we tried to cram the entire periodic table the night before exams? "
+                "Good news — for production AI in 2026 you only need 6 tiles!'\n"
+                "WALK THE TILES: 'Hydrogen (H) is your lightweight rocket fuel for parallel subagents and quick UI tweaks ($1.50/$7.50). "
+                "Neon (Ne) — glowing right in the heart — is your daily frontier orchestrator for planning, legacy rewrites, and cyber review ($3/$15). "
+                "Carbon (C) is the heavyweight researcher for multi-day deep dives; Argon (Ar) is the rock-solid enterprise workhorse. "
+                "And underneath sit two unsung heroes: Decisions API (zero output tokens!) and Gemini 3.8 Live (voice that thinks while speaking).'\n"
+                "PRINCIPAL ARCHITECT WISDOM: 'Amateurs ask: Which single model is best? Principal Architects ask: Which element belongs on THIS exact hop of the pipeline?'"
             ),
             "html": """
             <div class="s-visual">
@@ -227,10 +258,13 @@ def build_slides(tr: Dict[str, Any]) -> List[Dict[str, Any]]:
         {
             "title": "Gemini 4 Neon — Verified Public Benchmarks",
             "notes": (
-                "Every single number on this screen is straight from the public Gemini 4 Neon announcement blog. "
-                "#1 on the Artificial Analysis Coding Agent Index (58.6). 39.0% on SWE-sweep inside Google Antigravity — "
-                "3x higher than running standalone! 90.5% on SEC-bench Pro with 0.0% indirect prompt-injection attack success "
-                "and 99.2% honesty. And listen to Glean's production quote: matched or exceeded Carbon at 3x the speed and 60% of the cost."
+                "CREDIBILITY ANCHOR: 'Every single number on this slide is straight from the public Gemini 4 Neon launch post on blog.google.'\n"
+                "LITTLE-KNOWN GEM (39.0% vs 12.8%): 'Pause on that blue card — this is my favorite engineering insight of the entire year! "
+                "The EXACT SAME Gemini 4 Neon weights score 12.8% on SWE-sweep standalone... and jump 3x to 39.0% inside Google Antigravity! "
+                "Why? Because multi-agent orchestration, isolated sandboxes, and clean context hygiene unlock intelligence that a single-loop prompt wastes!'\n"
+                "SECURITY & REAL-WORLD PROOF: '90.5% on SEC-bench Pro, 70.7% CWE-bench v2, 0.0% Gray Swan indirect prompt-injection bypass, "
+                "and 99.2% honesty — meaning Neon actually admits when it does not know instead of hallucinating a confident lie. "
+                "And read Glean's real production quote: Matched or exceeded Gemini 4 Carbon on quality at 3x speed & 60% cost!'"
             ),
             "html": f"""
             <div class="s-content">
@@ -280,10 +314,13 @@ def build_slides(tr: Dict[str, Any]) -> List[Dict[str, Any]]:
         {
             "title": "One Story. Four Simple Rules.",
             "notes": (
-                "Don't memorize 20 frameworks. Memorize 4 plain-English habits — and let's watch them save a real Indian "
-                "UPI payment platform called MonsoonPay during a Delhi festival flash sale: "
-                "1) Plan Big with Neon. 2) Build Fast in parallel with Hydrogen. 3) Decide Instant with Decisions API. "
-                "4) Review Everything with independent AI security + human approval."
+                "STORYTELLING BEAT: 'Every Bengaluru engineer knows this exact nightmare: It is 8 PM on Diwali Eve. "
+                "Your company — let's call it MonsoonPay, an Indian UPI platform running across Google Cloud Mumbai and Delhi — gets slammed "
+                "by a festival flash sale. Suddenly Delhi checkout latency spikes past 470 milliseconds, AND your aging UPI settlement engine "
+                "is choking on end-of-day reconciliation.'\n"
+                "THE 4-HABIT MENTAL MODEL: 'Forget memorizing 25 agent frameworks. Memorize four plain-English habits: "
+                "1) Plan Big with Gemini 4 Neon. 2) Build Fast in parallel with 3 Hydrogen builders. "
+                "3) Decide Instant at $0 output cost with Decisions API. 4) Ship Safe with Neon Cyber defense plus a human on the Merge button.'"
             ),
             "html": """
             <div class="s-content">
@@ -328,10 +365,14 @@ def build_slides(tr: Dict[str, Any]) -> List[Dict[str, Any]]:
         {
             "title": "Google Antigravity — Neon Plans, Hydrogen Swarms",
             "notes": (
-                "This is the pattern powering Neon's 39.0% SWE-sweep score in Google Antigravity — literally 3x higher than a "
-                "single-agent loop. Gemini 4 Neon acts as the calm senior orchestrator. It delegates parallel coding work to "
-                "three fast Gemini 4 Hydrogen builders in isolated sandboxes with zero merge conflicts, and hands off long runs "
-                "to a Remote Cloud VM."
+                "ANECDOTE: 'Six months ago, running an AI coding agent meant sitting there babysitting a single chat tab while your MacBook fan "
+                "sounded like a Bengaluru-to-Delhi Airbus taking off!'\n"
+                "ARCHITECTURE WALKTHROUGH: 'Look at the 3-stage Antigravity engine: "
+                "Step 1 — Gemini 4 Neon acts as the calm senior architect, mapping exact file ownership so builders never collide. "
+                "Step 2 — /swarm spins up 3 parallel Gemini 4 Hydrogen builders inside isolated git worktree sandboxes (zero merge conflicts!). "
+                "Step 3 — Remote Cloud Agent VM takes over verification so you literally close your laptop and grab dinner.'\n"
+                "LITTLE-KNOWN FACT: 'Git worktrees share one underlying .git object store, so spinning up 3 isolated sandboxes takes milliseconds "
+                "and almost zero disk — a 10-year-old git feature that suddenly became the secret weapon of parallel AI coding!'"
             ),
             "html": """
             <div class="s-visual">
@@ -350,9 +391,13 @@ def build_slides(tr: Dict[str, Any]) -> List[Dict[str, Any]]:
         {
             "title": "Live Demo 1 — Neon + 3× Parallel Hydrogen Swarm",
             "notes": (
-                "Let's watch Demo 1! You can trigger this LIVE inside our Stage Studio Web UI or play the recorded live run "
-                "right here. Live gemini-4-neon reads our payment gateway code, designs a 3-part fix, and spawns 3 real "
-                "isolated sandboxes powered by live gemini-4-hydrogen in parallel — finishing 1.83x faster with 0 conflicts."
+                "STAGE CUE: Play the inline video right here OR flip to Stage Studio Tab 1 and click 'Run Live'!\n"
+                "NARRATE WHAT IS HAPPENING LIVE: 'Watch the left flow diagram: real live gemini-4-neon reads our payment gateway code "
+                f"and designs a 3-part fix — Traffic Capacity, Checkout Reliability, and Database Resilience. Then 3 live gemini-4-hydrogen "
+                f"builders execute simultaneously in isolated sandboxes: {d1_wall_s}s wall-clock instead of {d1_seq_s}s sequential — "
+                f"a {d1_speedup}x real parallel speedup with ZERO merge conflicts!'\n"
+                "JOVIAL PUNCHLINE: 'Notice nobody had to yell across Slack asking Who touched circuit_breaker.py?! Because Neon partitioned "
+                "ownership before a single line was written.'"
             ),
             "html": f"""
             <div class="s-demo">
@@ -384,11 +429,13 @@ def build_slides(tr: Dict[str, Any]) -> List[Dict[str, Any]]:
         {
             "title": "Why 1M Context & Long Decode Unlock Code Modernization",
             "notes": (
-                "Every enterprise in India has 10-year-old banking, billing, or UPI code nobody dares touch. "
-                "Why did older AI rewrites fail? Small context windows forgot edge rules hidden 600 lines away, "
-                "and short outputs truncated mid-file. With Gemini 4 Neon's 1-million-token context and long output decode, "
-                "it reads the whole legacy system, lists every hidden RBI & GST rule, writes the full replacement in one shot, "
-                "and we prove zero rupee drift automatically."
+                "AUDIENCE LAUGH: 'Raise your hand if your company has a 10-year-old billing, banking, or settlement file written by a legend "
+                "who left in 2018... and the only comment at the top says: DO NOT TOUCH — NOBODY KNOWS WHY THIS WORKS!'\n"
+                "WHY OLDER AI FAILED: 'Smaller context windows forgot an RBI compliance rule sitting 600 lines down, and short output limits "
+                "stopped mid-function. In Indian payments, even a 1-paisa rounding bug across 10 million UPI transactions is a boardroom emergency.'\n"
+                "THE GOLDEN FALSIFIER SECRET: 'Here is the enterprise modernization pattern that actually works: BEFORE letting AI touch a line, "
+                "run the old code on realistic transactions and lock its exact SHA-256 output fingerprint as an unmodified Golden Falsifier. "
+                "Then Gemini 4 Neon reads the whole subsystem in 1M context, rewrites it completely, and only passes at 100.000% bit-exact parity!'"
             ),
             "html": """
             <div class="s-content">
@@ -428,10 +475,14 @@ def build_slides(tr: Dict[str, Any]) -> List[Dict[str, Any]]:
         {
             "title": "Live Demo 2 — Gemini 4 Neon Rewrites Legacy UPI Code",
             "notes": (
-                "Watch real live Gemini 4 Neon modernize MonsoonPay's slow legacy UPI settlement engine. "
-                f"It runs 8,000 realistic Indian payments — {b5['legacy_ms']}ms in the old slow code — discovers all 5 hidden "
-                f"RBI & GST rules, writes a clean modern version on attempt 1, and finishes in {b5['modern_ms']}ms: "
-                f"{b5['speedup_factor']}x faster with literally ₹0.00 error across ₹{payout_cr} Crore!"
+                "STAGE CUE: Play inline video or trigger Stage Studio Tab 2.\n"
+                f"WALK THE LIVE PROOF: 'We fed our slow legacy Indian UPI settlement engine 8,000 realistic transactions — "
+                f"{b5['legacy_ms']} ms in the old code. Live Gemini 4 Neon read the entire file in 7.1 seconds, uncovered ALL 5 hidden "
+                f"business rules (including duplicate UTR handling, zero fee under INR 2,000, RBI high-value flagging above INR 50,000, "
+                f"and exact half-up paise GST rounding!), rewrote the whole engine cleanly on Attempt 1 — and dropped runtime to "
+                f"{b5['modern_ms']} ms: {b5['speedup_factor']}x faster with literally ₹0.00 error across ₹{payout_cr} Crore!'\n"
+                "LITTLE-KNOWN FACT: 'Banker's rounding (Python's default round()) vs commercial half-up paise rounding is the #1 bug that breaks "
+                "financial rewrites — Neon caught that subtle trap on its very first pass!'"
             ),
             "html": f"""
             <div class="s-demo">
@@ -439,7 +490,7 @@ def build_slides(tr: Dict[str, Any]) -> List[Dict[str, Any]]:
                 <div class="eyebrow">LIVE DEMO 02 · GEMINI 4 NEON MODERNIZATION</div>
                 <h2>{e(b5['speedup_factor'])}× Faster UPI Engine. ₹0.00 Error.</h2>
                 <div class="mini-kpis">
-                  <div class="mk"><strong class="neon">{e(b5['legacy_ms'])} → {e(b5['modern_ms'])} ms</strong><span>8,000 Indian Payments</span></div>
+                  <div class="mk"><strong class="neon">{round(b5['legacy_ms'])} → {b5['modern_ms']:.1f} ms</strong><span>8,000 Indian Payments</span></div>
                   <div class="mk"><strong class="green">₹{payout_cr} Cr</strong><span>Exact Payout Match</span></div>
                 </div>
                 <ul class="clean-list">
@@ -462,11 +513,16 @@ def build_slides(tr: Dict[str, Any]) -> List[Dict[str, Any]]:
         {
             "title": "Gemini Decisions API — $0 Output Cost Guardrails",
             "notes": (
-                "Here is the single biggest architectural unlock for cost and speed in production agents. "
-                "Most teams waste generative models writing verbose JSON just to answer yes/no routing and security checks. "
-                "Gemini Decisions API skips text generation completely: ONE forward pass scores up to 1,000 rules at $0 output cost! "
-                "And here is exactly how we measured these numbers live: we sent the exact same Delhi outage alert to all 3 APIs "
-                "asking 8 checks and 50 RBI/security checks, timing real wall-clock latency and published token pricing."
+                "PHOTO SLIDE! Pause and let the audience pull out their phones!\n"
+                "JOVIAL HOOK: 'Pop quiz: Why on earth are we paying a genius generative model to slowly type out curly-brace, quote, "
+                "is_prompt_injection, colon, true, comma, newline... just to answer a yes/no security check?! That is like hiring an "
+                "airline captain to stamp parking tickets!'\n"
+                "LITTLE-KNOWN TECHNICAL SECRET: 'Gemini Decisions API (POST /v1beta/decisions) skips autoregressive text generation COMPLETELY! "
+                "It runs ONE single forward pass over your text, image, audio, or PDF and scores up to 1,000 independent boolean, choice, "
+                "and rating questions simultaneously — at ZERO output tokens billed ($0.10/1M input only)!'\n"
+                f"EXPLAIN HOW WE MEASURED THIS LIVE: 'We sent the exact same Delhi outage alert to all three live APIs asking 8 checks and "
+                f"50 RBI/PCI checks in one call: Decisions finished all 50 rules in {d1_50_ms} ms (${d1_50_cost:,.0f}/1M calls) vs "
+                f"{fl_50_ms/1000:.1f}s on 3.8 Flash ({sp50_fl}x slower) and {hy_50_ms/1000:.1f}s on 4 Hydrogen (${hy_50_cost:,.0f}/1M = {cs50_hy}x costlier!).'"
             ),
             "html": f"""
             <div class="s-content">
@@ -523,9 +579,13 @@ def build_slides(tr: Dict[str, Any]) -> List[Dict[str, Any]]:
         {
             "title": "Live Demo 3 — Instant Firewall & 50-Rule Race",
             "notes": (
-                "Watch Decisions API in action! First it blocks prompt hacking and leaked cloud keys before any agent wakes up, "
-                "routes a tiny CSS fix to Hydrogen, and escalates the Delhi outage to Gemini 4 Neon. Then it wins the 50-rule race "
-                f"{sp50_fl}x faster than Flash and {cs50_hy}x cheaper than Hydrogen — AND audits our architecture diagram in {mm2['latency_ms']}ms!"
+                "STAGE CUE: Play inline video or run Stage Studio Tab 3 LIVE!\n"
+                "NARRATE THE 3 ROUNDS: 'Watch this live 3-round arena: "
+                "Round 1 — Before ANY agent wakes up, Decisions API quarantines a prompt-injection attack, redacts a leaked cloud key, "
+                "sends a tiny button tweak to Hydrogen, and escalates our Delhi outage straight to Gemini 4 Neon. "
+                f"Round 2 — Live 50-rule race bars: Decisions finishes in {d1_50_ms}ms while Flash and Hydrogen are still typing JSON! "
+                f"Round 3 — Here is the hidden superpower: Decisions API is MULTIMODAL! We fed it our actual Google Cloud architecture JPEG "
+                f"and it audited it for leaked secrets and clarity in {mm2['latency_ms']}ms — still ZERO output tokens!'"
             ),
             "html": f"""
             <div class="s-demo">
@@ -558,10 +618,12 @@ def build_slides(tr: Dict[str, Any]) -> List[Dict[str, Any]]:
         {
             "title": "Zero-Copy Cloud Data + Built-In Human Approval",
             "notes": (
-                "Agents are only as good as the data and guardrails around them. "
-                "Instead of building brittle nightly ETL copies, Google ADK 2.0 + Knowledge Catalog joins live Spanner Omni "
-                "payments directly with BigQuery Apache Iceberg logs in milliseconds — and pauses automatically at a built-in "
-                "Human Approval Gate so an AI never blindly merges to production."
+                "ANECDOTE: 'Every enterprise data team I meet has 14 fragile nightly ETL pipelines copying the same table into 5 places — "
+                "and by the time an AI agent queries yesterday's data during a live outage, the outage is already trending on X!'\n"
+                "ARCHITECTURE: 'Look how clean Google Cloud's agentic data layer is: Spanner Omni holds live transactional checkouts with "
+                "Software TrueTime clock bounds, while BigQuery Apache Iceberg holds high-volume Envoy network logs — zero data copying! "
+                "Google ADK 2.0 pulls the verified join key straight from Knowledge Catalog so SQL never hallucinates column names, "
+                "and pauses natively at a Built-In Human Approval Gate before any production mutation.'"
             ),
             "html": """
             <div class="s-visual">
@@ -580,9 +642,12 @@ def build_slides(tr: Dict[str, Any]) -> List[Dict[str, Any]]:
         {
             "title": "Live Demo 4 — Voice Check-In + Zero-Copy Join",
             "notes": (
-                "Turn up the auditorium audio for this one! I closed my laptop 10 minutes ago and check in by voice. "
-                f"Gemini 3.8 answers immediately while Google ADK 2.0 joins {sql3_rows:,} live Spanner + BigQuery Iceberg rows "
-                f"in {sql3_ms}ms with zero copying, pinpoints Delhi's 64-slot queue, and pauses right at my confirmation gate."
+                "AUDIO CHECK: Unmute hall speakers!\n"
+                "STORY: 'Imagine I closed my laptop 10 minutes ago, grabbed a filter coffee, and check in with my remote agent by voice. "
+                "Listen closely — zero awkward 5-second dead air! Gemini 3.8 responds immediately while Google ADK 2.14.1 runs in the "
+                f"background, joins {sql3_rows:,} Spanner Omni + BigQuery Apache Iceberg rows in {sql3_ms}ms with ZERO copying, "
+                "pinpoints Delhi's choked 64-slot queue while Software TrueTime stayed rock-solid, and pauses cleanly at ADK's built-in "
+                "require_confirmation=True human checkpoint waiting for Mani to approve PR #1!'"
             ),
             "html": f"""
             <div class="s-demo">
@@ -615,10 +680,13 @@ def build_slides(tr: Dict[str, Any]) -> List[Dict[str, Any]]:
         {
             "title": "Voice AI in Production (A) — Camera + Voice Flight Rebooking",
             "notes": (
-                "Now let's go beyond demos into TWO real production Voice AI systems I built — both embedded right here on the slide! "
-                "First: Gemini 3.8 Live with Extended Thinking. Look at the architecture on the left: 1 FPS live camera + voice streams "
-                "into Gemini 3.8 Live's dual-track brain. While it keeps conversing naturally with the stranded passenger, it runs "
-                "non-blocking BigQuery SQL and Firestore updates in the background to rebook Frankfurt flight LH8942X and calculate EU261 compensation. Hit play!"
+                "TRANSITION: 'Now let's go beyond code demos into TWO real production Voice AI systems I built — both playing right here on the slide!'\n"
+                "EXPLAIN THE LEFT ARCHITECTURE FIRST: 'Think about calling an airline when your Frankfurt flight gets canceled. Traditional voice bots "
+                "freeze in eerie silence for 6 seconds every time they hit a database — so you start yelling HELLO?! ARE YOU THERE?! "
+                "Gemini 3.8 Live solves this with Dual-Track Extended Thinking: 1 FPS live camera reads your physical boarding pass while the voice "
+                "track keeps talking empathetically, and non-blocking tools query BigQuery flights, check EU261 compensation rules, and update Firestore "
+                "in parallel!'\n"
+                "STAGE CUE: Click Play right on the embedded video! Point to the right-hand live BigQuery SQL log executing mid-sentence!"
             ),
             "html": """
             <div class="s-voice-split">
@@ -650,10 +718,14 @@ def build_slides(tr: Dict[str, Any]) -> List[Dict[str, Any]]:
         {
             "title": "Voice AI in Production (B) — Indian Phone-Line Integration",
             "notes": (
-                "And here is the demo Indian enterprises ask me about every single week: REAL Indian phone calls! "
-                "Look at the left: a regular Indian phone call enters Google Cloud Mumbai (Cloud Armor + Load Balancing + Cloud Run), "
-                "supporting BOTH direct Speech-to-Speech and cascaded Listen-Think-Speak pipelines across English, Hindi, Tamil, "
-                "Kannada, Telugu, and Hinglish — with live call state in Firestore. Hit play right on the slide!"
+                "CROWD FAVORITE IN INDIA! 'Here is the #1 question Indian banks, telecoms, and hospitals ask me every single week: "
+                "Browser demos are cute, Mani — can this answer a REAL Indian phone call when my customer switches mid-sentence from English "
+                "to Hindi, Tamil, Kannada, Telugu, or Hinglish?!'\n"
+                "WALK THE LEFT ARCHITECTURE: 'Regular Indian PSTN phone call hits Google Cloud Mumbai (Cloud Armor + Load Balancing + Cloud Run), "
+                "running BOTH Direct Speech-to-Speech (lowest latency, natural barge-in) AND Cascaded Listen-Think-Speak (when regulated banks want "
+                "every intermediate transcript audited) — backed by Firestore call state.'\n"
+                "LITTLE-KNOWN FACT: 'Why do phone-line voice bots break so easily? Phone networks deliver narrowband 8kHz/16kHz audio with background "
+                "traffic horns — zero-resampling framing + instant barge-in cancellation on Cloud Run Mumbai keeps latency crisp! Hit play!'"
             ),
             "html": """
             <div class="s-voice-split">
@@ -685,10 +757,13 @@ def build_slides(tr: Dict[str, Any]) -> List[Dict[str, Any]]:
         {
             "title": "Live Demo 5 — Review Everything (Gemini 4 Neon for Cyber)",
             "notes": (
-                "Our final principle: NEVER let the same agent that wrote the code approve it for production! "
-                f"Load testing proved Delhi worst-case checkout delay fell {drop4}% ({bef4}ms to {aft4}ms), and all {tests4} automated "
-                "tests are green. Yet when we hand the diff to an independent Gemini 4 Neon security reviewer — backed by 90.5% "
-                f"SEC-bench Pro and 0.0% IPI bypass — it STILL catches a real policy gap ({warn_finding}) before a human clicks Merge!"
+                "CLIMAX PUNCHLINE! 'My favorite rule of all — and the one that separates hobbyist AI demos from production Principal Architects: "
+                "NEVER let the same agent that wrote the code approve it for production! That is like letting yourself grade your own exam!'\n"
+                f"WALK THE LIVE PROOF: 'Our 500-user flash-sale load test proved Delhi worst-case checkout delay crashed {drop4}% "
+                f"({bef4}ms down to {aft4}ms), and all {tests4}/{tests4} automated tests are glowing green. 99% of teams hit Merge right here! "
+                "Watch what happened when we handed the exact diff to an independent Gemini 4 Neon security reviewer — backed by 90.5% SEC-bench Pro "
+                f"and 0.0% prompt-injection bypass: Neon returned {verdict4} and caught a real safeguard gap ({warn_finding}) BEFORE a human ever "
+                "clicked Merge! AI writes, tests, and audits — humans ALWAYS own the Merge button.'"
             ),
             "html": f"""
             <div class="s-demo">
@@ -696,7 +771,7 @@ def build_slides(tr: Dict[str, Any]) -> List[Dict[str, Any]]:
                 <div class="eyebrow">LIVE DEMO 05 · GEMINI 4 NEON FOR CYBER DEFENSE</div>
                 <h2>-{e(drop4)}% Delay &amp; {tests4}/{tests4} Green — Still Audited by Neon.</h2>
                 <div class="mini-kpis">
-                  <div class="mk"><strong class="green">{bef4} → {aft4} ms</strong><span>500-User Flash-Sale Load Test</span></div>
+                  <div class="mk"><strong class="green">{round(bef4)} → {aft4:.1f} ms</strong><span>500-User Flash-Sale Load Test</span></div>
                   <div class="mk"><strong class="neon">90.5%</strong><span>SEC-bench Pro · 0.0% IPI</span></div>
                 </div>
                 <ul class="clean-list">
@@ -721,15 +796,20 @@ def build_slides(tr: Dict[str, Any]) -> List[Dict[str, Any]]:
         {
             "title": "Start Building with Gemini 4 Neon Today",
             "notes": (
-                "Thank you, DevFest Bengaluru! Four habits to take back to your teams Monday morning: "
-                "Plan big with Gemini 4 Neon, build fast with parallel Hydrogen swarms, decide instant at $0 output cost "
-                "with Decisions API, and review everything with independent AI cyber audits plus human approval. "
-                "Every single demo, slide, and Stage Web UI is open-source on my GitHub — connect with me on LinkedIn and let's build!"
+                "FINAL STANDING-OVATION BEAT: 'Phones up! Both QR codes are right here — left scans to my LinkedIn, right scans straight to "
+                "every single line of code, slide, live benchmark, and Stage Web UI we ran today!'\n"
+                "RECAP THE 4 MONDAY-MORNING HABITS: '1) Plan, modernize, and cyber-audit with Gemini 4 Neon ($3/$15). "
+                "2) Build fast in parallel with Hydrogen swarms. 3) Put Gemini Decisions API in front of every agent for $0-output guardrails. "
+                "4) Keep humans on the ADK 2.0 Merge button.'\n"
+                "CALLBACK JOKE TO CLOSE: 'Thank you DevFest Bengaluru! Come say hi in the hallway — and if you have strong opinions on where "
+                "to find Bengaluru's best filter coffee near the Google office, just look for the Principal Architect wearing the shiny brand-new badge!'"
             ),
             "html": f"""
             <div class="s-closing">
-              <div class="eyebrow">THANK YOU · DEVFEST BENGALURU 2026</div>
-              <h1 class="display-lg">Plan Big. Build Fast.<br/>Decide Instant. Ship Safe.</h1>
+              <div>
+                <div class="eyebrow">THANK YOU · DEVFEST BENGALURU 2026</div>
+                <h1 class="display-lg">Plan Big. Build Fast.<br/>Decide Instant. Ship Safe.</h1>
+              </div>
 
               <div class="takeaway-row">
                 <div class="tk"><strong>1 · Neon</strong><span>Plan, modernize &amp; audit at $3/$15</span></div>
@@ -739,13 +819,26 @@ def build_slides(tr: Dict[str, Any]) -> List[Dict[str, Any]]:
               </div>
 
               <div class="closing-card">
-                <div>
-                  <div class="speaker-name" style="font-size:24px;">Mani</div>
-                  <div style="color:var(--ink-soft);font-size:15px;margin-top:4px;">Principal Architect, Google Cloud</div>
+                <div class="closing-bio">
+                  <div class="speaker-name" style="font-size:26px;">Mani</div>
+                  <div style="color:var(--ink-soft);font-size:15.5px;margin-top:4px;">Principal Architect, Google Cloud</div>
+                  <div style="color:var(--ink-muted);font-size:13.5px;margin-top:4px;">Come say hi — look for the brand-new badge!</div>
+                  <div class="closing-links" style="margin-top:16px;">
+                    <a class="cta-btn neon" href="{LINKEDIN_URL}" target="_blank" rel="noopener">LinkedIn · /in/cmanikandan</a>
+                    <a class="cta-btn" href="{GITHUB_URL}" target="_blank" rel="noopener">GitHub · Full Code &amp; Stage UI</a>
+                  </div>
                 </div>
-                <div class="closing-links">
-                  <a class="cta-btn neon" href="{LINKEDIN_URL}" target="_blank" rel="noopener">LinkedIn · /in/cmanikandan</a>
-                  <a class="cta-btn" href="{GITHUB_URL}" target="_blank" rel="noopener">GitHub · Full Code &amp; Stage UI</a>
+                <div class="qr-pair closing-qrs">
+                  <a class="qr-card neon" href="{LINKEDIN_URL}" target="_blank" rel="noopener">
+                    <img src="../assets/diagrams/qr_linkedin.png" alt="Scan for Mani LinkedIn" />
+                    <strong>Connect · LinkedIn</strong>
+                    <span>/in/cmanikandan</span>
+                  </a>
+                  <a class="qr-card blue" href="{GITHUB_URL}" target="_blank" rel="noopener">
+                    <img src="../assets/diagrams/qr_github.png" alt="Scan for GitHub Repo" />
+                    <strong>Clone · GitHub</strong>
+                    <span>All Demos &amp; Slides</span>
+                  </a>
                 </div>
               </div>
             </div>
@@ -1027,20 +1120,21 @@ def build_html(slides: List[Dict[str, Any]]) -> str:
     .vs-video .video-box video {{ max-height: 515px; }}
 
     /* ── SLIDE 18 CLOSING ── */
-    .s-closing {{ display: flex; flex-direction: column; justify-content: space-between; height: 100%; padding: 14px 0; }}
-    .takeaway-row {{ display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 28px 0; }}
-    .tk {{ background: var(--surface); border: 1px solid var(--hairline); border-radius: 16px; padding: 20px; }}
-    .tk strong {{ display: block; font-family: var(--font-display); font-size: 19px; color: var(--neon-bright); }}
-    .tk span {{ display: block; font-size: 14px; color: var(--ink-soft); margin-top: 6px; line-height: 1.45; }}
+    .s-closing {{ display: flex; flex-direction: column; justify-content: space-between; height: 100%; padding: 8px 0; gap: 18px; }}
+    .takeaway-row {{ display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 4px 0; }}
+    .tk {{ background: var(--surface); border: 1px solid var(--hairline); border-radius: 16px; padding: 18px 20px; }}
+    .tk strong {{ display: block; font-family: var(--font-display); font-size: 18.5px; color: var(--neon-bright); }}
+    .tk span {{ display: block; font-size: 13.8px; color: var(--ink-soft); margin-top: 6px; line-height: 1.45; }}
 
     .closing-card {{
-      display: flex; align-items: center; justify-content: space-between; gap: 20px;
-      padding: 24px 30px; background: var(--surface); border: 1px solid rgba(255,122,26,0.32);
-      border-radius: 20px;
+      display: flex; align-items: center; justify-content: space-between; gap: 24px;
+      padding: 20px 26px; background: var(--surface); border: 1px solid rgba(255,122,26,0.34);
+      border-radius: 22px;
     }}
+    .closing-bio {{ flex: 1; min-width: 0; }}
     .closing-links {{ display: flex; gap: 12px; flex-wrap: wrap; }}
     .cta-btn {{
-      text-decoration: none; padding: 12px 22px; border-radius: 999px; font-weight: 700; font-size: 15px;
+      text-decoration: none; padding: 11px 20px; border-radius: 999px; font-weight: 700; font-size: 14.5px;
       border: 1px solid var(--hairline-strong); color: var(--ink); background: var(--surface-2);
     }}
     .cta-btn.neon {{
@@ -1064,13 +1158,14 @@ def build_html(slides: List[Dict[str, Any]]) -> str:
 
     .notes-panel {{
       position: fixed; bottom: 60px; left: 50%; transform: translateX(-50%);
-      width: min(920px, 92vw); background: rgba(14,16,23,0.96);
-      border: 1px solid rgba(255,122,26,0.45); border-radius: 16px;
+      width: min(960px, 92vw); max-height: 40vh; overflow-y: auto;
+      background: rgba(14,16,23,0.97);
+      border: 1px solid rgba(255,122,26,0.48); border-radius: 16px;
       padding: 18px 24px; display: none; z-index: 50; box-shadow: 0 24px 60px rgba(0,0,0,0.75);
     }}
     .notes-panel.open {{ display: block; }}
-    .notes-lbl {{ font-family: var(--font-mono); font-size: 11px; color: var(--neon-bright); letter-spacing: 0.12em; margin-bottom: 6px; }}
-    .notes-text {{ font-size: 15.5px; line-height: 1.55; color: var(--ink); }}
+    .notes-lbl {{ font-family: var(--font-mono); font-size: 11px; color: var(--neon-bright); letter-spacing: 0.12em; margin-bottom: 8px; }}
+    .notes-text {{ font-size: 15px; line-height: 1.62; color: var(--ink); white-space: pre-line; }}
 
     .grid-modal {{
       position: fixed; inset: 0; background: rgba(5,6,9,0.94); backdrop-filter: blur(12px);

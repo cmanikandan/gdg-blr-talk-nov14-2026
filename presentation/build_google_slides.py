@@ -18,11 +18,14 @@ import argparse
 import json
 import re
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 DIAG_DIR = ROOT / "assets" / "diagrams"
 VID_DIR = ROOT / "assets" / "videos"
 TRACES_DIR = ROOT / "demos" / "traces"
@@ -172,6 +175,91 @@ def add_header(
         if right_link:
             tb["link"] = right_link
         ops.append(tb)
+
+
+def add_qr_pair_ops(
+    ops: List[Dict[str, Any]],
+    img_jobs: List[Dict[str, Any]],
+    slide_id: str,
+    x_start: float,
+    y_top: float,
+    card_w: float,
+    card_h: float,
+    qr_size: float,
+    gap: float,
+) -> None:
+    """Adds two crisp scannable QR code cards (LinkedIn + GitHub) with clickable captions."""
+    cards = [
+        ("SCAN · LINKEDIN", "/in/cmanikandan", NEON, NEON_BRIGHT, "qr_linkedin.png", LINKEDIN_URL),
+        ("SCAN · GITHUB", "Code & Stage UI", BLUE, BLUE_BRIGHT, "qr_github.png", GITHUB_URL),
+    ]
+    title_fs = 7.4 if card_w < 98 else 8.0
+    sub_fs = 6.5 if card_w < 98 else 7.0
+    for i, (label, sub, accent_bar, label_col, img_name, url) in enumerate(cards):
+        cx = round(x_start + i * (card_w + gap), 2)
+        qr_x = round(cx + (card_w - qr_size) / 2.0, 2)
+        qr_y = round(y_top + 7.5, 2)
+        label_y = round(qr_y + qr_size + 2.5, 2)
+        sub_y = round(label_y + 12.0, 2)
+        ops.extend([
+            {
+                "op": "add-shape",
+                "slide": slide_id,
+                "shape_type": "RECTANGLE",
+                "x": cx,
+                "y": y_top,
+                "width": card_w,
+                "height": card_h,
+                "background_color": SURFACE_2,
+            },
+            {
+                "op": "add-shape",
+                "slide": slide_id,
+                "shape_type": "RECTANGLE",
+                "x": cx,
+                "y": y_top,
+                "width": card_w,
+                "height": 2.5,
+                "background_color": accent_bar,
+            },
+            {
+                "op": "add-textbox",
+                "slide": slide_id,
+                "text": label,
+                "x": cx + 2,
+                "y": label_y,
+                "width": card_w - 4,
+                "height": 13,
+                "font_size": title_fs,
+                "bold": True,
+                "color": label_col,
+                "font_family": "Roboto Mono",
+                "alignment": "center",
+                "link": url,
+            },
+            {
+                "op": "add-textbox",
+                "slide": slide_id,
+                "text": sub,
+                "x": cx + 2,
+                "y": sub_y,
+                "width": card_w - 4,
+                "height": 12,
+                "font_size": sub_fs,
+                "color": MUTED,
+                "font_family": "Roboto",
+                "alignment": "center",
+                "link": url,
+            },
+        ])
+        img_jobs.append({
+            "slide": slide_id,
+            "file": str(DIAG_DIR / img_name),
+            "x": qr_x,
+            "y": qr_y,
+            "width": qr_size,
+            "height": qr_size,
+        })
 
 
 def add_visual_slide(
@@ -592,10 +680,11 @@ def build_deck_ops(
     add_blank_slide(ops, "p", BG, is_first=True)
     ops.extend([
         {"op": "add-shape", "slide": "p", "shape_type": "RECTANGLE", "x": 0, "y": 0, "width": 7, "height": 405, "background_color": NEON},
-        {"op": "add-textbox", "slide": "p", "text": "DEVFEST BENGALURU 2026  ·  KEYNOTE", "x": 44, "y": 28, "width": 632, "height": 18, "font_size": 9.5, "bold": True, "color": NEON_BRIGHT, "font_family": "Roboto Mono"},
-        {"op": "add-textbox", "slide": "p", "text": "The Periodic Table\nof Agents", "x": 44, "y": 50, "width": 632, "height": 94, "font_size": 36, "bold": True, "color": WHITE, "font_family": "Montserrat", "line_spacing": 106},
+        {"op": "add-textbox", "slide": "p", "text": "DEVFEST BENGALURU 2026  ·  KEYNOTE", "x": 44, "y": 28, "width": 430, "height": 18, "font_size": 9.5, "bold": True, "color": NEON_BRIGHT, "font_family": "Roboto Mono"},
+        {"op": "add-textbox", "slide": "p", "text": "The Periodic Table\nof Agents", "x": 44, "y": 50, "width": 430, "height": 94, "font_size": 36, "bold": True, "color": WHITE, "font_family": "Montserrat", "line_spacing": 106},
         {"op": "add-textbox", "slide": "p", "text": "Building Production AI Systems with Gemini 4 Neon & Google Antigravity", "x": 44, "y": 146, "width": 632, "height": 26, "font_size": 13.5, "color": SOFT, "font_family": "Roboto"},
     ])
+    add_qr_pair_ops(ops, imgs, "p", x_start=482.0, y_top=22.0, card_w=92.0, card_h=112.0, qr_size=74.0, gap=10.0)
     tiles = [
         ("1", "H", "HYDROGEN", BLUE_BRIGHT, SURFACE),
         ("10", "Ne", "NEON", NEON_BRIGHT, NEON_BG),
@@ -1145,22 +1234,22 @@ def build_deck_ops(
             {"op": "add-textbox", "slide": "S18", "text": head, "x": tx + 10, "y": 166, "width": 131, "height": 22, "font_size": 11.5, "bold": True, "color": WHITE, "font_family": "Montserrat"},
             {"op": "add-textbox", "slide": "S18", "text": desc, "x": tx + 10, "y": 192, "width": 131, "height": 38, "font_size": 8.6, "color": SOFT, "font_family": "Roboto", "line_spacing": 125},
         ])
-    # Closing speaker card + buttons
+    # Closing speaker card + buttons + large scannable QR pair
     ops.extend([
-        {"op": "add-shape", "slide": "S18", "shape_type": "RECTANGLE", "x": 44, "y": 266, "width": 632, "height": 98, "background_color": SURFACE},
-        {"op": "add-shape", "slide": "S18", "shape_type": "RECTANGLE", "x": 44, "y": 266, "width": 5, "height": 98, "background_color": NEON},
-        {"op": "add-textbox", "slide": "S18", "text": "Mani", "x": 64, "y": 280, "width": 240, "height": 28, "font_size": 20, "bold": True, "color": WHITE, "font_family": "Montserrat"},
-        {"op": "add-textbox", "slide": "S18", "text": "Principal Architect, Google Cloud", "x": 64, "y": 312, "width": 260, "height": 20, "font_size": 11, "color": SOFT, "font_family": "Roboto"},
-        {"op": "add-textbox", "slide": "S18", "text": "Come say hi — look for the brand-new badge!", "x": 64, "y": 334, "width": 260, "height": 18, "font_size": 9.2, "color": MUTED, "font_family": "Roboto"},
+        {"op": "add-shape", "slide": "S18", "shape_type": "RECTANGLE", "x": 44, "y": 252, "width": 632, "height": 134, "background_color": SURFACE},
+        {"op": "add-shape", "slide": "S18", "shape_type": "RECTANGLE", "x": 44, "y": 252, "width": 5, "height": 134, "background_color": NEON},
+        {"op": "add-textbox", "slide": "S18", "text": "Mani", "x": 64, "y": 264, "width": 320, "height": 28, "font_size": 21, "bold": True, "color": WHITE, "font_family": "Montserrat"},
+        {"op": "add-textbox", "slide": "S18", "text": "Principal Architect, Google Cloud", "x": 64, "y": 294, "width": 340, "height": 20, "font_size": 11.2, "color": SOFT, "font_family": "Roboto"},
+        {"op": "add-textbox", "slide": "S18", "text": "Come say hi — look for the brand-new badge!", "x": 64, "y": 315, "width": 340, "height": 18, "font_size": 9.2, "color": MUTED, "font_family": "Roboto"},
         {
             "op": "add-textbox",
             "slide": "S18",
-            "text": "LinkedIn  ·  /in/cmanikandan",
-            "x": 366,
-            "y": 282,
-            "width": 292,
-            "height": 30,
-            "font_size": 10.5,
+            "text": "LinkedIn · /in/cmanikandan",
+            "x": 64,
+            "y": 342,
+            "width": 172,
+            "height": 28,
+            "font_size": 9.0,
             "bold": True,
             "color": "#111319",
             "background_color": NEON_BRIGHT,
@@ -1172,12 +1261,12 @@ def build_deck_ops(
         {
             "op": "add-textbox",
             "slide": "S18",
-            "text": "GitHub  ·  Full Code, Slides & Stage UI",
-            "x": 366,
-            "y": 322,
-            "width": 292,
-            "height": 30,
-            "font_size": 10.0,
+            "text": "GitHub · Code & Stage UI",
+            "x": 244,
+            "y": 342,
+            "width": 172,
+            "height": 28,
+            "font_size": 9.0,
             "bold": True,
             "color": WHITE,
             "background_color": SURFACE_2,
@@ -1186,12 +1275,18 @@ def build_deck_ops(
             "content_alignment": "MIDDLE",
             "link": GITHUB_URL,
         },
-        {
-            "op": "set-notes",
-            "slide": "S18",
-            "text": "Thank you, DevFest Bengaluru! Four habits to take back to your teams Monday morning: Plan big with Gemini 4 Neon, build fast with parallel Hydrogen swarms, decide instant at $0 output cost with Decisions API, and review everything with independent AI cyber audits plus human approval. Every single demo, slide, and Stage Web UI is open-source on my GitHub — connect with me on LinkedIn and come find the Principal Architect with the brand-new badge!",
-        },
+        {"op": "set-notes", "slide": "S18", "text": ""},
     ])
+    add_qr_pair_ops(ops, imgs, "S18", x_start=442.0, y_top=260.0, card_w=104.0, card_h=118.0, qr_size=82.0, gap=12.0)
+
+    # Synchronize all 18 slides with the rich, jovial Principal Architect speaker notes from build_html_keynote.py
+    from presentation.build_html_keynote import build_slides as build_html_slides
+    rich_notes = [s["notes"] for s in build_html_slides(tr)]
+    slide_keys = ["p"] + [f"S{n:02d}" for n in range(2, 19)]
+    notes_by_slide = dict(zip(slide_keys, rich_notes))
+    for op in ops:
+        if op.get("op") == "set-notes" and op.get("slide") in notes_by_slide:
+            op["text"] = notes_by_slide[op["slide"]]
 
     return ops, imgs, video_jobs
 
@@ -1240,14 +1335,111 @@ def github_signed_url(local_path: str) -> str:
     return url
 
 
+def sync_qr_and_notes_in_place(pres_id: str, tr: Dict[str, Any], drive: Dict[str, Any]) -> None:
+    """Updates an existing 18-slide v4 deck in-place with Slide 1 & 18 QR cards + rich speaker notes, then re-exports PDF/PPTX."""
+    from presentation.build_html_keynote import build_slides as build_html_slides
+
+    slides_json = json.loads(run_cmd(["gslides", "readonly", "list-slides", pres_id, "--json"]))
+    slide_ids = [s["objectId"] for s in slides_json]
+    if len(slide_ids) != 18:
+        raise RuntimeError(f"Expected 18 slides on {pres_id}, found {len(slide_ids)}")
+    resolved = {"p": slide_ids[0]}
+    for n in range(2, 19):
+        resolved[f"S{n:02d}"] = slide_ids[n - 1]
+
+    # 1. Inspect Slide 18 bottom panel elements (y > 245pt => translateY > 3111500 EMU) to cleanly replace with bio + QR pair
+    s18_id = resolved["S18"]
+    s18_elems = json.loads(run_cmd(["gslides", "readonly", "list-elements", pres_id, "17", "--json"]))
+    delete_ops: List[Dict[str, Any]] = []
+    for el in s18_elems:
+        ty = el.get("transform", {}).get("translateY", 0)
+        oid = el.get("objectId", "")
+        if oid and ty > 3_100_000:
+            delete_ops.append({"op": "delete-element", "element": oid})
+
+    # Also remove any existing QR elements on Slide 1 (x > 460pt and y < 145pt) if re-running idempotently
+    s01_elems = json.loads(run_cmd(["gslides", "readonly", "list-elements", pres_id, "0", "--json"]))
+    for el in s01_elems:
+        tx = el.get("transform", {}).get("translateX", 0)
+        ty = el.get("transform", {}).get("translateY", 0)
+        oid = el.get("objectId", "")
+        if oid and tx > 5_800_000 and ty < 1_900_000:
+            delete_ops.append({"op": "delete-element", "element": oid})
+
+    patch_ops: List[Dict[str, Any]] = list(delete_ops)
+    qr_imgs: List[Dict[str, Any]] = []
+
+    # 2. Add QR pair to Slide 1 (`p`)
+    add_qr_pair_ops(patch_ops, qr_imgs, "p", x_start=482.0, y_top=22.0, card_w=92.0, card_h=112.0, qr_size=74.0, gap=10.0)
+
+    # 3. Rebuild Slide 18 closing panel with Mani bio + buttons + large QR pair
+    patch_ops.extend([
+        {"op": "add-shape", "slide": s18_id, "shape_type": "RECTANGLE", "x": 44, "y": 252, "width": 632, "height": 134, "background_color": SURFACE},
+        {"op": "add-shape", "slide": s18_id, "shape_type": "RECTANGLE", "x": 44, "y": 252, "width": 5, "height": 134, "background_color": NEON},
+        {"op": "add-textbox", "slide": s18_id, "text": "Mani", "x": 64, "y": 264, "width": 320, "height": 28, "font_size": 21, "bold": True, "color": WHITE, "font_family": "Montserrat"},
+        {"op": "add-textbox", "slide": s18_id, "text": "Principal Architect, Google Cloud", "x": 64, "y": 294, "width": 340, "height": 20, "font_size": 11.2, "color": SOFT, "font_family": "Roboto"},
+        {"op": "add-textbox", "slide": s18_id, "text": "Come say hi — look for the brand-new badge!", "x": 64, "y": 315, "width": 340, "height": 18, "font_size": 9.2, "color": MUTED, "font_family": "Roboto"},
+        {"op": "add-textbox", "slide": s18_id, "text": "LinkedIn · /in/cmanikandan", "x": 64, "y": 342, "width": 172, "height": 28, "font_size": 9.0, "bold": True, "color": "#111319", "background_color": NEON_BRIGHT, "font_family": "Roboto Mono", "alignment": "center", "content_alignment": "MIDDLE", "link": LINKEDIN_URL},
+        {"op": "add-textbox", "slide": s18_id, "text": "GitHub · Code & Stage UI", "x": 244, "y": 342, "width": 172, "height": 28, "font_size": 9.0, "bold": True, "color": WHITE, "background_color": SURFACE_2, "font_family": "Roboto Mono", "alignment": "center", "content_alignment": "MIDDLE", "link": GITHUB_URL},
+    ])
+    add_qr_pair_ops(patch_ops, qr_imgs, s18_id, x_start=442.0, y_top=260.0, card_w=104.0, card_h=118.0, qr_size=82.0, gap=12.0)
+
+    # 4. Update all 18 slides' speaker notes
+    rich_notes = [s["notes"] for s in build_html_slides(tr)]
+    for sid, note_text in zip(slide_ids, rich_notes):
+        patch_ops.append({"op": "set-notes", "slide": sid, "text": note_text})
+
+    # 5. Add the 4 QR code images on top of the cards via signed GitHub URLs
+    for job in qr_imgs:
+        patch_ops.append({
+            "op": "add-image",
+            "slide": job["slide"],
+            "url": github_signed_url(job["file"]),
+            "x": job["x"],
+            "y": job["y"],
+            "width": job["width"],
+            "height": job["height"],
+        })
+
+    with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as tf:
+        json.dump(patch_ops, tf, indent=2)
+        patch_file = tf.name
+    try:
+        print(f"Syncing QR codes (Slides 1 & 18) + rich speaker notes (all 18 slides) on {pres_id}...")
+        run_cmd(["gslides", "mutate", "batch", pres_id, "-f", patch_file, "--json"])
+        print("  ✔ In-place Google Slides QR & speaker notes update complete!")
+    finally:
+        Path(patch_file).unlink(missing_ok=True)
+
+    _, _, video_jobs = build_deck_ops(tr, drive)
+    pdf_path = PRES_DIR / "Periodic_Table_of_Agents_DevFest_Keynote.pdf"
+    pptx_path = PRES_DIR / "Periodic_Table_of_Agents_DevFest_Keynote.pptx"
+    run_cmd(["gslides", "readonly", "export", pres_id, str(pdf_path), "--format", "pdf"])
+    run_cmd(["gslides", "readonly", "export", pres_id, str(pptx_path), "--format", "pptx"])
+    print(f"  ✔ Re-exported PDF ({pdf_path.stat().st_size // 1024} KB) & base PPTX ({pptx_path.stat().st_size // 1024} KB)")
+    embed_videos_into_pptx(pptx_path, video_jobs)
+    print(f"  ✔ Final self-contained PPTX with 7 embedded videos + QRs: {pptx_path.stat().st_size // 1024} KB")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--pres-id", default="", help="Existing Google Slides presentation ID")
     parser.add_argument("--images-only", action="store_true", help="Place images on an existing 18-slide deck and export PDF/PPTX")
+    parser.add_argument("--sync-qr-and-notes", action="store_true", help="Update an existing 18-slide deck in-place with QR cards + rich speaker notes and re-export PDF/PPTX")
     args = parser.parse_args()
 
     tr = load_traces()
     drive = load_drive_links()
+
+    if args.sync_qr_and_notes:
+        if not args.pres_id:
+            meta = json.loads((PRES_DIR / "google_slides_metadata.json").read_text(encoding="utf-8"))
+            pres_id = meta["presentation_id"]
+        else:
+            pres_id = args.pres_id
+        sync_qr_and_notes_in_place(pres_id, tr, drive)
+        return
+
     ops, img_jobs, video_jobs = build_deck_ops(tr, drive)
 
     title = "The Periodic Table of Agents — Gemini 4 Neon Keynote (DevFest Bengaluru 2026)"
