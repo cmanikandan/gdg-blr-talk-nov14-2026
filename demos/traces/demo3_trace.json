@@ -1,25 +1,25 @@
 {
   "demo": "demo3_voice_adk_multicloud",
-  "timestamp_utc": "2026-11-18T05:12:05Z",
+  "timestamp_utc": "2026-11-19T04:49:18Z",
   "live_api": true,
   "adk_version": "2.14.1",
   "alert_incident": "Hey Gemini \u2014 I closed my laptop 12 minutes ago after launching the Antigravity remote swarm. Check our Spanner Omni checkout commits against BigQuery Borderless Apache Iceberg Envoy logs in asia-south2, confirm the root cause, and tell me if Pull Request #1 is ready for my approval.",
-  "adk_total_ms": 5545,
+  "adk_total_ms": 621,
   "adk_trace": [
     {
       "node_path": "monsoonpay_agentic_triage@1/decision_gate_node@1",
       "route": "lakehouse_carbon",
       "output": {
         "mode": "LIVE_GEMINI_DECISION_1",
-        "verdict": "DISPATCH_CARBON_DATA_SWARM",
+        "verdict": "DISPATCH_NEON_DATA_SWARM",
         "route": "lakehouse_carbon",
-        "selected_model": "gemini-4-carbon",
+        "selected_model": "gemini-4-neon",
         "mcp_toolset": "spanner_omni_plus_iceberg",
         "injection_prob": 0.0794,
         "severity_score": 1.62,
-        "latency_ms": 5355,
+        "latency_ms": 415,
         "output_tokens": 0,
-        "cost_usd": 7.93e-05
+        "cost_usd": 8.16e-05
       },
       "hitl_pause": false,
       "hitl_prompt": null
@@ -45,7 +45,7 @@
       "route": null,
       "output": {
         "query_engine": "Zero-Copy Federated SQL (Spanner Omni + BigQuery Apache Iceberg Parquet)",
-        "query_latency_ms": 162.4,
+        "query_latency_ms": 170.2,
         "rows_correlated": 40000,
         "regional_breakdown": [
           {
@@ -96,7 +96,7 @@
   ],
   "lakehouse_finding": {
     "query_engine": "Zero-Copy Federated SQL (Spanner Omni + BigQuery Apache Iceberg Parquet)",
-    "query_latency_ms": 162.4,
+    "query_latency_ms": 170.2,
     "rows_correlated": 40000,
     "regional_breakdown": [
       {
@@ -122,7 +122,7 @@
   },
   "multicloud_finding": {
     "query_engine": "Zero-Copy Federated SQL (Spanner Omni + BigQuery Apache Iceberg Parquet)",
-    "query_latency_ms": 162.4,
+    "query_latency_ms": 170.2,
     "rows_correlated": 40000,
     "regional_breakdown": [
       {
@@ -161,8 +161,8 @@
       "mime_type": "audio/wav",
       "wav_path": "/home/antigravity/cmanikandan/gdg-blr-talk-nov14-2026/demos/traces/audio/turn1_mani_checkin.wav",
       "wav_relpath": "demos/traces/audio/turn1_mani_checkin.wav",
-      "duration_sec": 7.84,
-      "synthesis_latency_ms": 3156,
+      "duration_sec": 7.52,
+      "synthesis_latency_ms": 3265,
       "transcript": "Hey Gemini, my laptop's been closed ten minutes. Did our remote swarm isolate the Delhi checkout spike, and is PR one ready?",
       "speaker": "Mani (Principal Architect, Google Cloud)"
     },
@@ -172,8 +172,8 @@
       "mime_type": "audio/wav",
       "wav_path": "/home/antigravity/cmanikandan/gdg-blr-talk-nov14-2026/demos/traces/audio/turn2_gemini_ack.wav",
       "wav_relpath": "demos/traces/audio/turn2_gemini_ack.wav",
-      "duration_sec": 9.48,
-      "synthesis_latency_ms": 3649,
+      "duration_sec": 11.12,
+      "synthesis_latency_ms": 3816,
       "transcript": "On it, Mani! Your remote Antigravity VM is still running. I'm firing ADK 2.0 right now to join Spanner Omni with your BigQuery Iceberg Envoy logs.",
       "speaker": "Gemini 3.8 Live (Immediate Track)"
     },
@@ -183,9 +183,9 @@
       "mime_type": "audio/wav",
       "wav_path": "/home/antigravity/cmanikandan/gdg-blr-talk-nov14-2026/demos/traces/audio/turn3_gemini_report.wav",
       "wav_relpath": "demos/traces/audio/turn3_gemini_report.wav",
-      "duration_sec": 29.4,
-      "synthesis_latency_ms": 7666,
-      "transcript": "Done! Zero-copy SQL joined 40,000 events in 162 milliseconds. Spanner Omni TrueTime is rock solid at 2.75 milliseconds drift. The culprit is Delhi asia-south2's 64-slot Cloud Run Envoy pool triggering 18,006 retries and a 432 millisecond spike. Your remote swarm patch cuts p99 to 14 milliseconds, and ADK 2.0 is paused at your confirmation gate for PR one.",
+      "duration_sec": 28.72,
+      "synthesis_latency_ms": 7568,
+      "transcript": "Done! Zero-copy SQL joined 40,000 events in 170 milliseconds. Spanner Omni TrueTime is rock solid at 2.75 milliseconds drift. The culprit is Delhi asia-south2's 64-slot Cloud Run Envoy pool triggering 18,006 retries and a 432 millisecond spike. Your remote swarm patch cuts p99 to 14 milliseconds, and ADK 2.0 is paused at your confirmation gate for PR one.",
       "speaker": "Gemini 3.8 Live (ADK Tool Result)"
     }
   ]

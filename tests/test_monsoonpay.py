@@ -124,12 +124,12 @@ def test_decisions_policy_gate_routes_and_zero_output_cost():
     v_mc = apply_policy_gate(
         _mock_decisions_response(
             mc=0.94,
-            model="gemini-4-carbon",
+            model="gemini-4-neon",
             mcp="spanner_omni_plus_iceberg",
             sev=2.9,
         )
     )
-    assert v_mc.verdict == "DISPATCH_CARBON_DATA_SWARM"
+    assert v_mc.verdict == "DISPATCH_NEON_DATA_SWARM"
     assert v_mc.adk_route == "lakehouse_carbon"
 
     v_fast = apply_policy_gate(_mock_decisions_response())

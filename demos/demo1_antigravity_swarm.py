@@ -41,27 +41,33 @@ def _extract_usage(resp: Any) -> Dict[str, int]:
     }
 
 
-async def run_carbon_architect(client: Any) -> Dict[str, Any]:
-    """Phase 1: Plan Big with `gemini-4-carbon`."""
+async def run_neon_orchestrator(client: Any) -> Dict[str, Any]:
+    """Phase 1: Plan Big & Fast with `gemini-4-neon` Orchestrator."""
     from google.genai import types
 
     cb_code = (REPO_ROOT / "monsoonpay" / "circuit_breaker.py").read_text(encoding="utf-8")
     prompt = (
-        "You are a Principal Cloud Architect at Google Cloud using Antigravity Orchestrator.\n"
-        "Incident: MonsoonPay checkouts in Google Cloud asia-south2 (Delhi) are spiking to p99=430ms during a festival flash sale because "
-        "Cloud Run / Envoy max_pending_requests=64 triggers synchronous retry storms, while Spanner Omni Software TrueTime and asia-south1 (Mumbai) stay healthy (<3ms drift).\n"
-        "Review this module and output STRICT JSON (no markdown fences) matching:\n"
-        '{"architecture_summary": str, "risk_assessment": str, "workers": ['
-        '{"id": "W1", "branch": str, "element": "gemini-4-hydrogen", "thinking_level": "low", "owner": str, "task": str, "target_file": str},'
-        '{"id": "W2", "branch": str, "element": "gemini-4-hydrogen", "thinking_level": "low", "owner": str, "task": str, "target_file": str},'
-        '{"id": "W3", "branch": str, "element": "gemini-4-hydrogen", "thinking_level": "high", "owner": str, "task": str, "target_file": str}'
+        "You are an AI Architect powered by Gemini 4 Neon inside Google Antigravity.\n"
+        "Scenario: During a Diwali flash sale in Delhi, MonsoonPay checkouts slowed down to ~430ms because a small "
+        "server queue got overloaded with retries, while Mumbai stayed fast (~16ms).\n"
+        "Inspect the code below and output STRICT JSON (no markdown fences) written in SIMPLE, CLEAR PLAIN ENGLISH "
+        "that both business leaders and software engineers immediately understand.\n"
+        "STRICT STYLE RULES:\n"
+        "- NEVER mention internal Python variable names, class names, or code symbols in `architecture_summary`, `key_risks`, or `plain_goal`.\n"
+        "- `architecture_summary`: ONE crisp sentence (max 24 words) explaining the problem and the 3-part fix.\n"
+        "- `key_risks`: array of EXACTLY 2 short plain-English warnings (max 14 words each) that Neon caught before coding.\n"
+        "- `workers`: EXACTLY 3 parallel `gemini-4-hydrogen` tasks with a clear `owner` (2-4 words), `plain_goal` (max 12 words, no jargon), `branch`, `task`, and `target_file`.\n"
+        'Schema: {"architecture_summary": str, "key_risks": [str, str], "risk_assessment": str, "workers": ['
+        '{"id": "W1", "branch": str, "element": "gemini-4-hydrogen", "thinking_level": "low", "owner": str, "plain_goal": str, "task": str, "target_file": str},'
+        '{"id": "W2", "branch": str, "element": "gemini-4-hydrogen", "thinking_level": "low", "owner": str, "plain_goal": str, "task": str, "target_file": str},'
+        '{"id": "W3", "branch": str, "element": "gemini-4-hydrogen", "thinking_level": "medium", "owner": str, "plain_goal": str, "task": str, "target_file": str}'
         "]}\n\n"
         f"Current monsoonpay/circuit_breaker.py:\n```python\n{cb_code}\n```"
     )
     t0 = time.perf_counter()
     resp = await asyncio.to_thread(
         client.models.generate_content,
-        model="gemini-4-carbon",
+        model="gemini-4-neon",
         contents=prompt,
         config=types.GenerateContentConfig(
             thinking_config=types.ThinkingConfig(thinking_level="low"),
@@ -75,41 +81,48 @@ async def run_carbon_architect(client: Any) -> Dict[str, Any]:
         plan_json = json.loads(plan_text)
     except json.JSONDecodeError:
         plan_json = {
-            "architecture_summary": plan_text[:280],
-            "risk_assessment": "Medium — production Cloud Run / Envoy connection pool and Spanner Omni TrueTime fallback policy.",
+            "architecture_summary": "Expand Delhi's checkout queue 8x, add automatic overload protection, and verify speed with a 500-user flash-sale test.",
+            "key_risks": [
+                "Current load test does not simulate enough traffic to trigger automatic failover protection.",
+                "Recovery health checks need a cooldown timer so traffic bursts do not overwhelm recovering servers.",
+            ],
+            "risk_assessment": "High-impact checkout recovery — requires automated load verification and human review.",
             "workers": [
                 {
                     "id": "W1",
-                    "branch": "swarm/w1-envoy-breaker",
+                    "branch": "swarm/w1-gateway-capacity",
                     "element": "gemini-4-hydrogen",
                     "thinking_level": "low",
-                    "owner": "Envoy & Spanner Policy Worker",
+                    "owner": "Traffic & Capacity",
+                    "plain_goal": "Expand Delhi checkout queue 8x and add smooth retry limits",
                     "task": "Emit Cloud Run / Envoy cluster YAML with max_pending_requests=512 and jittered retry budget.",
                     "target_file": "envoy_pool_patch.yaml",
                 },
                 {
                     "id": "W2",
-                    "branch": "swarm/w2-iceberg-sql",
+                    "branch": "swarm/w2-failover-safety",
                     "element": "gemini-4-hydrogen",
                     "thinking_level": "low",
-                    "owner": "Lakehouse SQL Worker",
-                    "task": "Write zero-copy BigQuery / DuckDB SQL correlating Spanner Omni with BigQuery Borderless Apache Iceberg telemetry.",
-                    "target_file": "lakehouse_correlate.sql",
+                    "owner": "Smart Failover",
+                    "plain_goal": "Route overflow reads safely to healthy Mumbai backup servers",
+                    "task": "Write concise Python failover helper for Spanner Omni bounded stale reads under 7ms clock sync.",
+                    "target_file": "spanner_failover.py",
                 },
                 {
                     "id": "W3",
-                    "branch": "swarm/w3-chaos-verifier",
+                    "branch": "swarm/w3-flashsale-tests",
                     "element": "gemini-4-hydrogen",
-                    "thinking_level": "high",
-                    "owner": "Chaos & TrueTime Verifier Worker",
-                    "task": "Write pytest chaos test validating <20ms p99 and TrueTime >7ms rejection.",
+                    "thinking_level": "medium",
+                    "owner": "Flash-Sale Tests",
+                    "plain_goal": "Prove 500-user traffic spikes stay fast under 20ms",
+                    "task": "Write concise pytest load test verifying checkout stays under 20ms and rejects bad clock drift.",
                     "target_file": "test_swarm_chaos.py",
                 },
             ],
         }
 
     return {
-        "model": "gemini-4-carbon",
+        "model": "gemini-4-neon",
         "thinking_level": "low",
         "latency_ms": elapsed_ms,
         "usage": _extract_usage(resp),
@@ -133,10 +146,10 @@ async def run_hydrogen_worker(
         level = "low"
     target_name = Path(worker.get("target_file", f"{wid.lower()}_patch.txt")).name
     prompt = (
-        f"You are Antigravity `/swarm` Worker {wid} ({worker.get('owner', 'Engineer')}) running inside an isolated git worktree.\n"
+        f"You are Antigravity `/swarm` Worker {wid} ({worker.get('owner', 'Engineer')}) running inside an isolated sandbox.\n"
         f"Task: {worker.get('task')}\n"
         f"Target artifact filename: {target_name}\n"
-        "Output ONLY concise, production-ready artifact content (max 24 lines, no prose wrapper)."
+        "Output ONLY concise, production-ready artifact content (max 20 lines, no prose wrapper)."
     )
     t0 = time.perf_counter()
     resp = await asyncio.to_thread(
@@ -145,7 +158,7 @@ async def run_hydrogen_worker(
         contents=prompt,
         config=types.GenerateContentConfig(
             thinking_config=types.ThinkingConfig(thinking_level=level),
-            max_output_tokens=8192,
+            max_output_tokens=4096,
         ),
     )
     elapsed_ms = int((time.perf_counter() - t0) * 1000)
@@ -175,6 +188,7 @@ async def run_hydrogen_worker(
     return {
         "worker_id": wid,
         "owner": worker.get("owner", wid),
+        "plain_goal": worker.get("plain_goal") or worker.get("task", "")[:90],
         "branch": worker.get("branch", f"swarm/{wid.lower()}"),
         "model": "gemini-4-hydrogen",
         "thinking_level": level,
@@ -191,27 +205,26 @@ async def run_hydrogen_worker(
 async def run_demo1() -> Dict[str, Any]:
     console.print(
         Panel.fit(
-            "[bold cyan]DEMO 1 · PLAN BIG, EXECUTE FAST[/bold cyan]\n"
-            "Gemini 4 Carbon Architect -> Parallel Gemini 4 Hydrogen `/swarm` (Real Git Worktrees) -> Remote Agent Handoff",
-            border_style="cyan",
+            "[bold orange1]DEMO 1 · PLAN BIG, EXECUTE FAST[/bold orange1]\n"
+            "Gemini 4 Neon Orchestrator -> 3 Parallel Gemini 4 Hydrogen `/swarm` Workers -> Cloud VM Handoff",
+            border_style="orange1",
         )
     )
     client = get_genai_client()
 
-    # 1. Plan Big with Gemini 4 Carbon
-    console.print("[bold yellow]▶ Phase 1:[/bold yellow] Calling LIVE [bold]gemini-4-carbon[/bold] to architect the Google Cloud regional recovery...")
-    carbon_res = await run_carbon_architect(client)
-    workers = carbon_res["plan"].get("workers", [])[:3]
+    # 1. Plan Big & Fast with Gemini 4 Neon
+    console.print("[bold yellow]▶ Phase 1:[/bold yellow] Calling LIVE [bold]gemini-4-neon[/bold] to plan the Delhi flash-sale recovery...")
+    neon_res = await run_neon_orchestrator(client)
+    workers = neon_res["plan"].get("workers", [])[:3]
     console.print(
-        f"  [green]✔ Carbon Architect finished in {carbon_res['latency_ms']} ms[/green] "
-        f"(in={carbon_res['usage']['input_tokens']} tok, out={carbon_res['usage']['output_tokens']} tok, "
-        f"thoughts={carbon_res['usage']['thoughts_tokens']} tok)"
+        f"  [green]✔ Neon Orchestrator finished in {neon_res['latency_ms']} ms[/green] "
+        f"(in={neon_res['usage']['input_tokens']} tok, out={neon_res['usage']['output_tokens']} tok)"
     )
 
     # 2. Create 3 REAL isolated `git worktree` sandboxes in /tmp and execute 3 parallel Hydrogen workers
     console.print(
-        f"[bold yellow]▶ Phase 2:[/bold yellow] Spawning [bold]{len(workers)} isolated git worktrees[/bold] "
-        "and fanning out parallel LIVE [bold]gemini-4-hydrogen[/bold] workers..."
+        f"[bold yellow]▶ Phase 2:[/bold yellow] Spawning [bold]{len(workers)} isolated sandboxes[/bold] "
+        "and launching 3 parallel LIVE [bold]gemini-4-hydrogen[/bold] builders..."
     )
     wt_root = Path(tempfile.mkdtemp(prefix="agy_swarm_wt_"))
     wt_paths: List[Path] = []
@@ -257,7 +270,7 @@ async def run_demo1() -> Dict[str, Any]:
     )
     pytest_ms = int((time.perf_counter() - t_test) * 1000)
 
-    table = Table(title="Live Antigravity `/swarm` Parallel Execution Results")
+    table = Table(title="Live Antigravity `/swarm` Parallel Execution Results (Neon -> 3x Hydrogen)")
     table.add_column("Worker", style="cyan bold")
     table.add_column("Model / Tier")
     table.add_column("Artifact")
@@ -282,10 +295,11 @@ async def run_demo1() -> Dict[str, Any]:
         "timestamp_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "live_api": True,
         "remote_agent_cmd": "agy --remote-agent --repo cmanikandan/gdg-blr-talk-nov14-2026 --plan .antigravity/plan.json",
-        "remote_vm": "agy-remote-vm-blr-01 (Google Cloud Run / GKE Sandbox — Laptop Can Close Now!)",
-        "carbon_architect": carbon_res,
+        "remote_vm": "Google Cloud Remote Sandbox — Close Your Laptop, Agents Keep Shipping",
+        "neon_orchestrator": neon_res,
+        "carbon_architect": neon_res,
         "hydrogen_swarm": {
-            "worktree_isolation": "git worktree add --detach (zero merge conflict across 3 branches)",
+            "worktree_isolation": "3 isolated code sandboxes (0 merge conflicts)",
             "wall_clock_ms": swarm_wall_ms,
             "sequential_sum_ms": sequential_sum_ms,
             "parallel_speedup": parallel_speedup,

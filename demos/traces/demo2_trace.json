@@ -1,6 +1,6 @@
 {
   "demo": "demo2_decisions_arena",
-  "timestamp_utc": "2026-11-18T05:15:42Z",
+  "timestamp_utc": "2026-11-19T04:50:28Z",
   "live_api": true,
   "use_case": "MonsoonPay Payment Guardrail & Compliance Gate: evaluates every incoming SEV-1 alert, receipt, or support ticket against 8 real-time routing/security gates OR 50 RBI/PCI-DSS/SOC-2 compliance checks in a single request before dispatching an expensive coding or workflow agent.",
   "methodology": "Apples-to-apples live API calls on the identical SEV-1 Google Cloud checkout incident payload: (1) gemini-decision-1 calls POST /v1beta/decisions with all 8 or 50 questions in one forward pass (0 decoded output tokens); (2) gemini-3.8-flash (thinking_budget=0) and gemini-4-hydrogen (thinking_level=low) return strict JSON via generateContent. Wall-clock latency and billed input/output+thought tokens are measured directly from API usage_metadata at Nov 2026 published list pricing.",
@@ -16,10 +16,10 @@
       "injection_prob": 0.99,
       "secret_prob": 0.0245,
       "severity_score": 2.33,
-      "latency_ms": 4458,
-      "input_tokens": 783,
+      "latency_ms": 1268,
+      "input_tokens": 806,
       "output_tokens": 0,
-      "cost_usd": 7.83e-05
+      "cost_usd": 8.06e-05
     },
     {
       "id": "EVT-02",
@@ -27,15 +27,15 @@
       "input_preview": "Bug report screenshot transcript from staging worker: connection failed while exporting Cloud Storage bucket with GCP_SA_PRIVATE_KEY=-----BE",
       "verdict": "REDACT_AND_ROTATE_SECRET",
       "adk_route": "dlp_redact",
-      "selected_model": "gemini-4-hydrogen",
+      "selected_model": "gemini-4-neon",
       "mcp_toolset": "none_code_only",
       "injection_prob": 0.0114,
       "secret_prob": 0.9759,
       "severity_score": 2.62,
-      "latency_ms": 3900,
-      "input_tokens": 801,
+      "latency_ms": 376,
+      "input_tokens": 824,
       "output_tokens": 0,
-      "cost_usd": 8.01e-05
+      "cost_usd": 8.24e-05
     },
     {
       "id": "EVT-03",
@@ -48,26 +48,26 @@
       "injection_prob": 0.01,
       "secret_prob": 0.01,
       "severity_score": 0.04,
-      "latency_ms": 279,
-      "input_tokens": 774,
+      "latency_ms": 2088,
+      "input_tokens": 797,
       "output_tokens": 0,
-      "cost_usd": 7.74e-05
+      "cost_usd": 7.97e-05
     },
     {
       "id": "EVT-04",
       "label": "Regional Checkout Outage",
       "input_preview": "SEV-1 PagerDuty Alert: MonsoonPay checkout p99 commit latency spiked to 432ms in Google Cloud asia-south2 (Delhi) (asia-south1 Mumbai health",
-      "verdict": "DISPATCH_CARBON_DATA_SWARM",
+      "verdict": "DISPATCH_NEON_DATA_SWARM",
       "adk_route": "lakehouse_carbon",
-      "selected_model": "gemini-4-carbon",
+      "selected_model": "gemini-4-neon",
       "mcp_toolset": "spanner_omni_plus_iceberg",
       "injection_prob": 0.01,
       "secret_prob": 0.01,
       "severity_score": 2.17,
-      "latency_ms": 252,
-      "input_tokens": 805,
+      "latency_ms": 253,
+      "input_tokens": 828,
       "output_tokens": 0,
-      "cost_usd": 8.05e-05
+      "cost_usd": 8.28e-05
     }
   ],
   "round_b_head_to_head": {
@@ -77,39 +77,39 @@
         "thinking_mode": "single-forward-pass (0 decoding)",
         "questions": 8,
         "answered_keys": 8,
-        "latency_ms": 290,
-        "input_tokens": 805,
+        "latency_ms": 240,
+        "input_tokens": 828,
         "output_tokens": 0,
         "thoughts_tokens": 0,
         "billed_output_tokens": 0,
-        "cost_usd": 8.05e-05,
-        "cost_per_1m_calls_usd": 80.5
+        "cost_usd": 8.28e-05,
+        "cost_per_1m_calls_usd": 82.8
       },
       {
         "model": "gemini-3.8-flash",
         "thinking_mode": "thinking_budget=0",
         "questions": 8,
         "answered_keys": 8,
-        "latency_ms": 2921,
+        "latency_ms": 3507,
         "input_tokens": 348,
-        "output_tokens": 111,
+        "output_tokens": 108,
         "thoughts_tokens": 0,
-        "billed_output_tokens": 111,
-        "cost_usd": 0.0003819,
-        "cost_per_1m_calls_usd": 381.9
+        "billed_output_tokens": 108,
+        "cost_usd": 0.0003744,
+        "cost_per_1m_calls_usd": 374.4
       },
       {
         "model": "gemini-4-hydrogen",
         "thinking_mode": "low",
         "questions": 8,
         "answered_keys": 8,
-        "latency_ms": 7817,
+        "latency_ms": 2727,
         "input_tokens": 441,
         "output_tokens": 108,
-        "thoughts_tokens": 625,
-        "billed_output_tokens": 733,
-        "cost_usd": 0.006159,
-        "cost_per_1m_calls_usd": 6159.0
+        "thoughts_tokens": 565,
+        "billed_output_tokens": 673,
+        "cost_usd": 0.005709,
+        "cost_per_1m_calls_usd": 5709.0
       }
     ],
     "benchmark_50q": [
@@ -118,7 +118,7 @@
         "thinking_mode": "single-forward-pass (0 decoding)",
         "questions": 50,
         "answered_keys": 50,
-        "latency_ms": 270,
+        "latency_ms": 283,
         "input_tokens": 2707,
         "output_tokens": 0,
         "thoughts_tokens": 0,
@@ -135,19 +135,19 @@
             0.983
           ],
           [
-            "q18_latency_sla_breach",
-            0.98
-          ],
-          [
             "q22_iceberg_lakehouse",
             0.98
           ],
           [
-            "q19_delhi_region_affected",
-            0.979
+            "q18_latency_sla_breach",
+            0.98
           ],
           [
             "q16_sev1_outage",
+            0.979
+          ],
+          [
+            "q19_delhi_region_affected",
             0.979
           ]
         ]
@@ -157,7 +157,7 @@
         "thinking_mode": "thinking_budget=0",
         "questions": 50,
         "answered_keys": 50,
-        "latency_ms": 5479,
+        "latency_ms": 6347,
         "input_tokens": 1364,
         "output_tokens": 755,
         "thoughts_tokens": 0,
@@ -170,20 +170,20 @@
         "thinking_mode": "low",
         "questions": 50,
         "answered_keys": 50,
-        "latency_ms": 7693,
+        "latency_ms": 4947,
         "input_tokens": 1433,
         "output_tokens": 742,
-        "thoughts_tokens": 899,
-        "billed_output_tokens": 1641,
-        "cost_usd": 0.014457,
-        "cost_per_1m_calls_usd": 14457.0
+        "thoughts_tokens": 958,
+        "billed_output_tokens": 1700,
+        "cost_usd": 0.0148995,
+        "cost_per_1m_calls_usd": 14899.5
       }
     ],
     "live_ratios_50q": {
-      "speedup_vs_3_8_flash": 20.3,
-      "speedup_vs_4_hydrogen": 28.5,
+      "speedup_vs_3_8_flash": 22.4,
+      "speedup_vs_4_hydrogen": 17.5,
       "cost_savings_vs_3_8_flash": 8.5,
-      "cost_savings_vs_4_hydrogen": 53.4
+      "cost_savings_vs_4_hydrogen": 55.0
     },
     "published_100q_reference": {
       "source": "Google Gemini Decisions API Benchmark (Nov 2026, 100 Qs single request)",
@@ -195,52 +195,52 @@
     }
   },
   "round_c_multimodal": {
-    "image_file": "assets/diagrams/07_gcp_data_cloud.jpg",
-    "latency_ms": 8063,
-    "input_tokens": 694,
+    "image_file": "assets/diagrams/07_gcp_data_cloud_v4.jpg",
+    "latency_ms": 440,
+    "input_tokens": 708,
     "output_tokens": 0,
     "answers": {
-      "contains_spanner_and_iceberg": {
-        "confidence": 0.9458286107400232,
-        "noul": 0.9458286107400232,
+      "contains_sensitive_passwords": {
+        "confidence": 0.961546797477082,
+        "noul": 0.038453202522917944,
         "type": "noul"
       },
-      "diagram_style": {
-        "confidence": 0.999025766172947,
-        "choice": "illustrated_architecture_diagram",
-        "probabilities": {
-          "handwritten_whiteboard_photo": 0.0007048290887176778,
-          "raw_cli_terminal_screenshot": 0.0002694047383352174,
-          "illustrated_architecture_diagram": 0.999025766172947
-        },
-        "type": "choice"
+      "contains_spanner_and_iceberg": {
+        "confidence": 0.9540672960644512,
+        "noul": 0.9540672960644512,
+        "type": "noul"
       },
       "executive_keynote_clarity": {
-        "confidence": 0.644831965980205,
-        "score": 2.51964228526162,
+        "confidence": 0.796688033471795,
+        "score": 2.753469447576139,
         "probabilities": {
-          "3": 0.644831965980205,
-          "1": 0.07302748176952632,
-          "2": 0.25605945277573944,
-          "0": 0.026081099474529357
+          "0": 0.005859396510429267,
+          "1": 0.03149979287479749,
+          "2": 0.16595277714297832,
+          "3": 0.796688033471795
         },
         "legend": {
-          "0": "Unreadable or garbled text.",
-          "3": "Crisp, structured, keynote-grade visual architecture.",
           "2": "Clear diagram suitable for documentation.",
-          "1": "Cluttered and hard to parse quickly."
+          "0": "Unreadable or garbled text.",
+          "1": "Cluttered and hard to parse quickly.",
+          "3": "Crisp, structured, keynote-grade visual architecture."
         },
         "type": "score"
       },
       "depicts_google_cloud_data_architecture": {
-        "confidence": 0.9073915302492127,
-        "noul": 0.9073915302492127,
+        "confidence": 0.9160577872148944,
+        "noul": 0.9160577872148944,
         "type": "noul"
       },
-      "contains_sensitive_passwords": {
-        "confidence": 0.9568100980614473,
-        "noul": 0.04318990193855264,
-        "type": "noul"
+      "diagram_style": {
+        "confidence": 0.9966804799436604,
+        "choice": "illustrated_architecture_diagram",
+        "probabilities": {
+          "illustrated_architecture_diagram": 0.9966804799436604,
+          "raw_cli_terminal_screenshot": 0.0020710656119372005,
+          "handwritten_whiteboard_photo": 0.0012484544444023474
+        },
+        "type": "choice"
       }
     }
   }

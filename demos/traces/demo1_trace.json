@@ -1,117 +1,177 @@
 {
   "demo": "demo1_antigravity_swarm",
-  "timestamp_utc": "2026-11-18T05:11:37Z",
+  "timestamp_utc": "2026-11-19T04:36:28Z",
   "live_api": true,
   "remote_agent_cmd": "agy --remote-agent --repo cmanikandan/gdg-blr-talk-nov14-2026 --plan .antigravity/plan.json",
-  "remote_vm": "agy-remote-vm-blr-01 (Google Cloud Run / GKE Sandbox \u2014 Laptop Can Close Now!)",
-  "carbon_architect": {
-    "model": "gemini-4-carbon",
+  "remote_vm": "Google Cloud Remote Sandbox \u2014 Close Your Laptop, Agents Keep Shipping",
+  "neon_orchestrator": {
+    "model": "gemini-4-neon",
     "thinking_level": "low",
-    "latency_ms": 12301,
+    "latency_ms": 14833,
     "usage": {
-      "input_tokens": 1832,
-      "output_tokens": 702,
-      "thoughts_tokens": 0
+      "input_tokens": 2009,
+      "output_tokens": 438,
+      "thoughts_tokens": 1324
     },
     "plan": {
-      "architecture_summary": "MonsoonPay's asia-south2 (Delhi) Cloud Run / Envoy proxy suffers from premature queue exhaustion (max_pending_requests=64) during festival flash sales, triggering synchronous retry storms that amplify checkout p99 latency to 430ms+. Upgrading Envoy queue depth to 512, enforcing a jittered exponential circuit breaker, and falling back to Spanner Omni Software TrueTime bounded stale reads (<15ms) isolates upstream saturation and restores sub-15ms tail latency while leveraging healthy <3ms TrueTime drift across asia-south1 (Mumbai) and asia-south2.",
-      "risk_assessment": "1. Benchmark Coverage Gap: benchmark_policy only simulates up to 184 concurrent requests, so SHIPPED_SWARM_POLICY (max_envoy_pending_requests=512) never trips BreakerState.OPEN or exercises fallback_reads under test. 2. HALF_OPEN State Fragility: A single saturated probe in HALF_OPEN fails to immediately re-open the circuit unless consecutive_failures >= failure_threshold, and probe throttling is count-modulo rather than time-windowed. 3. Read/Write Semantics & Drift Resilience: Checkout mutations cannot blindly degrade to stale reads without idempotency/read-only validation, and raising an unhandled ValueError when TrueTime drift exceeds 7.0ms risks hard 500s instead of failing over to healthy asia-south1.",
+      "architecture_summary": "Delhi checkouts stalled from retry storms; we will expand queue capacity, add smart retry limits, and enable fast local backup reads.",
+      "key_risks": [
+        "Clock drift between regions could temporarily halt checkouts if safety limits are exceeded.",
+        "Serving brief local backup reads during outages may show slightly outdated inventory."
+      ],
+      "risk_assessment": "Low operational risk when deployed with automated latency monitoring and instant regional rollback.",
       "workers": [
         {
           "id": "W1",
-          "branch": "fix/envoy-queue-config",
+          "branch": "fix/expand-envoy-queue-capacity",
           "element": "gemini-4-hydrogen",
           "thinking_level": "low",
-          "owner": "Traffic & Cloud Run Networking",
-          "task": "Externalize Envoy circuit breaker thresholds and active policy selection from LEGACY_BROKEN_POLICY to SHIPPED_SWARM_POLICY (max_envoy_pending_requests=512, max_retries=2, jittered backoff) with environment-driven overrides for asia-south2 Cloud Run.",
-          "target_file": "monsoonpay/envoy_config.yaml"
+          "owner": "Traffic Capacity Team",
+          "plain_goal": "Increase server queue size to handle flash sale traffic.",
+          "task": "Update the production checkout pool policy to raise max_envoy_pending_requests from 64 to 512 for Delhi flash sale bursts.",
+          "target_file": "monsoonpay/circuit_breaker.py"
         },
         {
           "id": "W2",
-          "branch": "fix/high-concurrency-benchmark",
+          "branch": "fix/jittered-circuit-breaker-retries",
           "element": "gemini-4-hydrogen",
           "thinking_level": "low",
-          "owner": "SRE Performance & Load Testing",
-          "task": "Add deterministic unit and stress tests simulating >600 concurrent flash-sale requests and regional TrueTime drift spikes so SHIPPED_SWARM_POLICY exercises CLOSED -> OPEN -> HALF_OPEN transitions and verifies p99 < 20ms.",
-          "target_file": "tests/test_circuit_breaker.py"
+          "owner": "Checkout Reliability Team",
+          "plain_goal": "Stop endless retries and pause traffic when servers struggle.",
+          "task": "Replace synchronous unbounded retries with a jittered exponential circuit breaker capped at 2 retries and a 5-failure threshold.",
+          "target_file": "monsoonpay/circuit_breaker.py"
         },
         {
           "id": "W3",
-          "branch": "fix/breaker-state-and-failover",
+          "branch": "feat/spanner-omni-stale-read-fallback",
           "element": "gemini-4-hydrogen",
-          "thinking_level": "high",
-          "owner": "Spanner Omni Distributed Systems",
-          "task": "Harden SpannerOmniCircuitBreaker state machine to immediately re-open on HALF_OPEN probe saturation, implement true multi-attempt jittered exponential backoff bounded by max_retries, restrict TrueTime bounded stale-read fallback to read/idempotent paths, and add graceful asia-south1 (Mumbai) regional failover when TrueTime drift exceeds 7.0ms.",
+          "thinking_level": "medium",
+          "owner": "Database Resilience Team",
+          "plain_goal": "Serve fast local backup reads when primary servers slow down.",
+          "task": "Configure Spanner Omni bounded stale-read fallback under 15ms during OPEN circuit states and validate p99 latency under 20ms via benchmark_policy.",
+          "target_file": "monsoonpay/circuit_breaker.py"
+        }
+      ]
+    }
+  },
+  "carbon_architect": {
+    "model": "gemini-4-neon",
+    "thinking_level": "low",
+    "latency_ms": 14833,
+    "usage": {
+      "input_tokens": 2009,
+      "output_tokens": 438,
+      "thoughts_tokens": 1324
+    },
+    "plan": {
+      "architecture_summary": "Delhi checkouts stalled from retry storms; we will expand queue capacity, add smart retry limits, and enable fast local backup reads.",
+      "key_risks": [
+        "Clock drift between regions could temporarily halt checkouts if safety limits are exceeded.",
+        "Serving brief local backup reads during outages may show slightly outdated inventory."
+      ],
+      "risk_assessment": "Low operational risk when deployed with automated latency monitoring and instant regional rollback.",
+      "workers": [
+        {
+          "id": "W1",
+          "branch": "fix/expand-envoy-queue-capacity",
+          "element": "gemini-4-hydrogen",
+          "thinking_level": "low",
+          "owner": "Traffic Capacity Team",
+          "plain_goal": "Increase server queue size to handle flash sale traffic.",
+          "task": "Update the production checkout pool policy to raise max_envoy_pending_requests from 64 to 512 for Delhi flash sale bursts.",
+          "target_file": "monsoonpay/circuit_breaker.py"
+        },
+        {
+          "id": "W2",
+          "branch": "fix/jittered-circuit-breaker-retries",
+          "element": "gemini-4-hydrogen",
+          "thinking_level": "low",
+          "owner": "Checkout Reliability Team",
+          "plain_goal": "Stop endless retries and pause traffic when servers struggle.",
+          "task": "Replace synchronous unbounded retries with a jittered exponential circuit breaker capped at 2 retries and a 5-failure threshold.",
+          "target_file": "monsoonpay/circuit_breaker.py"
+        },
+        {
+          "id": "W3",
+          "branch": "feat/spanner-omni-stale-read-fallback",
+          "element": "gemini-4-hydrogen",
+          "thinking_level": "medium",
+          "owner": "Database Resilience Team",
+          "plain_goal": "Serve fast local backup reads when primary servers slow down.",
+          "task": "Configure Spanner Omni bounded stale-read fallback under 15ms during OPEN circuit states and validate p99 latency under 20ms via benchmark_policy.",
           "target_file": "monsoonpay/circuit_breaker.py"
         }
       ]
     }
   },
   "hydrogen_swarm": {
-    "worktree_isolation": "git worktree add --detach (zero merge conflict across 3 branches)",
-    "wall_clock_ms": 24296,
-    "sequential_sum_ms": 43246,
-    "parallel_speedup": 1.78,
+    "worktree_isolation": "3 isolated code sandboxes (0 merge conflicts)",
+    "wall_clock_ms": 10836,
+    "sequential_sum_ms": 19779,
+    "parallel_speedup": 1.83,
     "workers": [
       {
         "worker_id": "W1",
-        "owner": "Traffic & Cloud Run Networking",
-        "branch": "fix/envoy-queue-config",
+        "owner": "Traffic Capacity Team",
+        "plain_goal": "Increase server queue size to handle flash sale traffic.",
+        "branch": "fix/expand-envoy-queue-capacity",
         "model": "gemini-4-hydrogen",
         "thinking_level": "low",
-        "worktree_path": "/tmp/agy_swarm_wt_n0mhk9zj/worktree_1_w1",
-        "artifact_file": "envoy_config.yaml",
-        "artifact_lines": 19,
-        "artifact_preview": "# Envoy Traffic & Circuit Breaker Policy (asia-south2 Cloud Run)\nactive_policy: ${ENVOY_ACTIVE_POLICY:-SHIPPED_SWARM_POLICY}\nregion: ${CLOUD_RUN_REGION:-asia-south2}\nstatic_resources:\n  clusters:\n    - name: cloud_run_upstream\n      type: LOGICAL_DNS\n      lb_policy: ROUND_ROBIN\n      circuit_breakers:\n        thresholds:",
+        "worktree_path": "/tmp/agy_swarm_wt_iovqg3hg/worktree_1_w1",
+        "artifact_file": "circuit_breaker.py",
+        "artifact_lines": 17,
+        "artifact_preview": "from dataclasses import dataclass\n\n@dataclass(frozen=True)\nclass CheckoutPoolPolicy:\n    pool_name: str\n    max_envoy_pending_requests: int\n    max_connections: int\n    max_retries: int\n    consecutive_5xx_threshold: int\n",
         "git_status": "?? .antigravity_swarm_out/",
-        "latency_ms": 14064,
+        "latency_ms": 1972,
         "usage": {
-          "input_tokens": 153,
-          "output_tokens": 241,
-          "thoughts_tokens": 140
+          "input_tokens": 117,
+          "output_tokens": 146,
+          "thoughts_tokens": 193
         }
       },
       {
         "worker_id": "W2",
-        "owner": "SRE Performance & Load Testing",
-        "branch": "fix/high-concurrency-benchmark",
+        "owner": "Checkout Reliability Team",
+        "plain_goal": "Stop endless retries and pause traffic when servers struggle.",
+        "branch": "fix/jittered-circuit-breaker-retries",
         "model": "gemini-4-hydrogen",
         "thinking_level": "low",
-        "worktree_path": "/tmp/agy_swarm_wt_n0mhk9zj/worktree_2_w2",
-        "artifact_file": "test_circuit_breaker.py",
-        "artifact_lines": 29,
-        "artifact_preview": "import time\nfrom concurrent.futures import ThreadPoolExecutor\nimport pytest\n\nfrom circuit_breaker import CircuitBreaker, CircuitState, SHIPPED_SWARM_POLICY\n\n\ndef test_flash_sale_600_plus_concurrent_and_transitions():\n    cb = CircuitBreaker(policy=SHIPPED_SWARM_POLICY)\n    assert cb.state == CircuitState.CLOSED",
+        "worktree_path": "/tmp/agy_swarm_wt_iovqg3hg/worktree_2_w2",
+        "artifact_file": "circuit_breaker.py",
+        "artifact_lines": 22,
+        "artifact_preview": "import random, time\n\nclass CircuitBreaker:\n    def __init__(self, failure_threshold=5, max_retries=2, base_delay=0.1, reset_timeout=30.0):\n        self.failure_threshold, self.max_retries = failure_threshold, max_retries\n        self.base_delay, self.reset_timeout, self.failures, self.opened_at = base_delay, reset_timeout, 0, None\n\n    def call(self, fn, *args, **kwargs):\n        if self.opened_at and time.monotonic() - self.opened_at < self.reset_timeout:\n            raise RuntimeError(\"Circuit breaker is OPEN\")",
         "git_status": "?? .antigravity_swarm_out/",
-        "latency_ms": 4946,
+        "latency_ms": 7043,
         "usage": {
-          "input_tokens": 143,
-          "output_tokens": 318,
-          "thoughts_tokens": 126
+          "input_tokens": 111,
+          "output_tokens": 294,
+          "thoughts_tokens": 1525
         }
       },
       {
         "worker_id": "W3",
-        "owner": "Spanner Omni Distributed Systems",
-        "branch": "fix/breaker-state-and-failover",
+        "owner": "Database Resilience Team",
+        "plain_goal": "Serve fast local backup reads when primary servers slow down.",
+        "branch": "feat/spanner-omni-stale-read-fallback",
         "model": "gemini-4-hydrogen",
         "thinking_level": "medium",
-        "worktree_path": "/tmp/agy_swarm_wt_n0mhk9zj/worktree_3_w3",
+        "worktree_path": "/tmp/agy_swarm_wt_iovqg3hg/worktree_3_w3",
         "artifact_file": "circuit_breaker.py",
-        "artifact_lines": 24,
-        "artifact_preview": "import random, time; from enum import Enum\nState = Enum(\"State\", \"CLOSED OPEN HALF_OPEN\")\nclass SpannerOmniCircuitBreaker:\n    def __init__(self, max_retries=3, base_delay=0.05, max_probes=1, open_ttl=5.0, region=\"us-central1\"):\n        self.max_retries, self.base_delay, self.max_probes, self.open_ttl, self.region = max_retries, base_delay, max_probes, open_ttl, region\n        self.state, self.probes, self.opened_at = State.CLOSED, 0, 0.0\n    def execute(self, fn, *, is_read=False, drift_ms=0.0, stale_fallback=None):\n        target = \"asia-south1\" if drift_ms > 7.0 else self.region\n        if self.state == State.OPEN:\n            if time.monotonic() - self.opened_at < self.open_ttl:",
+        "artifact_lines": 21,
+        "artifact_preview": "from dataclasses import dataclass\nfrom typing import Callable, Sequence, TypeVar\n\nT = TypeVar(\"T\")\n\n@dataclass(frozen=True)\nclass SpannerCircuitBreaker:\n    state: str = \"OPEN\"\n    stale_read_bound_ms: int = 14\n    p99_budget_ms: float = 20.0",
         "git_status": "?? .antigravity_swarm_out/",
-        "latency_ms": 24236,
+        "latency_ms": 10764,
         "usage": {
-          "input_tokens": 164,
-          "output_tokens": 485,
-          "thoughts_tokens": 4886
+          "input_tokens": 121,
+          "output_tokens": 296,
+          "thoughts_tokens": 1936
         }
       }
     ]
   },
   "pytest_verification": {
     "exit_code": 0,
-    "duration_ms": 1753,
-    "summary": "10 passed in 1.31s"
+    "duration_ms": 3312,
+    "summary": "10 passed in 2.58s"
   }
 }

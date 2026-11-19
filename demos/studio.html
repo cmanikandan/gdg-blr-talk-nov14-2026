@@ -3,2130 +3,1985 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Interactive Stage Command Center for The Periodic Table of Agents — DevFest Bengaluru 2026 Keynote by Mani, Principal Architect, Google Cloud." />
-  <title>The Periodic Table of Agents — Interactive Stage Command Center</title>
+  <title>Gemini 4 Neon — DevFest Bengaluru 2026 Interactive Stage Studio</title>
+  <meta name="description" content="Interactive keynote showcase for The Periodic Table of Agents powered by Gemini 4 Neon, Hydrogen, Decisions API, Google ADK 2.0, and Gemini 3.8 Live." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #0B101B;
-      --bg-elevated: #0E1524;
-      --surface: #121A2B;
-      --surface-alt: #182236;
-      --surface-hover: #1E2B44;
-      --border: #25334D;
-      --border-strong: #34476B;
-      --text: #F1F5F9;
-      --text-muted: #94A3B8;
-      --text-dim: #64748B;
+      --bg: #07080B;
+      --surface: #111319;
+      --surface-2: #171A22;
+      --surface-hover: #1C202B;
+      --hairline: rgba(255, 255, 255, 0.08);
+      --hairline-strong: rgba(255, 255, 255, 0.14);
+      --ink: #F8FAFC;
+      --ink-soft: #B6C0D2;
+      --ink-muted: #7C879C;
+
+      --neon: #FF7A1A;
+      --neon-bright: #FFA352;
+      --neon-soft: rgba(255, 122, 26, 0.14);
       --blue: #4285F4;
-      --blue-soft: rgba(66, 133, 244, 0.15);
+      --blue-bright: #75A8FF;
+      --blue-soft: rgba(66, 133, 244, 0.14);
       --green: #34A853;
-      --green-soft: rgba(52, 168, 83, 0.15);
-      --amber: #F59E0B;
-      --amber-soft: rgba(245, 158, 11, 0.15);
+      --green-bright: #62D987;
+      --green-soft: rgba(52, 168, 83, 0.14);
       --red: #EA4335;
-      --red-soft: rgba(234, 67, 53, 0.15);
-      --cyan: #38BDF8;
-      --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, 'DejaVu Sans', sans-serif;
-      --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'DejaVu Sans Mono', monospace;
+      --red-bright: #FF786E;
+      --red-soft: rgba(234, 67, 53, 0.14);
+
+      --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
+    html, body {
+      height: 100%;
       background: var(--bg);
-      color: var(--text);
-      font-family: var(--font-sans);
-      min-height: 100vh;
-      overflow: hidden;
+      color: var(--ink);
+      font-family: var(--font-body);
       -webkit-font-smoothing: antialiased;
-    }
-
-    body:not(.record-mode) {
-      background: radial-gradient(circle at 15% 0%, #121E36 0%, #0B101B 48%);
-      overflow-y: auto;
       overflow-x: hidden;
     }
 
-    /* ── Interactive Chrome (100% hidden when ?record=1) ── */
-    body.record-mode .interactive-only {
-      display: none !important;
+    body {
+      background:
+        radial-gradient(ellipse 68% 42% at 50% -6%, rgba(255, 122, 26, 0.11), transparent 68%),
+        radial-gradient(ellipse 46% 36% at 88% 100%, rgba(66, 133, 244, 0.06), transparent 65%),
+        var(--bg);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
 
-    .top-header {
+    /* ── SINGLE SLEEK 60px TOP NAVIGATION BAR ── */
+    .topbar {
       position: sticky;
       top: 0;
       z-index: 40;
-      background: rgba(8, 12, 21, 0.94);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .stage-nav {
+      height: 62px;
+      padding: 0 28px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      min-height: 46px;
-      padding: 7px 24px;
-      border-bottom: 1px solid rgba(37, 51, 77, 0.65);
+      gap: 16px;
+      background: rgba(7, 8, 11, 0.86);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--hairline);
+    }
+
+    body.record-mode .topbar,
+    body.record-mode .stage-footer,
+    body.record-mode .tech-drawer,
+    body.record-mode .tech-backdrop,
+    body.record-mode .live-pill,
+    body.record-mode .toast {
+      display: none !important;
+    }
+
+    body.record-mode {
+      overflow: hidden;
+    }
+
+    body.record-mode .stage-shell {
+      height: 100vh;
+      max-width: 1920px;
+      padding: 40px 64px;
+      justify-content: center;
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 9px;
-      font-weight: 700;
-      font-size: 13px;
-      letter-spacing: 0.04em;
-      color: var(--text);
-      white-space: nowrap;
+      gap: 10px;
+      cursor: pointer;
+      user-select: none;
       flex-shrink: 0;
-    }
-    .brand-dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      background: var(--blue);
-      flex-shrink: 0;
-    }
-    .brand span { color: var(--blue); }
-    .brand-sub {
-      font-weight: 500;
-      font-size: 11.5px;
-      color: var(--text-muted);
-      letter-spacing: 0.01em;
     }
 
-    .health-bar {
+    .brand-spark {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, rgba(255, 122, 26, 0.22), rgba(255, 122, 26, 0.06));
+      display: grid;
+      place-items: center;
+      color: var(--neon-bright);
+      font-size: 16px;
+      box-shadow: 0 0 18px rgba(255, 122, 26, 0.28);
+    }
+
+    .brand-name {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 15px;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+    }
+
+    .brand-sub {
+      font-size: 12px;
+      color: var(--ink-muted);
+      font-weight: 500;
+      margin-left: 2px;
+    }
+
+    .nav-tabs {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(255, 255, 255, 0.035);
+      padding: 4px;
+      border-radius: 999px;
+      border: 1px solid var(--hairline);
+    }
+
+    .tab-btn {
+      appearance: none;
+      border: none;
+      background: transparent;
+      color: var(--ink-soft);
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 7px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 180ms ease, color 180ms ease;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .tab-btn.active {
+      background: var(--surface-2);
+      color: var(--ink);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(255, 122, 26, 0.35);
+    }
+
+    .tab-num {
+      color: var(--ink-muted);
+      margin-right: 4px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+
+    .tab-btn.active .tab-num {
+      color: var(--neon-bright);
+    }
+
+    .actions {
       display: flex;
       align-items: center;
       gap: 8px;
-      flex-wrap: nowrap;
-      justify-content: flex-end;
+      position: relative;
+      flex-shrink: 0;
     }
 
-    .status-chip {
+    .btn {
+      appearance: none;
+      border: 1px solid var(--hairline);
+      background: var(--surface);
+      color: var(--ink);
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 999px;
+      cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 7px;
-      padding: 5px 10px;
-      border-radius: 6px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      font-family: var(--font-mono);
-      font-size: 11.5px;
-      color: var(--text-muted);
+      transition: transform 150ms ease, background 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
       white-space: nowrap;
     }
-    .status-dot {
+
+    .btn:hover:not(:disabled) {
+      background: var(--surface-hover);
+      border-color: var(--hairline-strong);
+      transform: translateY(-1px);
+    }
+
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-neon {
+      background: linear-gradient(180deg, #FF882E 0%, #E86209 100%);
+      border-color: rgba(255, 163, 82, 0.45);
+      color: #090A0D;
+      font-weight: 700;
+      box-shadow: 0 4px 20px rgba(255, 122, 26, 0.32);
+    }
+
+    .btn-neon:hover:not(:disabled) {
+      background: linear-gradient(180deg, #FF9442 0%, #F26E16 100%);
+      box-shadow: 0 6px 26px rgba(255, 122, 26, 0.46);
+    }
+
+    .btn-neon.running {
+      background: linear-gradient(180deg, #F45B50 0%, #D93025 100%);
+      color: #FFF;
+      border-color: rgba(255, 120, 110, 0.45);
+      box-shadow: 0 4px 20px rgba(234, 67, 53, 0.35);
+    }
+
+    .btn-icon {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      justify-content: center;
+      font-size: 15px;
+    }
+
+    .dot-indicator {
       width: 7px;
       height: 7px;
       border-radius: 50%;
-      background: var(--text-dim);
-      flex-shrink: 0;
-    }
-    .status-dot.green { background: var(--green); }
-    .status-dot.amber { background: var(--amber); }
-    .status-dot.blue { background: var(--blue); }
-    .status-dot.red { background: var(--red); }
-
-    .auto-reset-toggle {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 5px 10px;
-      border-radius: 6px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text);
-      cursor: pointer;
-      user-select: none;
-      white-space: nowrap;
-    }
-    .auto-reset-toggle input {
-      accent-color: var(--green);
-      width: 14px;
-      height: 14px;
-      cursor: pointer;
+      background: var(--green-bright);
+      display: inline-block;
     }
 
-    .reset-menu-wrap {
-      position: relative;
-    }
-    .reset-popover {
-      display: none;
+    .dot-indicator.warn { background: var(--neon-bright); }
+    .dot-indicator.off { background: var(--ink-muted); }
+
+    /* ── RESET POPOVER ── */
+    .popover {
       position: absolute;
+      top: 46px;
       right: 0;
-      top: calc(100% + 8px);
       width: 310px;
-      background: #0F1729;
-      border: 1px solid var(--border-strong);
-      border-radius: 10px;
-      padding: 10px;
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+      background: #141720;
+      border: 1px solid var(--hairline-strong);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.72);
+      display: none;
+      flex-direction: column;
+      gap: 12px;
       z-index: 60;
-      flex-direction: column;
-      gap: 8px;
     }
-    .reset-popover.open { display: flex; }
-    .reset-option {
+
+    .popover.open { display: flex; }
+
+    .pop-row {
       display: flex;
-      flex-direction: column;
-      gap: 3px;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12.5px;
+      color: var(--ink-soft);
+    }
+
+    .pop-row strong { color: var(--ink); font-weight: 600; }
+
+    .pop-divider {
+      height: 1px;
+      background: var(--hairline);
+    }
+
+    .pop-action {
       width: 100%;
       text-align: left;
       padding: 10px 12px;
-      border-radius: 8px;
-      background: var(--surface-alt);
-      border: 1px solid var(--border);
-      color: var(--text);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--hairline);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--ink);
       cursor: pointer;
-      transition: background 0.15s, border-color 0.15s;
+      transition: background 150ms ease;
     }
-    .reset-option:hover {
-      background: var(--surface-hover);
-      border-color: var(--blue);
+
+    .pop-action:hover { background: rgba(255, 255, 255, 0.07); }
+    .pop-action span { display: block; font-size: 11.5px; color: var(--ink-muted); margin-top: 2px; }
+
+    /* ── MAIN AUDITORIUM STAGE ── */
+    .stage-shell {
+      flex: 1;
+      width: 100%;
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 22px 36px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
     }
-    .reset-option strong {
-      font-size: 12.5px;
+
+    #stage {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .scene-top {
       display: flex;
       align-items: center;
       justify-content: space-between;
-    }
-    .reset-option span {
-      font-size: 11.5px;
-      color: var(--text-muted);
-      line-height: 1.38;
-    }
-
-    /* Second Navigation Row: Demo Tabs + Action Controls */
-    .demo-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      padding: 6px 20px;
-      background: rgba(13, 20, 34, 0.96);
-      flex-wrap: wrap;
-    }
-
-    .tabs {
-      display: flex;
-      gap: 4px;
-      flex-wrap: wrap;
-    }
-    .tab-btn {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      padding: 5px 8.5px;
-      border-radius: 7px;
-      font-size: 11.5px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.15s, color 0.15s, border-color 0.15s;
-      white-space: nowrap;
-    }
-    .tab-btn:hover { color: var(--text); border-color: #3E5378; background: rgba(255,255,255,0.03); }
-    .tab-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
-
-    .controls {
-      display: flex;
-      gap: 5px;
-      align-items: center;
+      gap: 24px;
       flex-wrap: nowrap;
     }
-    .ctrl-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      background: var(--surface-alt);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 5px 9.5px;
-      border-radius: 7px;
+
+    .scene-eyebrow {
+      font-family: var(--font-mono);
       font-size: 11.5px;
       font-weight: 600;
-      cursor: pointer;
-      transition: background 0.15s, border-color 0.15s, opacity 0.15s;
-      white-space: nowrap;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--neon-bright);
+      margin-bottom: 6px;
     }
-    .ctrl-btn:hover:not(:disabled) {
-      background: var(--surface-hover);
-      border-color: var(--border-strong);
-    }
-    .ctrl-btn.primary {
-      background: var(--green);
-      border-color: var(--green);
-      color: #04190B;
-      font-weight: 700;
-    }
-    .ctrl-btn.primary:hover:not(:disabled) {
-      background: #40BC61;
-      border-color: #40BC61;
-    }
-    .ctrl-btn.danger {
-      background: var(--red);
-      border-color: var(--red);
-      color: #fff;
-    }
-    .ctrl-btn.info-active {
-      background: var(--blue-soft);
-      border-color: var(--blue);
-      color: #93C5FD;
-    }
-    .ctrl-btn:disabled { opacity: 0.42; cursor: not-allowed; }
 
-    /* ── Live SSE Progress Drawer ── */
-    .live-drawer {
-      display: none;
-      margin: 14px 28px 0 28px;
-      background: #0F1729;
-      border: 1px solid var(--border-strong);
-      border-radius: 12px;
-      padding: 16px 20px;
-      flex-direction: column;
-      gap: 12px;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+    .scene-heading {
+      font-family: var(--font-display);
+      font-size: clamp(25px, 2.35vw, 35px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      color: var(--ink);
     }
-    .live-drawer.visible { display: flex; }
-    .live-drawer.done { border-color: rgba(52, 168, 83, 0.65); }
-    .live-drawer.err { border-color: rgba(234, 67, 53, 0.7); }
 
-    .live-drawer-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
+    .scene-sub {
+      margin-top: 6px;
+      font-size: 15px;
+      color: var(--ink-soft);
+      line-height: 1.45;
+      max-width: 740px;
     }
-    .live-title {
+
+    .hero-kpis {
       display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 700;
-      font-size: 14.5px;
-      color: var(--text);
-    }
-    .spinner {
-      width: 14px;
-      height: 14px;
-      border: 2px solid rgba(66, 133, 244, 0.25);
-      border-top-color: var(--blue);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
+      align-items: stretch;
+      gap: 14px;
       flex-shrink: 0;
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
 
-    .stepper {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .step-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 6px 11px;
-      border-radius: 7px;
+    .hero-kpi {
+      padding: 12px 20px;
       background: var(--surface);
-      border: 1px solid var(--border);
-      font-family: var(--font-mono);
-      font-size: 12px;
-      color: var(--text-dim);
-      transition: all 0.2s ease;
-    }
-    .step-pill.active {
-      background: var(--blue-soft);
-      border-color: var(--blue);
-      color: #BFDBFE;
-      font-weight: 600;
-    }
-    .step-pill.done {
-      background: var(--green-soft);
-      border-color: rgba(52, 168, 83, 0.6);
-      color: #86EFAC;
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius-md);
+      min-width: 154px;
+      text-align: right;
     }
 
-    .live-feed {
-      background: #080C15;
-      border: 1px solid #1E2B42;
-      border-radius: 8px;
-      padding: 10px 14px;
-      max-height: 120px;
-      overflow-y: auto;
-      font-family: var(--font-mono);
-      font-size: 12px;
-      line-height: 1.5;
-      color: #CBD5E1;
+    .hero-kpi-val {
+      font-family: var(--font-display);
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      color: var(--ink);
     }
-    .live-feed-line {
+
+    .hero-kpi-val.neon { color: var(--neon-bright); }
+    .hero-kpi-val.green { color: var(--green-bright); }
+    .hero-kpi-val.blue { color: var(--blue-bright); }
+
+    .hero-kpi-lbl {
+      font-size: 12.5px;
+      color: var(--ink-muted);
+      font-weight: 500;
+      margin-top: 4px;
+    }
+
+    /* ── SPACIOUS 2-COLUMN AUDITORIUM CANVAS ── */
+    .split-stage {
+      display: grid;
+      grid-template-columns: 1.25fr 1fr;
+      gap: 24px;
+      align-items: stretch;
+      flex: 1;
+    }
+
+    .split-stage.even {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .split-stage.video-split {
+      grid-template-columns: 0.78fr 1.22fr;
+      align-items: center;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius-lg);
+      padding: 28px;
       display: flex;
-      gap: 10px;
-    }
-    .live-feed-ts {
-      color: var(--text-dim);
-      flex-shrink: 0;
-      min-width: 52px;
+      flex-direction: column;
+      gap: 20px;
+      position: relative;
+      overflow: hidden;
     }
 
-    /* ── Behind the Scenes Architecture Drawer ── */
-    .bts-drawer {
-      display: none;
-      margin: 14px 28px 0 28px;
-      background: linear-gradient(180deg, #111B2E 0%, #0E1626 100%);
-      border: 1px solid var(--border-strong);
-      border-radius: 12px;
-      padding: 18px 22px;
-      flex-direction: column;
-      gap: 14px;
-    }
-    .bts-drawer.open { display: flex; }
-    .bts-top {
+    .panel-title {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      color: var(--ink);
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 10px;
-    }
-    .bts-heading {
-      font-family: var(--font-mono);
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.07em;
-      text-transform: uppercase;
-      color: #7BB1FF;
-    }
-    .bts-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 14px;
-    }
-    .bts-card {
-      background: rgba(11, 16, 27, 0.72);
-      border: 1px solid var(--border);
-      border-radius: 9px;
-      padding: 13px 15px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .bts-card-label {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-    }
-    .bts-card-label.green { color: #6CE08A; }
-    .bts-card-label.amber { color: #FBBF24; }
-    .bts-card-label.blue { color: #7BB1FF; }
-    .bts-card-body {
-      font-size: 13px;
-      line-height: 1.5;
-      color: #DCE6F4;
     }
 
-    /* ── Toast Notification ── */
-    .toast-wrap {
-      position: fixed;
-      right: 24px;
-      bottom: 22px;
-      z-index: 80;
+    .panel-caption {
+      font-size: 13px;
+      color: var(--ink-muted);
+      font-weight: 500;
+    }
+
+    /* ── OVERVIEW (SCENE 0) ── */
+    .overview-hero {
+      text-align: center;
+      padding: 8px 0 4px;
+    }
+
+    .overview-hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(34px, 3.8vw, 52px);
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      line-height: 1.08;
+      color: var(--ink);
+    }
+
+    .overview-hero p {
+      margin: 12px auto 0;
+      font-size: 17px;
+      color: var(--ink-soft);
+      max-width: 660px;
+      line-height: 1.5;
+    }
+
+    .arch-strip {
+      background: var(--surface);
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius-lg);
+      padding: 18px 24px;
+    }
+
+    .arch-strip svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .story-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .story-tile {
+      appearance: none;
+      text-align: left;
+      background: var(--surface);
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      cursor: pointer;
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      pointer-events: none;
+      justify-content: space-between;
+      gap: 16px;
+      transition: transform 200ms ease, background 200ms ease, border-color 200ms ease;
     }
-    .toast {
-      pointer-events: auto;
-      background: #101A2C;
-      border: 1px solid var(--border-strong);
-      border-left: 4px solid var(--green);
-      color: var(--text);
-      padding: 12px 16px;
-      border-radius: 9px;
+
+    .story-tile:hover {
+      transform: translateY(-3px);
+      background: var(--surface-2);
+      border-color: rgba(255, 122, 26, 0.42);
+    }
+
+    .story-num {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      color: var(--neon-bright);
+    }
+
+    .story-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-top: 6px;
+      line-height: 1.2;
+    }
+
+    .story-desc {
+      font-size: 14.5px;
+      color: var(--ink-soft);
+      line-height: 1.5;
+      margin-top: 8px;
+    }
+
+    .story-foot {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding-top: 14px;
+      border-top: 1px solid var(--hairline);
+    }
+
+    .story-stat {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--ink);
+    }
+
+    .story-stat.neon { color: var(--neon-bright); }
+    .story-stat.green { color: var(--green-bright); }
+    .story-stat.blue { color: var(--blue-bright); }
+
+    .story-go {
       font-size: 13px;
-      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.5);
-      max-width: 420px;
+      font-weight: 600;
+      color: var(--ink-muted);
+      transition: color 180ms ease, transform 180ms ease;
+    }
+
+    .story-tile:hover .story-go {
+      color: var(--neon-bright);
+      transform: translateX(3px);
+    }
+
+    /* ── ANIMATED SVG MOTION GRAPHICS ── */
+    @keyframes dashFlow {
+      to { stroke-dashoffset: -36; }
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.55; }
+      50% { opacity: 1; }
+    }
+
+    @keyframes waveBounce {
+      0%, 100% { transform: scaleY(0.28); }
+      50% { transform: scaleY(1); }
+    }
+
+    .flow-line {
+      stroke-dasharray: 6 12;
+      animation: dashFlow 1.2s linear infinite;
+    }
+
+    .stage-svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* ── CLEAN LISTS & METRIC ROWS ── */
+    .goal-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .goal-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 16px 18px;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid var(--hairline);
+      transition: opacity 280ms ease, transform 280ms ease, border-color 280ms ease;
+    }
+
+    .goal-item.active {
+      background: rgba(255, 122, 26, 0.06);
+      border-color: rgba(255, 122, 26, 0.28);
+    }
+
+    .goal-item.done {
+      border-color: rgba(52, 168, 83, 0.28);
+    }
+
+    .goal-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: var(--surface-2);
+      color: var(--neon-bright);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 600;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .goal-item.done .goal-num {
+      background: var(--green-soft);
+      color: var(--green-bright);
+    }
+
+    .goal-item.blue .goal-num {
+      background: var(--blue-soft);
+      color: var(--blue-bright);
+    }
+
+    .goal-title {
+      font-size: 15.5px;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.35;
+    }
+
+    .goal-sub {
+      font-size: 13.5px;
+      color: var(--ink-soft);
+      margin-top: 3px;
       line-height: 1.45;
     }
-    .toast.err { border-left-color: var(--red); }
-    .toast strong { display: block; margin-bottom: 2px; }
 
-    /* ── Main 1920x1080 Cinema Canvas (record-mode) & Responsive Interactive Stage ── */
-    .canvas {
-      width: 1920px;
-      height: 1080px;
-      padding: 36px 52px 34px 52px;
+    /* ── RACE BARS & BENCHMARK VISUALS ── */
+    .race-stack {
       display: flex;
       flex-direction: column;
-      gap: 22px;
-      transform-origin: top left;
-    }
-    body:not(.record-mode) .canvas {
-      width: 100%;
-      max-width: 1760px;
-      margin: 0 auto;
-      height: auto;
-      min-height: calc(100vh - 108px);
-      padding: 18px 28px 28px 28px;
-      gap: 16px;
+      gap: 20px;
     }
 
-    /* Scene Header */
-    .scene-header {
+    .race-row {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .race-head {
       display: flex;
       align-items: flex-end;
       justify-content: space-between;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 16px;
-      flex-shrink: 0;
-      gap: 16px;
-    }
-    .scene-kicker {
-      font-family: var(--font-mono);
-      font-size: 15px;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--blue);
-      margin-bottom: 6px;
-    }
-    .scene-title {
-      font-size: 29px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      line-height: 1.15;
-    }
-    .scene-meta {
-      display: flex;
-      gap: 22px;
-      align-items: center;
-      flex-shrink: 0;
-      font-family: var(--font-mono);
-      font-size: 14px;
-      color: var(--text-muted);
-    }
-    .meta-stat { white-space: nowrap; }
-    .meta-stat strong {
-      color: var(--text);
-      font-size: 17px;
-      margin-left: 6px;
-    }
-    .meta-stat.green strong { color: var(--green); }
-    .meta-stat.amber strong { color: var(--amber); }
-
-    /* Panels */
-    .panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 22px 26px;
-      display: flex;
-      flex-direction: column;
       gap: 14px;
-      overflow: hidden;
-    }
-    .panel-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      font-family: var(--font-mono);
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      border-bottom: 1px solid rgba(37, 51, 77, 0.7);
-      padding-bottom: 10px;
-    }
-    .tag {
-      font-family: var(--font-mono);
-      font-size: 13px;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 5px;
-      letter-spacing: 0.03em;
-      white-space: nowrap;
-    }
-    .tag-blue { background: var(--blue-soft); color: #7BB1FF; }
-    .tag-green { background: var(--green-soft); color: #6CE08A; }
-    .tag-amber { background: var(--amber-soft); color: #FBBF24; }
-    .tag-red { background: var(--red-soft); color: #F87171; }
-
-    /* Grid utilities */
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; flex: 1; min-height: 0; }
-    .grid-42-58 { display: grid; grid-template-columns: 42fr 58fr; gap: 22px; flex: 1; min-height: 0; }
-    .grid-60-40 { display: grid; grid-template-columns: 60fr 40fr; gap: 22px; flex: 1; min-height: 0; }
-    .grid-46-54 { display: grid; grid-template-columns: 46fr 54fr; gap: 22px; flex: 1; min-height: 0; }
-    .col-stack { display: flex; flex-direction: column; gap: 18px; min-height: 0; }
-
-    /* Typography & Code */
-    .prose { font-size: 17px; line-height: 1.5; color: #CBD5E1; }
-    .code-box {
-      background: #080C15;
-      border: 1px solid #1E2B42;
-      border-radius: 8px;
-      padding: 12px 14px;
-      font-family: var(--font-mono);
-      font-size: 13.5px;
-      line-height: 1.48;
-      color: #DCE8FA;
-      white-space: pre-wrap;
-      overflow: hidden;
-    }
-    body:not(.record-mode) .code-box {
-      overflow-x: auto;
     }
 
-    /* Worker rows (Demo 1) */
-    .worker-card {
-      background: var(--surface-alt);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 15px 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 9px;
-      transition: opacity 0.25s ease;
-    }
-    .worker-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-    .worker-id {
-      font-family: var(--font-mono);
-      font-weight: 700;
+    .race-name {
       font-size: 16px;
-      color: var(--text);
-    }
-    .worker-branch {
-      font-family: var(--font-mono);
-      font-size: 13px;
-      color: var(--cyan);
-    }
-    .worker-metrics {
-      font-family: var(--font-mono);
-      font-size: 13.5px;
-      color: var(--green);
-      font-weight: 600;
-    }
-
-    /* Footer command strip */
-    .cmd-strip {
-      background: #0D1524;
-      border: 1px solid var(--border);
-      border-left: 4px solid var(--blue);
-      border-radius: 10px;
-      padding: 16px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-      flex-shrink: 0;
-    }
-    .cmd-strip.amber { border-left-color: var(--amber); }
-    .cmd-strip.green { border-left-color: var(--green); }
-    .cmd-text {
-      font-family: var(--font-mono);
-      font-size: 16px;
-      color: #E2E8F0;
-    }
-    .cmd-text .prompt { color: var(--green); margin-right: 10px; }
-
-    /* Tables */
-    table.data-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 15.5px;
-    }
-    table.data-table th {
-      text-align: left;
-      font-family: var(--font-mono);
-      font-size: 12.5px;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--text-muted);
-      padding: 8px 12px;
-      border-bottom: 1px solid var(--border);
-    }
-    table.data-table td {
-      padding: 11px 12px;
-      border-bottom: 1px solid rgba(37, 51, 77, 0.55);
-      vertical-align: middle;
-    }
-    table.data-table td.num, table.data-table th.num {
-      text-align: right;
-      font-family: var(--font-mono);
-    }
-    table.data-table tr.hidden-row { opacity: 0.08; }
-
-    /* Horizontal Race Bars (Demo 2 & Demo 4) */
-    .bar-group { display: flex; flex-direction: column; gap: 11px; }
-    .bar-item { display: flex; flex-direction: column; gap: 5px; }
-    .bar-label-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      font-size: 15px;
-      font-family: var(--font-mono);
-    }
-    .bar-track {
-      height: 24px;
-      background: #0A0F1A;
-      border-radius: 6px;
-      overflow: hidden;
-      border: 1px solid #1E293B;
-    }
-    .bar-fill {
-      height: 100%;
-      border-radius: 5px;
-      display: flex;
-      align-items: center;
-      padding-left: 10px;
-      font-family: var(--font-mono);
-      font-size: 13px;
       font-weight: 700;
-      color: #06101B;
-      white-space: nowrap;
-    }
-    .bar-green { background: var(--green); color: #051A0D; }
-    .bar-blue { background: var(--blue); color: #FFFFFF; }
-    .bar-amber { background: var(--amber); color: #1A1102; }
-    .bar-red { background: var(--red); color: #FFFFFF; }
-
-    /* Voice Waveform (Demo 3) */
-    .wave-container {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      height: 76px;
-      background: #080C15;
-      border: 1px solid #1E2B42;
-      border-radius: 10px;
-      padding: 10px 18px;
-    }
-    .wave-bar {
-      width: 6px;
-      border-radius: 4px;
-      background: var(--blue);
-      min-height: 6px;
-    }
-    .transcript-bubble {
-      background: var(--surface-alt);
-      border: 1px solid var(--border);
-      border-left: 4px solid var(--blue);
-      border-radius: 10px;
-      padding: 14px 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .transcript-bubble.gemini { border-left-color: var(--green); }
-    .transcript-speaker {
-      font-family: var(--font-mono);
-      font-size: 13px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--text-muted);
-    }
-    .transcript-text {
-      font-size: 17px;
-      line-height: 1.45;
-      color: var(--text);
-    }
-
-    /* ADK DAG Nodes (Demo 3) */
-    .dag-list { display: flex; flex-direction: column; gap: 11px; }
-    .dag-node {
-      background: var(--surface-alt);
-      border: 1px solid var(--border);
-      border-radius: 9px;
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-      opacity: 0.25;
-    }
-    .dag-node.active { opacity: 1; border-color: var(--blue); background: #162238; }
-    .dag-node.done { opacity: 1; border-color: rgba(52, 168, 83, 0.55); }
-    .dag-node.hitl { opacity: 1; border-color: var(--amber); background: rgba(245, 158, 11, 0.11); }
-    .dag-name { font-family: var(--font-mono); font-size: 15px; font-weight: 700; color: var(--text); }
-    .dag-detail { font-size: 14.5px; color: #CBD5E1; margin-top: 3px; }
-
-    /* Big KPI Stat */
-    .kpi-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-    .kpi-box {
-      background: var(--surface-alt);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 16px 18px;
-    }
-    .kpi-label { font-family: var(--font-mono); font-size: 12.5px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
-    .kpi-value { font-family: var(--font-mono); font-size: 32px; font-weight: 700; margin-top: 6px; letter-spacing: -0.02em; }
-
-    /* Security Finding rows (Demo 4) */
-    .finding-row {
-      background: var(--surface-alt);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 11px 15px;
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-    }
-    .finding-title { font-weight: 700; font-size: 15.5px; color: var(--text); }
-    .finding-desc { font-size: 14.5px; color: #CBD5E1; margin-top: 3px; line-height: 1.4; }
-
-    /* Multimodal thumb */
-    .mm-card { display: flex; gap: 16px; align-items: center; }
-    .mm-thumb {
-      width: 210px;
-      height: 118px;
-      object-fit: cover;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      flex-shrink: 0;
-    }
-
-    /* Voice AI Live Showcase Cards (Scene 6 — interactive tab) */
-    .voice-poster {
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      object-fit: contain;
-      border-radius: 10px;
-      border: 1px solid var(--border-strong);
-      background: #080C15;
-    }
-    .drive-launch-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 11px 18px;
-      border-radius: 8px;
-      background: var(--blue);
-      color: #fff;
-      font-weight: 700;
-      font-size: 13.5px;
-      text-decoration: none;
-      transition: background 0.15s;
-    }
-    .drive-launch-btn:hover { background: #5A97F7; }
-    .arch-steps {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .arch-step {
-      background: var(--surface-alt);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px 13px;
-      font-size: 13.5px;
-      color: #DCE6F4;
-      line-height: 1.45;
-    }
-    .arch-step strong { color: #7BB1FF; font-family: var(--font-mono); font-size: 12.5px; }
-
-    /* ── Architecture & Live Demo Flow Tab (Scene 0) ── */
-    .pillars-row {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
-      align-items: stretch;
-      gap: 8px;
-    }
-    .pillar-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-top: 3px solid var(--blue);
-      border-radius: 10px;
-      padding: 10px 13px;
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-    .pillar-card.green { border-top-color: var(--green); }
-    .pillar-card.amber { border-top-color: var(--amber); }
-    .pillar-card.cyan { border-top-color: var(--cyan); }
-    .pillar-kicker {
-      font-family: var(--font-mono);
-      font-size: 10.5px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-    }
-    .pillar-title {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text);
-    }
-    .pillar-desc {
-      font-size: 12px;
-      line-height: 1.36;
-      color: #CBD5E1;
-    }
-    .pillar-arrow {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--font-mono);
-      font-size: 17px;
-      font-weight: 700;
-      color: var(--text-dim);
-      padding: 0 2px;
-    }
-
-    .flow-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-    }
-    .flow-card {
-      text-align: left;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 11px;
-      padding: 11px 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      cursor: pointer;
-      color: var(--text);
-      font-family: var(--font-sans);
-      transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
-    }
-    .flow-card:hover {
-      transform: translateY(-2px);
-      border-color: var(--blue);
-      background: var(--surface-alt);
-    }
-    .flow-card-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-    }
-    .flow-step-num {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      color: #7BB1FF;
-      white-space: nowrap;
-    }
-    .flow-card-title {
-      font-size: 14.5px;
-      font-weight: 700;
-      color: var(--text);
+      color: var(--ink);
       line-height: 1.25;
     }
-    .flow-card-desc {
-      font-size: 12.2px;
-      line-height: 1.38;
-      color: #CBD5E1;
-      flex: 1;
+
+    .race-name span {
+      display: block;
+      font-weight: 500;
+      color: var(--ink-muted);
+      font-size: 13px;
+      margin-top: 2px;
     }
-    .flow-card-foot {
+
+    .race-val {
+      font-family: var(--font-mono);
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--ink);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .race-track {
+      height: 22px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .race-fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 220ms linear;
+    }
+
+    .race-fill.neon { background: linear-gradient(90deg, #FF7A1A, #FFB067); }
+    .race-fill.green { background: linear-gradient(90deg, #279B48, #62D987); }
+    .race-fill.blue { background: linear-gradient(90deg, #3574E2, #75A8FF); }
+    .race-fill.red { background: linear-gradient(90deg, #D93025, #FF786E); }
+    .race-fill.muted { background: linear-gradient(90deg, #4B5568, #7C879C); }
+
+    .proof-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: auto;
+    }
+
+    .proof-cell {
+      padding: 16px;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid var(--hairline);
+    }
+
+    .proof-cell strong {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--ink);
+    }
+
+    .proof-cell span {
+      display: block;
+      font-size: 12.5px;
+      color: var(--ink-muted);
+      margin-top: 4px;
+    }
+
+    /* ── GUARDRAIL EVENT ROWS ── */
+    .gate-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
-      padding-top: 6px;
-      border-top: 1px solid rgba(37, 51, 77, 0.7);
-      font-family: var(--font-mono);
-      font-size: 11px;
+      gap: 16px;
+      padding: 16px 18px;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid var(--hairline);
     }
-    .flow-models { color: var(--text-muted); }
-    .flow-launch { color: var(--green); font-weight: 700; white-space: nowrap; }
 
-    .stack-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
+    .gate-label {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink);
     }
-    .stack-tier {
-      background: #0D1524;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 9px 12px;
+
+    .gate-desc {
+      font-size: 13px;
+      color: var(--ink-muted);
+      margin-top: 3px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 13px;
+      border-radius: 999px;
+      font-size: 12.5px;
+      font-weight: 700;
+      white-space: nowrap;
+      letter-spacing: 0.01em;
+    }
+
+    .pill.red { background: var(--red-soft); color: var(--red-bright); }
+    .pill.green { background: var(--green-soft); color: var(--green-bright); }
+    .pill.blue { background: var(--blue-soft); color: var(--blue-bright); }
+    .pill.neon { background: var(--neon-soft); color: var(--neon-bright); }
+
+    /* ── VOICE CONVERSATION BUBBLES ── */
+    .voice-thread {
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 14px;
     }
-    .stack-tier-head {
+
+    .voice-msg {
+      padding: 16px 20px;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--hairline);
+      transition: opacity 280ms ease, border-color 280ms ease;
+    }
+
+    .voice-msg.speaking {
+      background: rgba(255, 122, 26, 0.08);
+      border-color: rgba(255, 122, 26, 0.42);
+    }
+
+    .voice-msg.gemini {
+      background: rgba(66, 133, 244, 0.06);
+      border-color: rgba(66, 133, 244, 0.22);
+    }
+
+    .voice-who {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--ink-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+    }
+
+    .voice-msg.speaking .voice-who { color: var(--neon-bright); }
+    .voice-msg.gemini .voice-who { color: var(--blue-bright); }
+
+    .voice-text {
+      font-size: 15.5px;
+      line-height: 1.5;
+      color: var(--ink);
+    }
+
+    .wave-bars {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      height: 16px;
+    }
+
+    .wave-bar {
+      width: 3px;
+      height: 100%;
+      border-radius: 3px;
+      background: var(--neon-bright);
+      transform: scaleY(0.3);
+    }
+
+    .voice-msg.speaking .wave-bar {
+      animation: waveBounce 0.65s ease-in-out infinite;
+    }
+
+    .voice-msg.speaking .wave-bar:nth-child(2) { animation-delay: 0.12s; }
+    .voice-msg.speaking .wave-bar:nth-child(3) { animation-delay: 0.24s; }
+    .voice-msg.speaking .wave-bar:nth-child(4) { animation-delay: 0.36s; }
+    .voice-msg.speaking .wave-bar:nth-child(5) { animation-delay: 0.18s; }
+
+    /* ── EMBEDDED VOICE AI CINEMA (SCENE 6) ── */
+    .video-switcher {
+      display: inline-flex;
+      gap: 6px;
+      background: var(--surface);
+      padding: 5px;
+      border-radius: 999px;
+      border: 1px solid var(--hairline);
+    }
+
+    .video-switch-btn {
+      appearance: none;
+      border: none;
+      background: transparent;
+      color: var(--ink-soft);
+      font-family: var(--font-body);
+      font-size: 13.5px;
+      font-weight: 600;
+      padding: 8px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 180ms ease, color 180ms ease;
+    }
+
+    .video-switch-btn.active {
+      background: var(--neon);
+      color: #090A0D;
+      font-weight: 700;
+    }
+
+    .arch-card-frame {
+      background: var(--surface);
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius-lg);
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+
+    .arch-card-frame img {
+      width: 100%;
+      max-height: 465px;
+      object-fit: contain;
+      border-radius: 12px;
+      display: block;
+    }
+
+    .cinema-video-frame {
+      background: #040507;
+      border: 1px solid var(--hairline-strong);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cinema-video-frame video {
+      width: 100%;
+      max-height: 440px;
+      background: #000;
+      display: block;
+    }
+
+    .cinema-video-caption {
+      padding: 14px 20px;
+      background: var(--surface);
+      border-top: 1px solid var(--hairline);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 14px;
+      color: var(--ink-soft);
+    }
+
+    /* ── SUBTLE BOTTOM STAGE FOOTER ── */
+    .stage-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 12px;
+      border-top: 1px solid var(--hairline);
+      font-size: 13px;
+      color: var(--ink-muted);
+    }
+
+    .tech-link {
+      appearance: none;
+      border: 1px solid var(--hairline);
+      background: transparent;
+      color: var(--ink-soft);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 150ms ease, color 150ms ease;
+    }
+
+    .tech-link:hover {
+      background: var(--surface-2);
+      color: var(--ink);
+    }
+
+    /* ── FLOATING LIVE EXECUTION PILL (UNOBTRUSIVE) ── */
+    .live-pill {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(90px);
+      background: #141822;
+      border: 1px solid rgba(255, 122, 26, 0.45);
+      border-radius: 999px;
+      padding: 10px 22px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.72);
+      z-index: 50;
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 240ms ease, opacity 240ms ease;
+      font-size: 13.5px;
+      font-weight: 600;
+    }
+
+    .live-pill.visible {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .spinner {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 122, 26, 0.25);
+      border-top-color: var(--neon-bright);
+      animation: spin 0.75s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── SLIDE-OVER TECHNICAL DETAILS DRAWER (HIDDEN BY DEFAULT) ── */
+    .tech-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.56);
+      backdrop-filter: blur(4px);
+      z-index: 70;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 220ms ease;
+    }
+
+    .tech-backdrop.open { opacity: 1; pointer-events: auto; }
+
+    .tech-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: min(560px, 94vw);
+      background: #0E1017;
+      border-left: 1px solid var(--hairline-strong);
+      z-index: 80;
+      transform: translateX(100%);
+      transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tech-drawer.open { transform: translateX(0); }
+
+    .tech-head {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--hairline);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .tech-head h2 {
+      font-family: var(--font-display);
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .tech-body {
+      padding: 22px 24px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      flex: 1;
+    }
+
+    .tech-section-lbl {
       font-family: var(--font-mono);
       font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
+      font-weight: 600;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: var(--blue);
-    }
-    .stack-tier-head.green { color: #6CE08A; }
-    .stack-tier-head.amber { color: #FBBF24; }
-    .stack-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-    }
-    .stack-pill {
-      font-size: 11.2px;
-      padding: 3px 7.5px;
-      border-radius: 5px;
-      background: var(--surface-alt);
-      border: 1px solid var(--border);
-      color: #E2E8F0;
+      color: var(--neon-bright);
+      margin-bottom: 8px;
     }
 
-    /* ── Interactive MacBook / Laptop Scaling (NEVER applies in ?record=1) ── */
-    @media (max-width: 1680px) {
-      body:not(.record-mode) .scene-kicker { font-size: 12.5px; margin-bottom: 4px; }
-      body:not(.record-mode) .scene-title { font-size: 22px; }
-      body:not(.record-mode) .scene-header { padding-bottom: 12px; }
-      body:not(.record-mode) .scene-meta { font-size: 12.5px; gap: 16px; }
-      body:not(.record-mode) .meta-stat strong { font-size: 15px; }
-      body:not(.record-mode) .panel { padding: 15px 18px; gap: 10px; }
-      body:not(.record-mode) .panel-header { font-size: 12px; padding-bottom: 8px; }
-      body:not(.record-mode) .tag { font-size: 11.5px; padding: 3px 8px; }
-      body:not(.record-mode) .prose { font-size: 14px; }
-      body:not(.record-mode) .code-box { font-size: 12px; padding: 10px 12px; }
-      body:not(.record-mode) .worker-card { padding: 11px 14px; gap: 7px; }
-      body:not(.record-mode) .worker-id { font-size: 13.5px; }
-      body:not(.record-mode) .worker-branch,
-      body:not(.record-mode) .worker-metrics { font-size: 12px; }
-      body:not(.record-mode) table.data-table { font-size: 13px; }
-      body:not(.record-mode) table.data-table th { font-size: 11px; padding: 6px 10px; }
-      body:not(.record-mode) table.data-table td { padding: 8px 10px; }
-      body:not(.record-mode) .bar-label-row { font-size: 12.5px; }
-      body:not(.record-mode) .bar-track { height: 20px; }
-      body:not(.record-mode) .bar-fill { font-size: 11.5px; }
-      body:not(.record-mode) .kpi-box { padding: 12px 14px; }
-      body:not(.record-mode) .kpi-value { font-size: 24px; }
-      body:not(.record-mode) .transcript-text { font-size: 14px; }
-      body:not(.record-mode) .dag-node { padding: 10px 13px; }
-      body:not(.record-mode) .dag-name { font-size: 13px; }
-      body:not(.record-mode) .dag-detail { font-size: 12.5px; }
-      body:not(.record-mode) .finding-title { font-size: 13.5px; }
-      body:not(.record-mode) .finding-desc { font-size: 12.5px; }
-      body:not(.record-mode) .cmd-strip { padding: 12px 18px; }
-      body:not(.record-mode) .cmd-text { font-size: 13.5px; }
-      body:not(.record-mode) .grid-2,
-      body:not(.record-mode) .grid-42-58,
-      body:not(.record-mode) .grid-60-40,
-      body:not(.record-mode) .grid-46-54 { gap: 16px; }
-      body:not(.record-mode) .col-stack { gap: 12px; }
-      body:not(.record-mode) .mm-thumb { width: 165px; height: 93px; }
+    .tech-copy {
+      font-size: 14px;
+      line-height: 1.55;
+      color: var(--ink-soft);
     }
 
-    @media (max-width: 1180px) {
-      body:not(.record-mode) .pillars-row { grid-template-columns: repeat(2, 1fr); }
-      body:not(.record-mode) .pillar-arrow { display: none; }
-      body:not(.record-mode) .flow-grid { grid-template-columns: repeat(2, 1fr); }
-      body:not(.record-mode) .stack-grid { grid-template-columns: 1fr; }
-      body:not(.record-mode) .bts-grid { grid-template-columns: repeat(2, 1fr); }
-      body:not(.record-mode) .grid-2,
-      body:not(.record-mode) .grid-42-58,
-      body:not(.record-mode) .grid-60-40,
-      body:not(.record-mode) .grid-46-54 { grid-template-columns: 1fr; }
+    .tech-code {
+      background: #07090E;
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.55;
+      color: #D5E2F7;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-height: 280px;
+      overflow-y: auto;
+    }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 28px;
+      background: #141822;
+      border: 1px solid var(--hairline-strong);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      max-width: 360px;
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.7);
+      z-index: 90;
+      transform: translateY(20px);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 220ms ease, opacity 220ms ease;
+    }
+
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast strong { display: block; font-size: 13.5px; color: var(--ink); }
+    .toast span { display: block; font-size: 12.5px; color: var(--ink-soft); margin-top: 3px; }
+    .toast.err { border-color: rgba(234, 67, 53, 0.5); }
+
+    @media (max-width: 1100px) {
+      .split-stage, .split-stage.even, .split-stage.video-split { grid-template-columns: 1fr; }
+      .story-grid { grid-template-columns: repeat(2, 1fr); }
+      .brand-sub { display: none; }
+    }
+    @media (max-width: 720px) {
+      .story-grid, .proof-strip { grid-template-columns: 1fr; }
+      .topbar { padding: 0 14px; }
+      .stage-shell { padding: 20px 16px; }
     }
   </style>
 </head>
 <body>
-  <!-- ── Interactive Stage Header (automatically hidden when ?record=1) ── -->
-  <header class="top-header interactive-only">
-    <div class="stage-nav">
-      <div class="brand">
-        <span class="brand-dot"></span>
-        THE PERIODIC TABLE OF AGENTS · <span>STAGE COMMAND CENTER</span>
-        <span class="brand-sub">— Mani · Google Cloud</span>
-      </div>
-
-      <div class="health-bar">
-        <div class="status-chip" id="apiChip" title="Gemini API key detection status">
-          <span class="status-dot amber" id="apiDot"></span>
-          <span id="apiText">Checking API...</span>
-        </div>
-
-        <div class="status-chip" id="backendChip" title="Local Spanner Omni SQLite (10,000 rows) + BigQuery Iceberg Parquet (40,000 rows) + Sandbox Workspaces">
-          <span class="status-dot green" id="backendDot"></span>
-          <span id="backendText">Backend: Checking...</span>
-        </div>
-
-        <label class="auto-reset-toggle" title="Automatically clean sandboxes, verify code files, and re-seed Spanner/BigQuery data after every live demo finishes">
-          <input type="checkbox" id="chkAutoReset" checked />
-          <span>Auto-Reset</span>
-        </label>
-
-        <div class="reset-menu-wrap">
-          <button class="ctrl-btn" id="btnResetMenu" type="button">⟲ Reset ▾</button>
-          <div class="reset-popover" id="resetPopover">
-            <button class="reset-option" id="btnQuickReset" type="button">
-              <strong>
-                <span>⟲ Reset Code &amp; Backend</span>
-                <span class="tag tag-green">~0.4s</span>
-              </strong>
-              <span>Cleans temporary sandboxes, restores clean demo code, and refreshes 10k Spanner + 40k BigQuery rows. Keeps your current screen visible.</span>
-            </button>
-            <button class="reset-option" id="btnFactoryReset" type="button">
-              <strong>
-                <span>↺ Full Factory Reset (+ Baseline &amp; Tests)</span>
-                <span class="tag tag-amber">~2s</span>
-              </strong>
-              <span>Resets code + backend, restores baseline demo recordings &amp; voice tracks, and verifies all 10 automated tests pass.</span>
-            </button>
-          </div>
-        </div>
-      </div>
+  <header class="topbar">
+    <div class="brand" id="brandHome" title="Back to Keynote Overview">
+      <div class="brand-spark">✦</div>
+      <div class="brand-name">Gemini 4 Neon <span class="brand-sub">· Stage Studio</span></div>
     </div>
 
-    <div class="demo-bar">
-      <nav class="tabs" aria-label="Keynote Demos">
-        <button class="tab-btn active" data-scene="0" type="button">00 · Architecture &amp; Flow</button>
-        <button class="tab-btn" data-scene="1" type="button">01 · Parallel Fix</button>
-        <button class="tab-btn" data-scene="5" type="button">02 · Legacy Rewrite</button>
-        <button class="tab-btn" data-scene="2" type="button">03 · Instant Guardrails</button>
-        <button class="tab-btn" data-scene="3" type="button">04 · Voice + Cloud Data</button>
-        <button class="tab-btn" data-scene="4" type="button">05 · AI Security Audit</button>
-        <button class="tab-btn" data-scene="6" type="button">06 · Voice AI Live</button>
-      </nav>
+    <nav class="nav-tabs" aria-label="Demo Navigation">
+      <button class="tab-btn active" data-scene="0" type="button">Overview</button>
+      <button class="tab-btn" data-scene="1" type="button"><span class="tab-num">1</span>Swarm</button>
+      <button class="tab-btn" data-scene="5" type="button"><span class="tab-num">2</span>Rewrite</button>
+      <button class="tab-btn" data-scene="2" type="button"><span class="tab-num">3</span>Guardrails</button>
+      <button class="tab-btn" data-scene="3" type="button"><span class="tab-num">4</span>Voice + Data</button>
+      <button class="tab-btn" data-scene="4" type="button"><span class="tab-num">5</span>Cyber Audit</button>
+      <button class="tab-btn" data-scene="6" type="button"><span class="tab-num">6</span>Live Videos</button>
+    </nav>
 
-      <div class="controls">
-        <button class="ctrl-btn" id="btnAudioToggle" type="button" style="display:none;">🔊 Audio</button>
-        <button class="ctrl-btn" id="btnBtsToggle" type="button" title="Keyboard shortcut: B">? Behind the Scenes</button>
-        <button class="ctrl-btn primary" id="btnStartDemo1" type="button" style="display:none;">Start Demo 01 →</button>
-        <button class="ctrl-btn" id="btnReplay" type="button" title="Keyboard shortcut: R">▶ Replay</button>
-        <button class="ctrl-btn primary" id="btnRunLive" type="button">⚡ Run LIVE</button>
+    <div class="actions">
+      <button class="btn" id="btnPreview" type="button" title="Play animated stage preview (R)">▶ Preview</button>
+      <button class="btn btn-neon" id="btnRunLive" type="button" title="Execute real live Gemini API calls">⚡ Run Live</button>
+      <button class="btn btn-icon" id="btnResetMenu" type="button" title="Environment Status & Reset">↺</button>
+
+      <div class="popover" id="resetPopover">
+        <div class="pop-row">
+          <span>Gemini API Key</span>
+          <strong id="popApiStatus"><span class="dot-indicator off"></span> Checking…</strong>
+        </div>
+        <div class="pop-row">
+          <span>Cloud Data Seed</span>
+          <strong id="popDataStatus">10k Spanner · 40k Iceberg</strong>
+        </div>
+        <div class="pop-row">
+          <span>Auto-Reset After Live Run</span>
+          <input type="checkbox" id="chkAutoReset" checked />
+        </div>
+        <div class="pop-divider"></div>
+        <button class="pop-action" id="btnQuickReset" type="button">
+          <strong>Reset Code &amp; Backend</strong>
+          <span>Prunes sandboxes &amp; refreshes Spanner + Iceberg data</span>
+        </button>
+        <button class="pop-action" id="btnFactoryReset" type="button">
+          <strong>Full Factory Reset + Tests</strong>
+          <span>Resets data, restores verified traces &amp; runs 10 tests</span>
+        </button>
       </div>
     </div>
   </header>
 
-  <!-- ── Live SSE Progress Banner (interactive-only) ── -->
-  <section class="live-drawer interactive-only" id="liveDrawer" aria-live="polite">
-    <div class="live-drawer-top">
-      <div class="live-title">
-        <span class="spinner" id="liveSpinner"></span>
-        <span id="liveTitleText">Executing Live Demo...</span>
-      </div>
-      <div style="display:flex;align-items:center;gap:10px;">
-        <span class="tag tag-blue" id="liveTimer">0.0s</span>
-        <button class="ctrl-btn" id="btnHideLiveDrawer" type="button" style="padding:4px 10px;font-size:11.5px;">Dismiss</button>
-      </div>
+  <main class="stage-shell">
+    <section id="stage" aria-live="polite"></section>
+
+    <footer class="stage-footer">
+      <div id="footerHint">MonsoonPay UPI Story · 100% Google Cloud · Keys: 0–6 switch · R preview · D technical details</div>
+      <button class="tech-link" id="btnTechDrawer" type="button">&lt;/&gt; Technical Details &amp; Code</button>
+    </footer>
+  </main>
+
+  <div class="live-pill" id="livePill">
+    <div class="spinner" id="liveSpinner"></div>
+    <span id="livePillText">Connecting to live Gemini API…</span>
+    <span id="livePillTimer" style="font-family:var(--font-mono);color:var(--ink-muted);font-size:12px;">0.0s</span>
+  </div>
+
+  <div class="tech-backdrop" id="techBackdrop"></div>
+  <aside class="tech-drawer" id="techDrawer" aria-label="Technical Details">
+    <div class="tech-head">
+      <h2 id="techTitle">Technical Details &amp; Code</h2>
+      <button class="btn btn-icon" id="btnCloseTech" type="button" aria-label="Close">✕</button>
     </div>
-    <div class="stepper" id="liveStepper"></div>
-    <div class="live-feed" id="liveFeed"></div>
-  </section>
+    <div class="tech-body" id="techBody"></div>
+  </aside>
 
-  <!-- ── Plain-English Behind-the-Scenes Explainer (interactive-only) ── -->
-  <section class="bts-drawer interactive-only" id="btsDrawer"></section>
-
-  <!-- ── Main Visual Demo Stage (100% compatible with ?record=1) ── -->
-  <main class="canvas" id="stage"></main>
-
-  <!-- ── Toast Notifications (interactive-only) ── -->
-  <div class="toast-wrap interactive-only" id="toastWrap"></div>
+  <div class="toast" id="toast">
+    <strong id="toastTitle"></strong>
+    <span id="toastMsg"></span>
+  </div>
 
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const IS_RECORD_MODE = params.get('record') === '1';
-    if (IS_RECORD_MODE) {
-      document.body.classList.add('record-mode');
-    }
+    const IS_RECORD_MODE = new URLSearchParams(window.location.search).get('record') === '1';
+    if (IS_RECORD_MODE) document.body.classList.add('record-mode');
 
     let TRACES = window.__INJECTED_TRACES__ || {};
     let currentScene = 0;
+    let voiceVideoTab = 'flight';
     let rafId = null;
-    let liveAudios = [];
-    let audioTimers = [];
     let audioEnabled = true;
     let audioBust = Date.now();
+    let liveAudios = [];
+    let audioTimers = [];
     let activeEventSource = null;
     let liveTimerInterval = null;
-    let btsOpen = false;
     let liveKeyConfigured = false;
+    let liveLogs = [];
+    let liveActiveStep = -1;
 
     const SCENE_TO_DEMO_ID = { 1: 'demo1', 2: 'demo2', 3: 'demo3', 4: 'demo4', 5: 'demo5' };
 
-    const BEHIND_THE_SCENES = {
-      0: {
-        title: 'Tab 00 · Keynote Architecture & End-to-End Demo Journey',
-        scenario: 'Gives both business executives and engineers one simple map before diving into live demos — showing how Gemini 4, Antigravity, Decisions API, Google ADK 2.0, and Google Cloud Data fit together for MonsoonPay.',
-        live: 'Click any of the 6 journey cards on this screen (or use tabs 01–06 across the top) to jump straight into that demo. Every live demo connects directly to real Google Gemini APIs.',
-        local: 'The entire Command Center runs locally on your laptop so switching tabs, replaying animations, or launching Google Drive Voice AI recordings is instant.',
-        takeaway: '"One mental model to remember from today: Plan big, execute fast, decide small, and review everything."'
-      },
-      1: {
-        title: 'Demo 01 · Plan Big with Carbon + Build Fast with 3 Parallel Hydrogen Workers',
-        scenario: 'During a festival flash sale in Delhi (asia-south2), MonsoonPay checkouts slow down to 430ms+ because a small 64-connection server queue gets overloaded with retries.',
-        live: 'Calls LIVE gemini-4-carbon to inspect the real code and design a 3-part recovery plan. Then creates 3 isolated code sandboxes on disk and runs 3 LIVE gemini-4-hydrogen builders in parallel, generating real fixes with zero merge conflicts and verifying all automated tests.',
-        local: 'The temporary sandboxes live in your OS temp folder and are automatically cleaned up when done (and verified on Reset). The bottom command shows handing off the finished work to a Cloud VM so you can close your laptop.',
-        takeaway: '"Don\'t force one AI model to do everything. Use Carbon once to think deeply and prevent costly mistakes, then let parallel Hydrogen builders execute in isolated sandboxes ~1.5x–2x faster with zero conflicts."'
-      },
-      5: {
-        title: 'Demo 02 · Modernize Legacy Indian UPI Code (Zero-Error Verified Rewrite)',
-        scenario: 'MonsoonPay runs an older UPI settlement program that slows to a crawl as transaction volumes grow — because it checks past payment IDs one by one — while hiding tricky RBI zero-fee and 18% GST rounding rules.',
-        live: 'First runs the old code on 8,000 Indian UPI/Card payments and locks its exact output fingerprint. Next, LIVE gemini-4-carbon reads the legacy code and lists all 5 hidden business rules. Then LIVE gemini-4-argon writes a fast modern version, runs it live on the same 8,000 payments plus 6 tricky boundary cases, and proves 0.00 INR difference with up to 94x faster speed.',
-        local: 'The 8,000 realistic Indian payment records are generated fresh in memory, and the AI-rewritten engine runs in memory without overwriting the original legacy file — so you can replay or re-run cleanly anytime.',
-        takeaway: '"The hardest part of modernizing legacy banking code isn\'t writing new code — it\'s proving zero silent financial drift. Lock an exact accuracy check first, let Gemini 4 modernize it, and prove 40x–90x faster execution with 0.00 INR error."'
-      },
-      2: {
-        title: 'Demo 03 · Instant Security & Compliance Guardrails ($0 Output Cost)',
-        scenario: 'Before an expensive AI agent runs, enterprises must check every incoming message for prompt-hacking attacks, leaked API keys, routing, and 50+ RBI/PCI compliance rules. Using standard chat models for yes/no checks wastes time and money.',
-        live: 'Runs 100% LIVE against Google Gemini APIs across 3 rounds: (A) 4 live events screened across 8 security & routing checks in one instant pass (0 output tokens!), (B) a live speed & cost race on the exact same alert vs gemini-3.8-flash and gemini-4-hydrogen (8 checks and 50 compliance checks), and (C) an instant check on our Google Cloud architecture diagram.',
-        local: 'Only the small bottom-right box cites Google\'s published 100-check benchmark (359ms vs 7.2s Flash vs 8.6s Hydrogen). Every single row in Rounds A, B, and C is measured live.',
-        takeaway: '"Stop burning generative output tokens on yes/no routing and compliance checks. Decisions API scores 50+ rules in a single instant pass with ZERO output cost — 10x–25x faster and up to 50x+ cheaper."'
-      },
-      3: {
-        title: 'Demo 04 · Live Voice Check-In + Automated Workflow + Unified Cloud Data',
-        scenario: 'Mid-talk, after closing your laptop, you ask by voice whether the remote cloud workers found the Delhi checkout slowdown and whether Pull Request #1 is ready to approve.',
-        live: 'Runs a real Google ADK 2.0 multi-step workflow: Step 1 screens your request via LIVE gemini-decision-1; Step 2 looks up the verified join key in Knowledge Catalog; Step 3 runs a real live SQL join across 40,000 payment & gateway records with zero data copying; Step 4 checks the patched speed; Step 5 pauses automatically for human approval. Then LIVE gemini-3.8-flash-tts generates the spoken HD voice update.',
-        local: 'So venue Wi-Fi or cloud permissions never break your keynote, Spanner Omni (10,000 rows) is backed by a local database and BigQuery Iceberg (40,000 rows) by a local Parquet file — both refreshed cleanly whenever you click Reset.',
-        takeaway: '"Production AI agents need governed workflows (ADK 2.0), live federated data with zero ETL copying, and built-in Human Approval pauses — never blind auto-merges."'
-      },
-      4: {
-        title: 'Demo 05 · Review Everything: Load Test + Automated Tests + AI Security Audit',
-        scenario: 'The AI workers cut worst-case checkout delay by 97% and turned every automated test green — now we prove why an independent AI security review and human sign-off still matter before going live.',
-        live: 'Runs a 500-user flash-sale load test comparing the old 64-connection setup against the new 512-connection protected setup, runs all 10 automated tests, then sends the actual Python code to LIVE gemini-4-carbon acting as an independent Principal Security Reviewer, and checks GitHub Pull Request #1.',
-        local: 'The 500-user load test runs locally against the real Python circuit-breaker code so you get crisp, reliable before-and-after latency proof every time.',
-        takeaway: '"Green tests and a 97% speed boost are still NOT enough to auto-launch. Putting Carbon in an independent security-reviewer role catches subtle concurrency and policy gaps that unit tests miss — humans keep the merge button."'
-      },
-      6: {
-        title: 'Demo 06 · Real Gemini 3.8 Live & Indian Phone-Line Voice AI Recordings',
-        scenario: 'Shows real production voice agents that think and query enterprise databases in the background while speaking naturally — with zero awkward silence.',
-        live: 'Opens Mani\'s two real recorded Google Drive sessions directly in full screen: (4A) Gemini 3.8 Live using live camera + voice to rebook cancelled Frankfurt flight PNR LH8942X while running background BigQuery/Firestore lookups, and (4B) Gemini VoiceAI answering real Indian phone calls across English, Hindi, Tamil, Kannada, Telugu & Hinglish on Cloud Run (Mumbai).',
-        local: 'Preview posters are bundled locally in the repo so this screen loads instantaneously offline, with 1-click Google Drive launch buttons.',
-        takeaway: '"Dual-track voice AI changes customer experience forever: the voice keeps talking naturally while the reasoning engine runs live database lookups and policy checks in the background — even over standard Indian phone lines."'
-      }
-    };
+    const DURATIONS = { 0: 1.0, 1: 12.5, 2: 14.0, 3: 24.0, 4: 12.5, 5: 13.0, 6: 1.0 };
 
-    function esc(str) {
-      return String(str ?? '')
+    function esc(v) {
+      return String(v ?? '')
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;');
     }
 
     function clamp01(v) { return Math.max(0, Math.min(1, v)); }
+    function easeOut(v) { const c = clamp01(v); return 1 - Math.pow(1 - c, 3); }
 
-    function easeOut(v) {
-      const c = clamp01(v);
-      return 1 - Math.pow(1 - c, 3);
-    }
-
-    function typewriter(str, progress) {
-      const s = String(str || '');
-      return s.slice(0, Math.floor(s.length * clamp01(progress)));
-    }
-
-    function trimWords(str, maxLen) {
-      const s = String(str || '').trim();
-      if (s.length <= maxLen) return s;
-      const cut = s.slice(0, maxLen);
-      const lastSpace = cut.lastIndexOf(' ');
-      return (lastSpace > maxLen * 0.6 ? cut.slice(0, lastSpace) : cut) + '…';
-    }
-
-    function humanizeRule(str) {
+    function shortRule(str) {
       return String(str || '')
-        .replace(/Idempotent first-seen-wins UTR deduplication:/i, 'No double-counting:')
-        .replace(/canonical digest parity/gi, 'exact output fingerprint match')
-        .replace(/SHA-256 parity digest/gi, 'digital output fingerprint')
-        .replace(/O\(N\^2\)|O\(N²\)/g, 'slow full-list scan')
-        .replace(/O\(1\)/g, 'instant lookup')
-        .replace(/O\(N\)/g, 'single-pass')
-        .replace(/ROUND_HALF_UP/g, 'standard half-up rounding');
+        .replace(/O\(N\^2\)|O\(N²\)/gi, 'slow scan')
+        .replace(/O\(1\)/gi, 'instant lookup')
+        .replace(/O\(N\)/gi, 'single pass')
+        .replace(/SHA-256 parity digest/gi, 'exact output match')
+        .replace(/Idempotent first-seen-wins UTR deduplication:/i, 'No double-counting:');
     }
 
-    // ── SCENE 0: End-to-End Architecture & Interactive Keynote Demo Flow ──
+    function stopPlayback() {
+      if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+      audioTimers.forEach(id => clearTimeout(id));
+      audioTimers = [];
+      liveAudios.forEach(a => { try { a.pause(); a.currentTime = 0; } catch {} });
+      liveAudios = [];
+    }
+
+    // ── SCENE 0: CLEAN KEYNOTE OVERVIEW & ANIMATED ARCHITECTURE FLOW ──
     function renderScene0() {
-      const d1 = TRACES.demo1;
-      const d5 = TRACES.demo5;
-      const d2 = TRACES.demo2;
-      const d3 = TRACES.demo3;
-      const d4 = TRACES.demo4;
+      const d1 = TRACES.demo1 || {};
+      const d5 = TRACES.demo5 || {};
+      const d2 = TRACES.demo2 || {};
+      const d3 = TRACES.demo3 || {};
+      const d4 = TRACES.demo4 || {};
 
-      const speedupSwarm = d1?.hydrogen_swarm?.parallel_speedup || '1.8';
-      const speedupMod = d5?.benchmark?.speedup_factor || '94.3';
-      const costSave = d2?.round_b_head_to_head?.live_ratios_50q?.cost_savings_vs_4_hydrogen || '53.4';
-      const sqlMs = (d3?.lakehouse_finding || d3?.multicloud_finding)?.query_latency_ms || '162';
-      const p99Drop = d4?.sla_benchmark?.p99_reduction_pct || '97.1';
+      const swarmSpeed = d1.hydrogen_swarm?.parallel_speedup || '1.8';
+      const modSpeed = d5.benchmark?.speedup_factor || '100.5';
+      const costSave = d2.round_b_head_to_head?.live_ratios_50q?.cost_savings_vs_4_hydrogen || '57.8';
+      const sqlMs = Math.round((d3.lakehouse_finding || d3.multicloud_finding)?.query_latency_ms || 162);
+      const p99Drop = d4.sla_benchmark?.p99_reduction_pct || '97.2';
 
-      const cards = [
+      const tiles = [
         {
-          scene: 1,
-          step: 'STEP 01 · PLAN & BUILD',
-          badge: `${speedupSwarm}x FASTER · 0 CONFLICTS`,
-          badgeCls: 'tag-blue',
-          title: 'Fix a Flash-Sale Checkout Outage in Parallel',
-          desc: 'A Delhi traffic surge spikes checkout delays past 430ms. Carbon plans the fix once; 3 Hydrogen workers build in isolated sandboxes simultaneously, then hand off to a Cloud VM.',
-          models: 'Gemini 4 Carbon + 3x Hydrogen',
-          cta: 'Open Demo 01 →',
+          scene: 1, num: 'DEMO 01 · PARALLEL SWARM', statCls: 'neon',
+          stat: `${swarmSpeed}x faster · 0 conflicts`,
+          title: 'Plan with Neon, Build in Parallel',
+          desc: 'Gemini 4 Neon plans the Delhi outage recovery once. Three Hydrogen workers fix it side-by-side in isolated sandboxes.',
         },
         {
-          scene: 5,
-          step: 'STEP 02 · MODERNIZE',
-          badge: `${speedupMod}x FASTER · 0.00 INR ERROR`,
-          badgeCls: 'tag-green',
-          title: 'Rewrite a Slow Legacy UPI System with Zero Drift',
-          desc: 'AI reads an old Indian UPI settlement engine, uncovers 5 hidden RBI & 18% GST rules, writes a fast modern replacement, and proves 100% exact paisa-for-paisa accuracy on 8,000 payments.',
-          models: 'Gemini 4 Carbon + Argon',
-          cta: 'Open Demo 02 →',
+          scene: 5, num: 'DEMO 02 · LEGACY REWRITE', statCls: 'green',
+          stat: `${modSpeed}x faster · ₹0.00 error`,
+          title: 'Modernize Old Indian UPI Code',
+          desc: 'Neon uncovers 5 hidden RBI & GST rules inside slow legacy banking code, rewrites it, and proves zero financial drift.',
         },
         {
-          scene: 2,
-          step: 'STEP 03 · DECIDE SMALL',
-          badge: `UP TO ${costSave}x CHEAPER`,
-          badgeCls: 'tag-amber',
-          title: 'Screen Attacks & 50 RBI Rules in One Instant Check',
-          desc: 'Blocks prompt-hacking attacks and leaked secrets before agents ever run, then races live against Flash & Hydrogen across 8 and 50 compliance checks with ZERO output tokens.',
-          models: 'Gemini Decisions API',
-          cta: 'Open Demo 03 →',
+          scene: 2, num: 'DEMO 03 · INSTANT GUARDRAILS', statCls: 'neon',
+          stat: `${costSave}x cheaper · $0 output`,
+          title: 'Block Attacks & Score 50 Rules',
+          desc: 'Gemini Decisions API screens prompt attacks, leaked keys, and 50 compliance checks in one instant pass with zero output tokens.',
         },
         {
-          scene: 3,
-          step: 'STEP 04 · VOICE + DATA',
-          badge: `40k ROWS IN ${sqlMs}ms · 0 ETL`,
-          badgeCls: 'tag-blue',
-          title: 'Voice Status Check + Live Cloud Data Join',
-          desc: 'Close your laptop and check in by voice. Google ADK 2.0 joins live Spanner transactions with BigQuery logs (zero data copying), pinpoints Delhi, and pauses for human approval.',
-          models: 'Google ADK 2.0 + Gemini 3.8 Voice',
-          cta: 'Open Demo 04 →',
+          scene: 3, num: 'DEMO 04 · VOICE + CLOUD DATA', statCls: 'blue',
+          stat: `40k rows in ${sqlMs}ms · 0 copies`,
+          title: 'Voice Check-In + Human Approval',
+          desc: 'Close your laptop and check in by voice. Google ADK 2.0 joins live Spanner and BigQuery data and pauses for your sign-off.',
         },
         {
-          scene: 4,
-          step: 'STEP 05 · SECURITY AUDIT',
-          badge: `-${p99Drop}% DELAY · AI AUDIT`,
-          badgeCls: 'tag-amber',
-          title: 'Independent AI Security Review Before Launch',
-          desc: 'Load testing proves checkout delay fell 97% and all 10 tests pass — yet Carbon audits the code independently and catches subtle pre-merge risks before a human hits Merge.',
-          models: 'Load Test + Pytest + Carbon Audit',
-          cta: 'Open Demo 05 →',
+          scene: 4, num: 'DEMO 05 · CYBER SECURITY', statCls: 'green',
+          stat: `-${p99Drop}% delay · Neon audit`,
+          title: 'Independent AI Security Audit',
+          desc: 'Even when tests turn green and delay drops 97%, Gemini 4 Neon reviews the code independently before a human approves.',
         },
         {
-          scene: 6,
-          step: 'STEP 06 · VOICE AI LIVE',
-          badge: 'LIVE VIDEO & TELEPHONY',
-          badgeCls: 'tag-green',
-          title: 'Voice Agents That Think While They Speak',
-          desc: 'Watch two real Google Drive recordings: live camera + voice flight rebooking with zero dead air, plus real Indian phone-line calls across English, Hindi, Tamil, Kannada, Telugu & Hinglish.',
-          models: 'Gemini 3.8 Live + Cloud Run Mumbai',
-          cta: 'Open Demo 06 →',
+          scene: 6, num: 'DEMO 06 · LIVE VOICE AI', statCls: 'blue',
+          stat: 'Camera + 6 Indian Languages',
+          title: 'Voice That Thinks While Speaking',
+          desc: 'Watch real embedded demos: live camera flight rebooking with zero dead air, plus real Indian phone-line support.',
         },
       ];
 
-      const flowHtml = cards.map(c => `
-        <button class="flow-card" type="button" data-jump-scene="${c.scene}">
-          <div class="flow-card-top">
-            <span class="flow-step-num">${esc(c.step)}</span>
-            <span class="tag ${c.badgeCls}">${esc(c.badge)}</span>
-          </div>
-          <div class="flow-card-title">${esc(c.title)}</div>
-          <div class="flow-card-desc">${esc(c.desc)}</div>
-          <div class="flow-card-foot">
-            <span class="flow-models">${esc(c.models)}</span>
-            <span class="flow-launch">${esc(c.cta)}</span>
-          </div>
-        </button>
-      `).join('');
-
       return `
-        <div class="scene-header">
-          <div>
-            <div class="scene-kicker">KEYNOTE BLUEPRINT · ONE CONNECTED GOOGLE CLOUD STORY (MONSOONPAY)</div>
-            <div class="scene-title">Architecture &amp; Live Demo Flow — Click Any Step to Launch</div>
-          </div>
-          <div class="scene-meta">
-            <div class="meta-stat">Story<strong>MonsoonPay UPI</strong></div>
-            <div class="meta-stat green">Live Demos<strong>6 Interactive</strong></div>
-            <div class="meta-stat amber">Cloud<strong>100% Google Cloud</strong></div>
-          </div>
+        <div class="overview-hero">
+          <h1>Plan Big. Build Fast. Decide Instant.</h1>
+          <p>One live banking story on Google Cloud — powered by <strong>Gemini 4 Neon</strong>. Click any step below to launch animated preview or live API execution.</p>
         </div>
 
-        <div class="pillars-row">
-          <div class="pillar-card">
-            <div class="pillar-kicker">PILLAR 1 · ARCHITECT</div>
-            <div class="pillar-title">Plan Big</div>
-            <div class="pillar-desc"><strong>Gemini 4 Carbon</strong> reads the whole system, uncovers hidden risks &amp; business rules, and creates a clear blueprint.</div>
-          </div>
-          <div class="pillar-arrow">→</div>
-          <div class="pillar-card green">
-            <div class="pillar-kicker">PILLAR 2 · BUILDERS</div>
-            <div class="pillar-title">Execute Fast</div>
-            <div class="pillar-desc"><strong>Argon &amp; Hydrogen</strong> work in parallel inside isolated sandboxes — shipping clean code fast and running in the cloud.</div>
-          </div>
-          <div class="pillar-arrow">→</div>
-          <div class="pillar-card cyan">
-            <div class="pillar-kicker">PILLAR 3 · GUARDRAILS</div>
-            <div class="pillar-title">Decide Small</div>
-            <div class="pillar-desc"><strong>Gemini Decisions API</strong> checks security, routing &amp; 50+ compliance rules in one instant pass at <strong>$0 output cost</strong>.</div>
-          </div>
-          <div class="pillar-arrow">→</div>
-          <div class="pillar-card amber">
-            <div class="pillar-kicker">PILLAR 4 · GOVERNANCE</div>
-            <div class="pillar-title">Review Everything</div>
-            <div class="pillar-desc"><strong>Carbon Security Audit + Human Approval</strong> verify real performance, accuracy, and safety before anything ships.</div>
-          </div>
+        <div class="arch-strip">
+          <svg viewBox="0 0 1160 118" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="End-to-End Gemini 4 Neon Architecture">
+            <!-- Flowing animated connectors -->
+            <line x1="248" y1="59" x2="312" y2="59" stroke="rgba(255,122,26,0.3)" stroke-width="2.5"/>
+            <line x1="248" y1="59" x2="312" y2="59" stroke="#FFA352" stroke-width="2.5" class="flow-line"/>
+            <line x1="544" y1="59" x2="608" y2="59" stroke="rgba(66,133,244,0.3)" stroke-width="2.5"/>
+            <line x1="544" y1="59" x2="608" y2="59" stroke="#75A8FF" stroke-width="2.5" class="flow-line"/>
+            <line x1="840" y1="59" x2="904" y2="59" stroke="rgba(52,168,83,0.3)" stroke-width="2.5"/>
+            <line x1="840" y1="59" x2="904" y2="59" stroke="#62D987" stroke-width="2.5" class="flow-line"/>
+
+            <!-- Node 1: Neon -->
+            <rect x="16" y="14" width="232" height="90" rx="16" fill="#161923" stroke="rgba(255,122,26,0.5)" stroke-width="1.5"/>
+            <text x="36" y="42" fill="#FFA352" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">01 · ORCHESTRATOR</text>
+            <text x="36" y="68" fill="#F8FAFC" font-family="Plus Jakarta Sans, sans-serif" font-size="18" font-weight="800">Gemini 4 Neon</text>
+            <text x="36" y="89" fill="#94A3B8" font-family="Inter, sans-serif" font-size="12.5">Plans, modernizes &amp; audits</text>
+
+            <!-- Node 2: Hydrogen Swarm -->
+            <rect x="312" y="14" width="232" height="90" rx="16" fill="#161923" stroke="rgba(66,133,244,0.45)" stroke-width="1.5"/>
+            <text x="332" y="42" fill="#75A8FF" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">02 · PARALLEL BUILDERS</text>
+            <text x="332" y="68" fill="#F8FAFC" font-family="Plus Jakarta Sans, sans-serif" font-size="18" font-weight="800">3× Hydrogen Swarm</text>
+            <text x="332" y="89" fill="#94A3B8" font-family="Inter, sans-serif" font-size="12.5">Builds fast in isolated sandboxes</text>
+
+            <!-- Node 3: Decisions API -->
+            <rect x="608" y="14" width="232" height="90" rx="16" fill="#161923" stroke="rgba(255,163,82,0.4)" stroke-width="1.5"/>
+            <text x="628" y="42" fill="#FFA352" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">03 · GUARDRAILS</text>
+            <text x="628" y="68" fill="#F8FAFC" font-family="Plus Jakarta Sans, sans-serif" font-size="18" font-weight="800">Decisions API</text>
+            <text x="628" y="89" fill="#94A3B8" font-family="Inter, sans-serif" font-size="12.5">50+ rules at $0 output cost</text>
+
+            <!-- Node 4: ADK + Voice -->
+            <rect x="904" y="14" width="240" height="90" rx="16" fill="#161923" stroke="rgba(52,168,83,0.45)" stroke-width="1.5"/>
+            <text x="924" y="42" fill="#62D987" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">04 · GOVERN &amp; SPEAK</text>
+            <text x="924" y="68" fill="#F8FAFC" font-family="Plus Jakarta Sans, sans-serif" font-size="18" font-weight="800">ADK 2.0 + Live Voice</text>
+            <text x="924" y="89" fill="#94A3B8" font-family="Inter, sans-serif" font-size="12.5">Zero-copy data &amp; human sign-off</text>
+          </svg>
         </div>
 
-        <div class="flow-grid">
-          ${flowHtml}
-        </div>
-
-        <div class="stack-grid">
-          <div class="stack-tier">
-            <div class="stack-tier-head">1 · USER &amp; VOICE EXPERIENCE</div>
-            <div class="stack-pills">
-              <span class="stack-pill">Stage Web Command Center</span>
-              <span class="stack-pill">Antigravity IDE</span>
-              <span class="stack-pill">Gemini 3.8 Live (Camera + Voice)</span>
-              <span class="stack-pill">Indian Phone Telephony (6 Languages)</span>
-            </div>
-          </div>
-          <div class="stack-tier">
-            <div class="stack-tier-head green">2 · AGENT CONTROL &amp; SAFETY</div>
-            <div class="stack-pills">
-              <span class="stack-pill">Decisions API (Instant Guardrails)</span>
-              <span class="stack-pill">Google ADK 2.0 Automated Workflows</span>
-              <span class="stack-pill">Built-In Human Approval Gates</span>
-              <span class="stack-pill">Parallel Sandboxes &amp; Cloud VMs</span>
-            </div>
-          </div>
-          <div class="stack-tier">
-            <div class="stack-tier-head amber">3 · GEMINI 4 MODELS &amp; DATA CLOUD</div>
-            <div class="stack-pills">
-              <span class="stack-pill">Gemini 4 Carbon · Argon · Hydrogen</span>
-              <span class="stack-pill">Spanner Omni (Mumbai + Delhi)</span>
-              <span class="stack-pill">BigQuery Iceberg (Zero-Copy)</span>
-              <span class="stack-pill">Knowledge Catalog (Verified Schemas)</span>
-            </div>
-          </div>
-        </div>
-      `;
-    }
-
-    // ── SCENE 1: Carbon Architect -> Parallel Hydrogen Builders -> Remote Cloud Agent ──
-    function renderScene1(t) {
-      const d = TRACES.demo1;
-      if (!d) return '<div class="panel">Loading Demo 1 real trace...</div>';
-
-      const carb = d.carbon_architect;
-      const swarm = d.hydrogen_swarm;
-      const plan = carb.plan || {};
-      const workers = swarm.workers || [];
-
-      const pCarbon = easeOut(t / 3.8);
-      const pRisk = easeOut((t - 2.0) / 2.2);
-      const showSwarm = t >= 4.2;
-      const showFooter = t >= 9.6;
-
-      const workerCards = workers.map((w, idx) => {
-        const startT = 4.3 + idx * 0.45;
-        const doneT = startT + 2.4 + idx * 0.6;
-        const vis = clamp01((t - startT) / 0.5);
-        const done = t >= doneT;
-        const codeProg = clamp01((t - startT - 0.3) / 2.6);
-        const preview = (w.artifact_preview || '').split('\n').slice(0, 5).join('\n');
-        return `
-          <div class="worker-card" style="opacity:${vis}">
-            <div class="worker-top">
+        <div class="story-grid">
+          ${tiles.map(t => `
+            <button class="story-tile" type="button" data-jump="${t.scene}">
               <div>
-                <span class="worker-id">${esc(w.worker_id)} · ${esc(w.owner)}</span>
-                <span class="worker-branch" style="margin-left:12px;">${esc(w.branch)}</span>
+                <div class="story-num">${t.num}</div>
+                <div class="story-title">${t.title}</div>
+                <div class="story-desc">${t.desc}</div>
               </div>
-              <div style="display:flex;gap:10px;align-items:center;flex-shrink:0;">
-                <span class="tag tag-blue">${esc(w.model)} (${esc(w.thinking_level)})</span>
-                <span class="worker-metrics">${done ? `${(w.latency_ms / 1000).toFixed(1)}s · ${w.artifact_lines} lines` : 'building in sandbox...'}</span>
+              <div class="story-foot">
+                <span class="story-stat ${t.statCls}">${t.stat}</span>
+                <span class="story-go">Launch →</span>
               </div>
-            </div>
-            <div class="code-box" style="font-size:12.5px;line-height:1.45;">${esc(typewriter(preview, codeProg))}</div>
-          </div>
-        `;
-      }).join('');
+            </button>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    // ── SCENE 1: GEMINI 4 NEON ORCHESTRATOR -> 3x PARALLEL HYDROGEN SWARM ──
+    function renderScene1(t) {
+      const d1 = TRACES.demo1 || {};
+      const neon = d1.neon_orchestrator || d1.carbon_architect || {};
+      const plan = neon.plan || {};
+      const swarm = d1.hydrogen_swarm || {};
+      const workers = swarm.workers || [
+        { worker_id: 'W1', owner: 'Traffic Capacity Team', plain_goal: 'Increase server queue size for flash sale bursts.', latency_ms: 1972 },
+        { worker_id: 'W2', owner: 'Checkout Reliability Team', plain_goal: 'Stop endless retries when servers slow down.', latency_ms: 7043 },
+        { worker_id: 'W3', owner: 'Database Resilience Team', plain_goal: 'Serve fast local backup reads during outages.', latency_ms: 10764 },
+      ];
+
+      const pPlan = easeOut(t / 3.0);
+      const pBuild = easeOut((t - 3.0) / 5.5);
+      const pCloud = easeOut((t - 8.8) / 2.2);
+
+      const neonMs = neon.latency_ms ? `${(neon.latency_ms / 1000).toFixed(1)}s` : '14.8s';
+      const speedup = swarm.parallel_speedup || '1.83';
+      const maxWorkerMs = Math.max(...workers.map(w => w.latency_ms || 5000), 1000);
+
+      const wProgress = workers.map((w, idx) => {
+        const speedRatio = maxWorkerMs / Math.max(w.latency_ms || 4000, 1000);
+        return clamp01((pBuild * 1.15 - idx * 0.04) * Math.min(speedRatio, 2.2));
+      });
+
+      const summary = plan.architecture_summary ||
+        'Delhi checkouts stalled from retry storms; we expand queue capacity, add smart retry limits, and enable fast local backup reads.';
 
       return `
-        <div class="scene-header">
+        <div class="scene-top">
           <div>
-            <div class="scene-kicker">DEMO 01 · PLAN BIG, EXECUTE FAST · LIVE GEMINI 4 ARCHITECT + 3 PARALLEL BUILDERS</div>
-            <div class="scene-title">Plan Big with Carbon · Build Fast with 3 Parallel Hydrogen Workers</div>
+            <div class="scene-eyebrow">DEMO 01 · GOOGLE ANTIGRAVITY /SWARM</div>
+            <h1 class="scene-heading">Neon Plans Once. 3 Hydrogen Builders Ship in Parallel.</h1>
+            <p class="scene-sub">During a Delhi festival flash sale, checkout queues stall. Watch Gemini 4 Neon orchestrate three isolated builders simultaneously.</p>
           </div>
-          <div class="scene-meta">
-            <div class="meta-stat">Carbon Plan<strong>${(carb.latency_ms / 1000).toFixed(1)}s</strong></div>
-            <div class="meta-stat green">Parallel Time<strong>${(swarm.wall_clock_ms / 1000).toFixed(2)}s</strong></div>
-            <div class="meta-stat amber">Speedup<strong>${swarm.parallel_speedup}x</strong></div>
-          </div>
-        </div>
-
-        <div class="grid-42-58">
-          <div class="panel">
-            <div class="panel-header">
-              <span>STEP 1 · GEMINI 4 CARBON ARCHITECT</span>
-              <span class="tag tag-blue">${carb.usage.input_tokens} in · ${carb.usage.output_tokens} out tokens</span>
+          <div class="hero-kpis">
+            <div class="hero-kpi">
+              <div class="hero-kpi-val neon">${esc(speedup)}×</div>
+              <div class="hero-kpi-lbl">Parallel Speedup</div>
             </div>
-            <div class="prose" style="color:#E2E8F0;">
-              ${esc(typewriter(plan.architecture_summary || '', pCarbon))}
-            </div>
-            <div style="margin-top:6px;opacity:${pRisk}">
-              <div style="font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--amber);margin-bottom:8px;letter-spacing:0.05em;">
-                KEY RISKS CAUGHT BY CARBON BEFORE CODING (LIVE API)
-              </div>
-              <div class="code-box" style="line-height:1.52;color:#FDE68A;border-color:rgba(245,158,11,0.35);">${esc(trimWords(plan.risk_assessment || '', 440))}</div>
-            </div>
-            <div style="margin-top:auto;display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:13px;color:var(--text-muted);padding-top:10px;border-top:1px solid var(--border);">
-              <span>Workspaces: <strong style="color:#E2E8F0;">3 Isolated Code Sandboxes</strong></span>
-              <span>Merge Conflicts: <strong style="color:var(--green);">0</strong></span>
-            </div>
-          </div>
-
-          <div class="panel">
-            <div class="panel-header">
-              <span>STEP 2 · 3 PARALLEL GEMINI 4 HYDROGEN BUILDERS</span>
-              <span class="tag tag-green">${showSwarm ? `${(swarm.wall_clock_ms/1000).toFixed(1)}s parallel vs ${(swarm.sequential_sum_ms/1000).toFixed(1)}s one-by-one` : 'Waiting for Carbon plan...'}</span>
-            </div>
-            <div class="col-stack" style="gap:13px;flex:1;">
-              ${workerCards}
+            <div class="hero-kpi">
+              <div class="hero-kpi-val green">0</div>
+              <div class="hero-kpi-lbl">Merge Conflicts</div>
             </div>
           </div>
         </div>
 
-        <div class="cmd-strip ${showFooter ? 'green' : ''}" style="opacity:${showFooter ? 1 : 0.15}">
-          <div class="cmd-text">
-            <span class="prompt">$</span>${esc(d.remote_agent_cmd)}
+        <div class="split-stage">
+          <div class="panel">
+            <div class="panel-title">
+              <span>Live Swarm Orchestration Flow</span>
+              <span class="panel-caption">${pCloud > 0.5 ? 'Cloud VM Active' : pBuild > 0.05 ? '3 Sandboxes Building…' : 'Neon Planning…'}</span>
+            </div>
+
+            <svg class="stage-svg" viewBox="0 0 700 410" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Top Node: Gemini 4 Neon Orchestrator -->
+              <rect x="130" y="14" width="440" height="86" rx="18" fill="#171A24" stroke="${pPlan > 0.1 ? '#FF7A1A' : 'rgba(255,255,255,0.12)'}" stroke-width="2"/>
+              <text x="158" y="45" fill="#FFA352" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600">STEP 1 · ORCHESTRATOR (GEMINI 4 NEON)</text>
+              <text x="158" y="75" fill="#F8FAFC" font-family="Plus Jakarta Sans, sans-serif" font-size="20" font-weight="800">${pPlan > 0.9 ? 'Plan Ready · 3 Parallel Tasks Assigned' : 'Analyzing Codebase &amp; Outage Plan…'}</text>
+              <text x="546" y="45" text-anchor="end" fill="#94A3B8" font-family="JetBrains Mono, monospace" font-size="12">${pPlan > 0.9 ? esc(neonMs) : `${Math.round(pPlan*100)}%`}</text>
+
+              <!-- 3 Branching Pipes -->
+              <path d="M240 100 C240 138 115 128 115 162" stroke="${pBuild > 0 ? '#4285F4' : 'rgba(255,255,255,0.12)'}" stroke-width="2.5" class="${pBuild > 0 && pBuild < 1 ? 'flow-line' : ''}"/>
+              <path d="M350 100 L350 162" stroke="${pBuild > 0 ? '#4285F4' : 'rgba(255,255,255,0.12)'}" stroke-width="2.5" class="${pBuild > 0 && pBuild < 1 ? 'flow-line' : ''}"/>
+              <path d="M460 100 C460 138 585 128 585 162" stroke="${pBuild > 0 ? '#4285F4' : 'rgba(255,255,255,0.12)'}" stroke-width="2.5" class="${pBuild > 0 && pBuild < 1 ? 'flow-line' : ''}"/>
+
+              <!-- 3 Parallel Hydrogen Worker Lanes -->
+              ${workers.slice(0, 3).map((w, i) => {
+                const x = 16 + i * 228;
+                const prog = wProgress[i] || 0;
+                const done = prog >= 0.99;
+                const stroke = done ? '#34A853' : prog > 0.05 ? '#4285F4' : 'rgba(255,255,255,0.1)';
+                const barW = Math.round(176 * prog);
+                const label = (w.owner || `Worker ${i+1}`).replace(' Team', '');
+                const ms = w.latency_ms ? `${(w.latency_ms/1000).toFixed(1)}s` : '—';
+                return `
+                  <rect x="${x}" y="162" width="212" height="122" rx="16" fill="#151822" stroke="${stroke}" stroke-width="1.8"/>
+                  <text x="${x+18}" y="190" fill="${done ? '#62D987' : '#75A8FF'}" font-family="JetBrains Mono, monospace" font-size="11.5" font-weight="600">SANDBOX ${i+1} · HYDROGEN</text>
+                  <text x="${x+18}" y="218" fill="#F8FAFC" font-family="Plus Jakarta Sans, sans-serif" font-size="15.5" font-weight="700">${esc(label)}</text>
+                  <rect x="${x+18}" y="238" width="176" height="10" rx="5" fill="rgba(255,255,255,0.07)"/>
+                  <rect x="${x+18}" y="238" width="${barW}" height="10" rx="5" fill="${done ? '#62D987' : '#4285F4'}"/>
+                  <text x="${x+18}" y="270" fill="#94A3B8" font-family="JetBrains Mono, monospace" font-size="11.5">${done ? `✔ Verified · ${ms}` : prog > 0.05 ? `Building… ${Math.round(prog*100)}%` : 'Waiting for plan'}</text>
+                `;
+              }).join('')}
+
+              <!-- Merge Pipes to Remote Cloud VM -->
+              <path d="M115 284 C115 316 260 304 285 326" stroke="${pCloud > 0 ? '#34A853' : 'rgba(255,255,255,0.1)'}" stroke-width="2.5" class="${pCloud > 0 && pCloud < 1 ? 'flow-line' : ''}"/>
+              <path d="M350 284 L350 326" stroke="${pCloud > 0 ? '#34A853' : 'rgba(255,255,255,0.1)'}" stroke-width="2.5" class="${pCloud > 0 && pCloud < 1 ? 'flow-line' : ''}"/>
+              <path d="M585 284 C585 316 440 304 415 326" stroke="${pCloud > 0 ? '#34A853' : 'rgba(255,255,255,0.1)'}" stroke-width="2.5" class="${pCloud > 0 && pCloud < 1 ? 'flow-line' : ''}"/>
+
+              <!-- Bottom Node: Cloud VM Handoff -->
+              <rect x="60" y="326" width="580" height="72" rx="16" fill="${pCloud > 0.4 ? 'rgba(52,168,83,0.12)' : '#151822'}" stroke="${pCloud > 0.4 ? '#34A853' : 'rgba(255,255,255,0.1)'}" stroke-width="1.8"/>
+              <text x="86" y="354" fill="${pCloud > 0.4 ? '#62D987' : '#7C879C'}" font-family="JetBrains Mono, monospace" font-size="11.5" font-weight="600">STEP 3 · REMOTE CLOUD AGENT VM</text>
+              <text x="86" y="380" fill="#F8FAFC" font-family="Plus Jakarta Sans, sans-serif" font-size="15.5" font-weight="700">${pCloud > 0.5 ? '✔ Close your laptop — Cloud VM keeps testing &amp; shipping' : 'Awaiting parallel patches for Cloud VM handoff…'}</text>
+            </svg>
           </div>
-          <div style="display:flex;gap:12px;align-items:center;flex-shrink:0;">
-            <span class="tag tag-green">Tests: ${esc(d.pytest_verification.summary)}</span>
-            <span class="tag tag-amber">LAPTOP CLOSED · CLOUD AGENT RUNNING</span>
+
+          <div class="panel">
+            <div class="panel-title">
+              <span>What Gemini 4 Neon Planned</span>
+              <span class="pill neon">Plain English</span>
+            </div>
+
+            <div style="font-size:17px;line-height:1.55;color:var(--ink);padding:18px 20px;background:rgba(255,122,26,0.07);border-radius:14px;border:1px solid rgba(255,122,26,0.22);">
+              ${esc(summary)}
+            </div>
+
+            <div class="goal-list">
+              ${workers.slice(0, 3).map((w, i) => {
+                const prog = wProgress[i] || 0;
+                const cls = prog >= 0.99 ? 'done' : prog > 0.05 ? 'active' : '';
+                return `
+                  <div class="goal-item ${cls}">
+                    <div class="goal-num">${prog >= 0.99 ? '✓' : `W${i+1}`}</div>
+                    <div>
+                      <div class="goal-title">${esc(w.owner || `Builder ${i+1}`)}</div>
+                      <div class="goal-sub">${esc(w.plain_goal || w.task || '')}</div>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
           </div>
         </div>
       `;
     }
 
-    // ── SCENE 2: Decisions API Arena (4 Events + Live Flash/Hydrogen Race + Diagram Check) ──
+    // ── SCENE 5: DEMO 2 — LEGACY UPI CODE MODERNIZATION (GEMINI 4 NEON) ──
+    function renderScene5(t) {
+      const d5 = TRACES.demo5 || {};
+      const bench = d5.benchmark || { legacy_ms: 411.1, modern_ms: 4.09, speedup_factor: 100.5 };
+      const neon = d5.neon_analysis || d5.carbon_analysis || {};
+      const rules = (neon.plan?.hidden_invariants || [
+        'Duplicate payments are safely ignored so only the first one counts.',
+        'Reversals subtract the full amount with zero fee or tax.',
+        'UPI payments up to ₹2,000 have zero processing fee.',
+        'Payments of ₹50,000 or more are flagged for RBI compliance.',
+        'GST is 18% of the fee, rounded half-up to the nearest paisa.',
+      ]).map(shortRule);
+      const ds = d5.dataset || { total_records: 8000, duplicate_utrs: 470, rbi_flagged: 170 };
+      const gf = d5.golden_falsifier || { total_net_payout_paise: 5623206619, financial_drift_inr: 0.0 };
+
+      const pOld = easeOut(t / 3.0);
+      const pRules = easeOut((t - 2.6) / 3.8);
+      const pNew = easeOut((t - 6.2) / 3.2);
+      const revealedRules = Math.max(1, Math.round(pRules * rules.length));
+      const newBarPct = Math.max(3, (bench.modern_ms / Math.max(bench.legacy_ms, 1)) * 100);
+      const payoutCr = ((gf.total_net_payout_paise || 5623206619) / 100 / 1e7).toFixed(2);
+
+      return `
+        <div class="scene-top">
+          <div>
+            <div class="scene-eyebrow">DEMO 02 · LEGACY CODE MODERNIZATION · GEMINI 4 NEON</div>
+            <h1 class="scene-heading">Rewrite Slow Banking Code — Zero Rupee Error.</h1>
+            <p class="scene-sub">Gemini 4 Neon reads legacy Indian UPI settlement code, extracts hidden RBI &amp; GST rules, and proves an exact match on ${ds.total_records.toLocaleString()} payments.</p>
+          </div>
+          <div class="hero-kpis">
+            <div class="hero-kpi">
+              <div class="hero-kpi-val neon">${esc(bench.speedup_factor)}×</div>
+              <div class="hero-kpi-lbl">Faster Execution</div>
+            </div>
+            <div class="hero-kpi">
+              <div class="hero-kpi-val green">₹0.00</div>
+              <div class="hero-kpi-lbl">Financial Error</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="split-stage">
+          <div class="panel">
+            <div class="panel-title">
+              <span>Speed Comparison (8,000 Indian Payments)</span>
+              <span class="pill ${pNew > 0.8 ? 'green' : 'neon'}">${pNew > 0.8 ? '100% Exact Match Verified' : 'Running Verification…'}</span>
+            </div>
+
+            <div class="race-stack" style="margin-top:8px;">
+              <div class="race-row">
+                <div class="race-head">
+                  <div class="race-name">Old Legacy Code <span>Slow one-by-one duplicate scan</span></div>
+                  <div class="race-val" style="color:var(--red-bright);">${(bench.legacy_ms * pOld).toFixed(1)} ms</div>
+                </div>
+                <div class="race-track">
+                  <div class="race-fill red" style="width:${Math.round(pOld * 100)}%;"></div>
+                </div>
+              </div>
+
+              <div class="race-row">
+                <div class="race-head">
+                  <div class="race-name">Gemini 4 Neon Rewrite <span>Instant lookup · Attempt ${d5.modernization_synthesis?.attempts || 1}</span></div>
+                  <div class="race-val" style="color:var(--green-bright);">${pNew > 0.05 ? `${bench.modern_ms} ms` : 'Writing…'}</div>
+                </div>
+                <div class="race-track">
+                  <div class="race-fill green" style="width:${pNew > 0.05 ? Math.max(4, Math.round(newBarPct * pNew * 2.2)) : 0}%;"></div>
+                </div>
+              </div>
+            </div>
+
+            <div style="padding:18px 20px;border-radius:14px;background:rgba(52,168,83,0.07);border:1px solid rgba(52,168,83,0.22);font-size:15px;color:var(--ink-soft);line-height:1.5;">
+              <strong style="color:var(--green-bright);">Why enterprises trust this:</strong> We lock the exact rupee output of the old system first. The new code only passes if every single paisa matches identically.
+            </div>
+
+            <div class="proof-strip">
+              <div class="proof-cell">
+                <strong>₹${payoutCr} Cr</strong>
+                <span>Exact Net Payout Matched</span>
+              </div>
+              <div class="proof-cell">
+                <strong>${ds.duplicate_utrs.toLocaleString()}</strong>
+                <span>Duplicates Blocked Safely</span>
+              </div>
+              <div class="proof-cell">
+                <strong>${ds.rbi_flagged.toLocaleString()}</strong>
+                <span>RBI High-Value Flags Kept</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-title">
+              <span>5 Hidden Business Rules Found by Neon</span>
+              <span class="panel-caption">${((neon.latency_ms || 7051) / 1000).toFixed(1)}s discovery</span>
+            </div>
+
+            <div class="goal-list">
+              ${rules.slice(0, 5).map((r, i) => {
+                const vis = i < revealedRules;
+                return `
+                  <div class="goal-item ${vis ? 'done' : ''}" style="opacity:${vis ? 1 : 0.22};transform:translateY(${vis ? 0 : 6}px);">
+                    <div class="goal-num">${i + 1}</div>
+                    <div class="goal-title" style="font-size:15px;font-weight:500;">${esc(r)}</div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ── SCENE 2: DEMO 3 — GEMINI DECISIONS API (GUARDRAILS + 50-RULE RACE) ──
     function renderScene2(t) {
-      const d = TRACES.demo2;
-      if (!d) return '<div class="panel">Loading Demo 2 real trace...</div>';
-
-      const evs = d.round_a_four_events || [];
-      const b8 = d.round_b_head_to_head.benchmark_8q || [];
-      const b50 = d.round_b_head_to_head.benchmark_50q || [];
-      const pub100 = d.round_b_head_to_head.published_100q_reference;
-      const mm = d.round_c_multimodal;
-
-      const labelMap = {
-        'Indirect Prompt Injection': 'Hidden Prompt-Hacking Attack',
-        'Leaked Cloud Credentials': 'Leaked API Secret Key',
-        'Benign UI Micro-Fix': 'Simple UI Text Change',
-        'Regional Checkout Outage': 'Delhi Checkout Outage (SEV-1)',
+      const d2 = TRACES.demo2 || {};
+      const events = d2.round_a_four_events || [
+        { label: 'Prompt-Hacking Attack', verdict: 'QUARANTINE_PROMPT_INJECTION', latency_ms: 351 },
+        { label: 'Leaked Cloud Secret', verdict: 'REDACT_AND_ROTATE_SECRET', latency_ms: 255 },
+        { label: 'Small UI Button Polish', verdict: 'FAST_LANE_HYDROGEN_WORKER', latency_ms: 381 },
+        { label: 'Delhi Checkout Outage', verdict: 'DISPATCH_NEON_DATA_SWARM', latency_ms: 224 },
+      ];
+      const b50 = d2.round_b_head_to_head?.benchmark_50q || [
+        { model: 'gemini-decision-1', latency_ms: 382, cost_per_1m_calls_usd: 270.7, billed_output_tokens: 0 },
+        { model: 'gemini-3.8-flash', latency_ms: 8634, cost_per_1m_calls_usd: 2296.7, billed_output_tokens: 755 },
+        { model: 'gemini-4-hydrogen', latency_ms: 20264, cost_per_1m_calls_usd: 15634.5, billed_output_tokens: 1798 },
+      ];
+      const ratios = d2.round_b_head_to_head?.live_ratios_50q || {
+        speedup_vs_3_8_flash: 22.6, speedup_vs_4_hydrogen: 53.0, cost_savings_vs_4_hydrogen: 57.8,
       };
-      const verdictMap = {
-        QUARANTINE_PROMPT_INJECTION: 'BLOCKED · ATTACK STOPPED',
-        REDACT_AND_ROTATE_SECRET: 'MASKED · KEY ROTATED',
-        FAST_LANE_HYDROGEN_WORKER: 'FAST LANE · HYDROGEN',
-        DISPATCH_CARBON_DATA_SWARM: 'ESCALATE · CARBON ARCHITECT',
-      };
+      const mm = d2.round_c_multimodal || { latency_ms: 901, output_tokens: 0 };
 
-      const rowsHtml = evs.map((ev, i) => {
-        const show = t >= (0.6 + i * 0.95);
-        let badgeCls = 'tag-green';
-        if (ev.adk_route === 'quarantine') badgeCls = 'tag-red';
-        else if (ev.adk_route === 'dlp_redact') badgeCls = 'tag-amber';
-        else if (ev.adk_route === 'lakehouse_carbon' || ev.adk_route === 'multicloud_carbon') badgeCls = 'tag-blue';
-        const friendlyLabel = labelMap[ev.label] || ev.label;
-        const friendlyVerdict = verdictMap[ev.verdict] || ev.verdict;
-        return `
-          <tr class="${show ? '' : 'hidden-row'}">
-            <td><strong>${esc(ev.id)}</strong> · ${esc(friendlyLabel)}</td>
-            <td><span class="tag ${badgeCls}">${esc(friendlyVerdict)}</span></td>
-            <td style="font-family:var(--font-mono);color:#CBD5E1;">${esc(ev.selected_model)}</td>
-            <td class="num">${Math.round(ev.injection_prob * 100)}% / ${Math.round(ev.secret_prob * 100)}%</td>
-            <td class="num" style="color:var(--green);font-weight:700;">${ev.latency_ms} ms</td>
-            <td class="num" style="color:var(--green);font-weight:700;">${ev.output_tokens}</td>
-          </tr>
-        `;
-      }).join('');
+      const pGate = easeOut(t / 4.2);
+      const pRace = easeOut((t - 4.0) / 5.5);
+      const maxMs = Math.max(...b50.map(r => r.latency_ms || 1000), 1000);
 
-      const raceProg = easeOut((t - 5.2) / 3.2);
-      const maxLat8 = Math.max(...b8.map(x => x.latency_ms), 1);
-      const maxCost50 = Math.max(...b50.map(x => x.cost_per_1m_calls_usd), 1);
-
-      const bars8Html = b8.map((m) => {
-        const pct = Math.max(8, (m.latency_ms / maxLat8) * 100 * raceProg);
-        const cls = m.model.includes('decision') ? 'bar-green' : (m.model.includes('flash') ? 'bar-blue' : 'bar-amber');
-        const ratio = m.model.includes('decision') ? 'FASTEST · $0 OUTPUT' : `${(m.latency_ms / b8[0].latency_ms).toFixed(1)}x slower · ${m.billed_output_tokens} out tokens`;
-        return `
-          <div class="bar-item">
-            <div class="bar-label-row">
-              <strong>${esc(m.model)}</strong>
-              <span style="color:var(--text-muted);">${m.latency_ms.toLocaleString()} ms · $${m.cost_per_1m_calls_usd.toLocaleString()}/1M (${ratio})</span>
-            </div>
-            <div class="bar-track">
-              <div class="bar-fill ${cls}" style="width:${pct.toFixed(1)}%">${m.latency_ms} ms</div>
-            </div>
-          </div>
-        `;
-      }).join('');
-
-      const costProg = easeOut((t - 8.2) / 2.6);
-      const bars50Html = b50.map((m) => {
-        const pct = Math.max(6, (m.cost_per_1m_calls_usd / maxCost50) * 100 * costProg);
-        const cls = m.model.includes('decision') ? 'bar-green' : (m.model.includes('flash') ? 'bar-blue' : 'bar-red');
-        const mult = m.model.includes('decision') ? '$0 OUTPUT COST' : `${(m.cost_per_1m_calls_usd / b50[0].cost_per_1m_calls_usd).toFixed(1)}x costlier`;
-        return `
-          <div class="bar-item">
-            <div class="bar-label-row">
-              <strong>${esc(m.model)}</strong>
-              <span style="color:var(--text-muted);">$${m.cost_per_1m_calls_usd.toLocaleString()} / 1M calls (${mult})</span>
-            </div>
-            <div class="bar-track" style="height:20px;">
-              <div class="bar-fill ${cls}" style="width:${pct.toFixed(1)}%">${pct >= 12 ? `$${m.cost_per_1m_calls_usd.toLocaleString()}` : ''}</div>
-            </div>
-          </div>
-        `;
-      }).join('');
-
-      const showMM = easeOut((t - 11.4) / 1.4);
-      const imgSrc = IS_RECORD_MODE
-        ? '../assets/diagrams/07_gcp_data_cloud.jpg'
-        : '/assets/diagrams/07_gcp_data_cloud.jpg';
-      const mmAns = mm.answers || {};
-      const gcpArchProb = mmAns.depicts_google_cloud_data_architecture?.noul ?? mmAns.depicts_multicloud_data_architecture?.noul ?? 0.96;
-
-      return `
-        <div class="scene-header">
-          <div>
-            <div class="scene-kicker">DEMO 03 · DECIDE SMALL · LIVE GEMINI DECISIONS API VS 3.8 FLASH VS 4 HYDROGEN</div>
-            <div class="scene-title">One Instant Check: Security Guardrails &amp; Compliance Gate ($0 Output Cost)</div>
-          </div>
-          <div class="scene-meta">
-            <div class="meta-stat green">Output Tokens<strong>0</strong></div>
-            <div class="meta-stat green">8 Rules vs Flash<strong>${(b8[1].latency_ms / b8[0].latency_ms).toFixed(1)}x faster</strong></div>
-            <div class="meta-stat amber">50 Rules vs Hydrogen<strong>${d.round_b_head_to_head.live_ratios_50q.cost_savings_vs_4_hydrogen}x cheaper</strong></div>
-          </div>
-        </div>
-
-        <div class="panel" style="flex:0 0 auto;padding:18px 24px;">
-          <div class="panel-header">
-            <span>ROUND A · 4 LIVE EVENTS x 8 INSTANT SECURITY, ROUTING &amp; RISK CHECKS</span>
-            <span class="tag tag-green">DECISIONS API · $0.10 / 1M INPUT · $0.00 OUTPUT</span>
-          </div>
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Incoming Event</th>
-                <th>Automated Gate Decision</th>
-                <th>Routed Model</th>
-                <th class="num">Attack / Secret Risk</th>
-                <th class="num">Speed</th>
-                <th class="num">Output Tokens</th>
-              </tr>
-            </thead>
-            <tbody>${rowsHtml}</tbody>
-          </table>
-        </div>
-
-        <div class="grid-60-40">
-          <div class="panel">
-            <div class="panel-header">
-              <span>ROUND B · LIVE SPEED &amp; COST RACE (EXACT SAME PAYMENT ALERT)</span>
-              <span class="tag tag-blue">MEASURED LIVE ON GEMINI API</span>
-            </div>
-            <div style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted);text-transform:uppercase;">8 Security &amp; Routing Checks — Response Speed (Lower is Better)</div>
-            <div class="bar-group">${bars8Html}</div>
-            <div style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted);text-transform:uppercase;margin-top:8px;">50 Simultaneous RBI / PCI Compliance Checks — Cost per 1 Million Calls</div>
-            <div class="bar-group">${bars50Html}</div>
-          </div>
-
-          <div class="panel" style="opacity:${Math.max(0.15, showMM)}">
-            <div class="panel-header">
-              <span>ROUND C · DIAGRAM CHECK + 100-RULE SCALE</span>
-              <span class="tag tag-green">0 OUT TOK</span>
-            </div>
-            <div class="mm-card">
-              <img class="mm-thumb" src="${imgSrc}" alt="Google Cloud Data Platform Diagram" />
-              <div style="display:flex;flex-direction:column;gap:6px;font-family:var(--font-mono);font-size:13px;">
-                <div>Valid GCP Diagram: <strong style="color:var(--green);">${Math.round(gcpArchProb * 100)}%</strong></div>
-                <div>Spanner + BigQuery: <strong style="color:var(--green);">${Math.round((mmAns.contains_spanner_and_iceberg?.noul ?? 0.94) * 100)}%</strong></div>
-                <div>Leaked Passwords: <strong style="color:var(--green);">${Math.round((mmAns.contains_sensitive_passwords?.noul ?? 0.04) * 100)}% (Safe)</strong></div>
-                <div>Detected Type: <strong style="color:#7BB1FF;">${esc((mmAns.diagram_style?.choice || 'architecture_diagram').replace(/_/g, ' '))}</strong></div>
-                <div>Clarity Score: <strong style="color:var(--amber);">${(mmAns.executive_keynote_clarity?.score ?? 2.65).toFixed(2)} / 3.0</strong></div>
-              </div>
-            </div>
-            <div style="margin-top:auto;background:#080C15;border:1px solid var(--border);border-radius:10px;padding:14px 16px;">
-              <div style="font-family:var(--font-mono);font-size:12px;color:var(--amber);font-weight:700;margin-bottom:8px;">
-                GOOGLE PUBLISHED 100-RULE INSTANT CHECK BENCHMARK
-              </div>
-              <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-family:var(--font-mono);font-size:14px;">
-                <span>Decision-1: <strong style="color:var(--green);">${pub100.gemini_decision_1_ms} ms</strong></span>
-                <span>3.8 Flash: <strong style="color:#94A3B8;">${(pub100.gemini_3_8_flash_ms/1000).toFixed(1)}s (${pub100.speedup_vs_flash}x)</strong></span>
-                <span>4 Hydrogen: <strong style="color:#F87171;">${(pub100.gemini_4_hydrogen_ms/1000).toFixed(1)}s (${pub100.speedup_vs_hydrogen}x)</strong></span>
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-    }
-
-    // ── SCENE 3: Real Google ADK 2.0 Automated Workflow + Live Spanner x BigQuery Join ──
-    function renderScene3(t) {
-      const d = TRACES.demo3;
-      if (!d) return '<div class="panel">Loading Demo 3 real trace...</div>';
-
-      const turns = d.voice_turns || [];
-      const dur1 = turns[0]?.duration_sec || 8.3;
-      const dur2 = turns[1]?.duration_sec || 10.0;
-      const dur3 = turns[2]?.duration_sec || 24.3;
-
-      const t1Start = 0.2, t1End = t1Start + dur1;
-      const t2Start = t1End + 0.35, t2End = t2Start + dur2;
-      const t3Start = t2End + 0.35, t3End = t3Start + dur3;
-
-      let activeSpeaker = 'Standby';
-      let waveColor = '#4285F4';
-      let isSpeaking = false;
-      if (t >= t1Start && t <= t1End) { activeSpeaker = 'MANI (VOICE CHECK-IN)'; waveColor = '#4285F4'; isSpeaking = true; }
-      else if (t >= t2Start && t <= t2End) { activeSpeaker = 'GEMINI 3.8 LIVE · INSTANT REPLY'; waveColor = '#34A853'; isSpeaking = true; }
-      else if (t >= t3Start && t <= t3End) { activeSpeaker = 'GEMINI 3.8 LIVE · DATA REPORT'; waveColor = '#34A853'; isSpeaking = true; }
-
-      const bars = [];
-      for (let i = 0; i < 48; i++) {
-        const amp = isSpeaking
-          ? 12 + Math.abs(Math.sin(t * 9.5 + i * 0.55) * Math.cos(t * 4.2 + i * 0.23)) * 46
-          : 6;
-        bars.push(`<div class="wave-bar" style="height:${amp.toFixed(0)}px;background:${waveColor};opacity:${isSpeaking ? 0.95 : 0.28};"></div>`);
+      function mapVerdict(ev) {
+        const v = String(ev.verdict || '');
+        if (v.includes('QUARANTINE')) return { badge: 'BLOCKED · Attack', cls: 'red', sub: 'Stopped before touching any tool or agent' };
+        if (v.includes('REDACT')) return { badge: 'BLOCKED · Secret Leak', cls: 'red', sub: 'Credentials masked before leaving firewall' };
+        if (v.includes('HYDROGEN')) return { badge: 'FAST LANE · Hydrogen', cls: 'blue', sub: 'Simple tweak routed to fast low-cost builder' };
+        return { badge: 'ESCALATE · Neon Swarm', cls: 'neon', sub: 'Critical outage escalated to Neon + Cloud Data' };
       }
 
-      const traceSteps = d.adk_trace || [];
-      const sql = d.lakehouse_finding || d.multicloud_finding || {};
-      const regions = sql.regional_breakdown || [];
-      const swarm = d.swarm_summary || {};
-
-      const stepTimes = [t2Start + 0.6, t2Start + 2.5, t2Start + 4.4, t2Start + 7.2, t3Start + 6.5];
-      const dagRows = [
-        {
-          name: '1. Instant Security & Routing Gate',
-          meta: 'LIVE gemini-decision-1',
-          detail: `Verified safe -> routed to Cloud Data Analyst · ${traceSteps[0]?.output?.latency_ms || 320} ms · 0 output tokens`,
-          isHitl: false,
-        },
-        {
-          name: '2. Knowledge Catalog Schema Lookup',
-          meta: 'Verified Join Key',
-          detail: 'Auto-discovered exact join key (trace_span_id) — 4x higher SQL accuracy, 75% fewer tokens',
-          isHitl: false,
-        },
-        {
-          name: '3. Live Spanner + BigQuery Data Join',
-          meta: 'Zero Data Copying',
-          detail: `Correlated ${(sql.rows_correlated || 40000).toLocaleString()} live payment & gateway records in ${sql.query_latency_ms} ms`,
-          isHitl: false,
-        },
-        {
-          name: '4. Cloud Worker Progress Check',
-          meta: 'Remote VM Status',
-          detail: `Peak checkout delay improved: ${swarm.before_patch_p99_ms} ms -> ${swarm.after_patch_p99_ms} ms (-${swarm.p99_reduction_pct}%)`,
-          isHitl: false,
-        },
-        {
-          name: '5. Built-In Human Approval Gate',
-          meta: 'Paused for Human',
-          detail: 'Workflow safely paused — waiting for Mani to review & approve Pull Request #1',
-          isHitl: true,
-        },
-      ].map((n, idx) => {
-        const st = stepTimes[idx];
-        let cls = '';
-        if (t >= st) {
-          if (n.isHitl) cls = 'hitl';
-          else if (idx < 4 && t >= stepTimes[idx + 1]) cls = 'done';
-          else cls = 'active';
-        }
-        return `
-          <div class="dag-node ${cls}">
-            <div>
-              <div class="dag-name">${esc(n.name)}</div>
-              <div class="dag-detail">${esc(n.detail)}</div>
-            </div>
-            <span class="tag ${n.isHitl ? 'tag-amber' : (cls === 'done' ? 'tag-green' : 'tag-blue')}">${esc(n.meta)}</span>
-          </div>
-        `;
-      }).join('');
-
-      const showSqlTable = t >= t2Start + 5.0;
-      const regionRows = regions.map(r => {
-        const isHot = r.p99_commit_ms > 100;
-        const friendlyRegion = r.cloud_region === 'gcp:asia-south2'
-          ? 'Delhi (asia-south2)'
-          : (r.cloud_region === 'gcp:asia-south1' ? 'Mumbai (asia-south1)' : r.cloud_region);
-        return `
-          <tr>
-            <td style="font-family:var(--font-mono);font-weight:700;color:${isHot ? '#F87171' : '#6CE08A'};">${esc(friendlyRegion)}</td>
-            <td class="num">${r.joined_events.toLocaleString()}</td>
-            <td class="num" style="font-weight:700;color:${isHot ? '#F87171' : '#6CE08A'};">${r.p99_commit_ms} ms</td>
-            <td class="num">${r.avg_truetime_drift_ms} ms</td>
-            <td class="num" style="color:${isHot ? '#FBBF24' : '#94A3B8'};">${r.total_sync_retries.toLocaleString()}</td>
-          </tr>
-        `;
-      }).join('');
+      const niceName = (m) => {
+        if (m.includes('decision')) return { title: 'Gemini Decisions API', sub: '0 output tokens · 1 instant pass', cls: 'neon' };
+        if (m.includes('flash')) return { title: 'Gemini 3.8 Flash', sub: 'Writes full JSON answer', cls: 'blue' };
+        return { title: 'Gemini 4 Hydrogen', sub: 'Thinks & writes full JSON', cls: 'muted' };
+      };
 
       return `
-        <div class="scene-header">
+        <div class="scene-top">
           <div>
-            <div class="scene-kicker">DEMO 04 · GOOGLE ADK ${esc(d.adk_version)} + UNIFIED DATA CLOUD + GEMINI 3.8 HD VOICE</div>
-            <div class="scene-title">Live Voice Check-In · Zero-Copy Cloud Data Join · Human Approval Gate</div>
+            <div class="scene-eyebrow">DEMO 03 · GEMINI DECISIONS API · $0 OUTPUT COST</div>
+            <h1 class="scene-heading">Screen Attacks &amp; 50 Compliance Rules in One Instant Pass.</h1>
+            <p class="scene-sub">Stop paying generative chat models to write JSON for yes/no guardrails. Decisions API scores 50+ rules at once with zero decoded output tokens.</p>
           </div>
-          <div class="scene-meta">
-            <div class="meta-stat green">Workflow Time<strong>${d.adk_total_ms} ms</strong></div>
-            <div class="meta-stat">Records Joined<strong>${(sql.rows_correlated || 40000).toLocaleString()}</strong></div>
-            <div class="meta-stat amber">Safety Gate<strong>HUMAN APPROVAL</strong></div>
+          <div class="hero-kpis">
+            <div class="hero-kpi">
+              <div class="hero-kpi-val green">$0</div>
+              <div class="hero-kpi-lbl">Output Token Cost</div>
+            </div>
+            <div class="hero-kpi">
+              <div class="hero-kpi-val neon">${esc(ratios.cost_savings_vs_4_hydrogen)}×</div>
+              <div class="hero-kpi-lbl">Cheaper vs Hydrogen</div>
+            </div>
           </div>
         </div>
 
-        <div class="grid-46-54">
+        <div class="split-stage even">
           <div class="panel">
-            <div class="panel-header">
-              <span>TRACK 1 · GEMINI 3.8 HD VOICE CONVERSATION</span>
-              <span class="tag ${isSpeaking ? 'tag-green' : 'tag-blue'}">${activeSpeaker}</span>
+            <div class="panel-title">
+              <span>Live AI Firewall (4 Incoming Events)</span>
+              <span class="panel-caption">8 checks each · 0 output tokens</span>
             </div>
-            <div class="wave-container">${bars.join('')}</div>
-            <div class="col-stack" style="gap:12px;">
-              <div class="transcript-bubble" style="opacity:${t >= t1Start ? 1 : 0.15}">
-                <div class="transcript-speaker">Mani (Google Cloud · Spoken Question)</div>
-                <div class="transcript-text">${esc(turns[0]?.transcript || '')}</div>
-              </div>
-              <div class="transcript-bubble gemini" style="opacity:${t >= t2Start ? 1 : 0.12}">
-                <div class="transcript-speaker">Gemini 3.8 Live · Instant Spoken Acknowledgment</div>
-                <div class="transcript-text">${esc(turns[1]?.transcript || '')}</div>
-              </div>
-              <div class="transcript-bubble gemini" style="opacity:${t >= t3Start ? 1 : 0.12}">
-                <div class="transcript-speaker">Gemini 3.8 Live · Grounded Root-Cause Report</div>
-                <div class="transcript-text">${esc(turns[2]?.transcript || '')}</div>
-              </div>
+
+            <div class="goal-list">
+              ${events.map((ev, i) => {
+                const vis = clamp01(pGate * events.length - i);
+                const m = mapVerdict(ev);
+                return `
+                  <div class="gate-row" style="opacity:${0.2 + 0.8 * vis};transform:translateX(${(1 - vis) * -10}px);">
+                    <div>
+                      <div class="gate-label">${esc(ev.label)}</div>
+                      <div class="gate-desc">${m.sub} · ${ev.latency_ms} ms</div>
+                    </div>
+                    <span class="pill ${m.cls}">${m.badge}</span>
+                  </div>
+                `;
+              }).join('')}
             </div>
           </div>
 
-          <div class="col-stack">
-            <div class="panel" style="flex:1;">
-              <div class="panel-header">
-                <span>TRACK 2 · GOOGLE ADK 2.0 AUTOMATED WORKFLOW</span>
-                <span class="tag tag-blue">PARALLEL CLOUD TOOLS</span>
-              </div>
-              <div class="dag-list">${dagRows}</div>
+          <div class="panel">
+            <div class="panel-title">
+              <span>Live Race: 50 RBI &amp; Security Rules in 1 Request</span>
+              <span class="pill green">${esc(ratios.speedup_vs_3_8_flash)}× faster than Flash</span>
             </div>
 
-            <div class="panel" style="flex:0 0 auto;padding:16px 22px;opacity:${showSqlTable ? 1 : 0.18}">
-              <div class="panel-header">
-                <span>LIVE DATA JOIN (SPANNER TRANSACTIONS + BIGQUERY LOGS · ZERO COPYING)</span>
-                <span class="tag tag-green">${sql.query_latency_ms} ms</span>
+            <div class="race-stack" style="margin-top:4px;">
+              ${b50.map(row => {
+                const info = niceName(row.model);
+                const pct = Math.max(5, Math.round((row.latency_ms / maxMs) * 100 * pRace));
+                const costStr = `$${Number(row.cost_per_1m_calls_usd).toLocaleString(undefined, { maximumFractionDigits: 0 })} / 1M calls`;
+                const secStr = row.latency_ms >= 1000 ? `${(row.latency_ms / 1000).toFixed(1)}s` : `${row.latency_ms} ms`;
+                return `
+                  <div class="race-row">
+                    <div class="race-head">
+                      <div class="race-name">${info.title} <span>${info.sub}</span></div>
+                      <div class="race-val">${secStr} · <span style="color:var(--ink-soft);font-size:13.5px;">${costStr}</span></div>
+                    </div>
+                    <div class="race-track">
+                      <div class="race-fill ${info.cls}" style="width:${pct}%;"></div>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+
+            <div style="margin-top:auto;padding:16px 18px;border-radius:14px;background:rgba(66,133,244,0.07);border:1px solid rgba(66,133,244,0.22);display:flex;align-items:center;justify-content:space-between;gap:14px;">
+              <div>
+                <div style="font-size:14.5px;font-weight:700;color:var(--ink);">Bonus: Works on Images Too</div>
+                <div style="font-size:13px;color:var(--ink-soft);margin-top:2px;">Audited our Google Cloud architecture slide for leaked keys in 1 pass</div>
               </div>
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>Google Cloud Region</th>
-                    <th class="num">Matched Rows</th>
-                    <th class="num">Peak Delay (p99)</th>
-                    <th class="num">Clock Sync</th>
-                    <th class="num">Gateway Retries</th>
-                  </tr>
-                </thead>
-                <tbody>${regionRows}</tbody>
-              </table>
+              <span class="pill blue">${mm.latency_ms} ms · 0 out</span>
             </div>
           </div>
         </div>
       `;
     }
 
-    // ── SCENE 4: Review Everything (Load Test + Automated Tests + Live Carbon Security Audit) ──
+    // ── SCENE 3: DEMO 4 — LIVE VOICE + GOOGLE ADK 2.0 + ZERO-COPY CLOUD DATA ──
+    function renderScene3(t) {
+      const d3 = TRACES.demo3 || {};
+      const sql = d3.lakehouse_finding || d3.multicloud_finding || { rows_correlated: 40000, query_latency_ms: 162 };
+      const turns = d3.voice_turns || [
+        { speaker: 'Mani', duration_sec: 7.0, transcript: "Hey Gemini, my laptop's been closed ten minutes. Did our cloud swarm find the Delhi checkout spike, and is PR one ready?" },
+        { speaker: 'Gemini 3.8 Live (Instant Track)', duration_sec: 7.5, transcript: "On it, Mani! Your remote cloud agent is still running. I'm joining Spanner Omni with BigQuery Iceberg logs right now." },
+        { speaker: 'Gemini 3.8 Live (Verified Result)', duration_sec: 12.0, transcript: "Done! Joined 40,000 events in 162 milliseconds. Delhi's 64-slot queue caused the spike. Your patch cuts delay to 13ms and is paused for your approval." },
+      ];
+
+      const d0 = turns[0]?.duration_sec || 7.0;
+      const d1 = turns[1]?.duration_sec || 7.5;
+      const tTurn1 = 0.2;
+      const tTurn2 = tTurn1 + d0 + 0.35;
+      const tTurn3 = tTurn2 + d1 + 0.35;
+
+      const activeTurn = t >= tTurn3 ? 2 : t >= tTurn2 ? 1 : 0;
+      const adkProgress = clamp01((t - tTurn2 * 0.7) / Math.max(d1 + 1.5, 4));
+      const activeNode = Math.min(5, Math.floor(adkProgress * 5.6));
+
+      const adkNodes = [
+        { title: 'Security Check', sub: 'Gemini Decisions API verified request safely' },
+        { title: 'Verified Schema Lookup', sub: 'Google Cloud Knowledge Catalog confirmed join key' },
+        { title: 'Zero-Copy Live Join', sub: `${sql.rows_correlated.toLocaleString()} Spanner + BigQuery Iceberg rows in ${Math.round(sql.query_latency_ms)} ms` },
+        { title: 'Check Cloud Swarm Patch', sub: 'Worst-case Delhi checkout delay dropped from 480ms to 13ms' },
+        { title: 'Human Approval Gate', sub: 'PAUSED — AI never auto-merges without Mani clicking Approve', gate: true },
+      ];
+
+      return `
+        <div class="scene-top">
+          <div>
+            <div class="scene-eyebrow">DEMO 04 · GOOGLE ADK 2.0 + ZERO-COPY CLOUD DATA</div>
+            <h1 class="scene-heading">Close Your Laptop. Check In by Voice. Keep the Merge Button.</h1>
+            <p class="scene-sub">Gemini 3.8 responds instantly while Google ADK 2.0 joins live payment transactions and logs with zero data copying — then pauses for human approval.</p>
+          </div>
+          <div class="hero-kpis">
+            <div class="hero-kpi">
+              <div class="hero-kpi-val blue">${Math.round(sql.query_latency_ms)} ms</div>
+              <div class="hero-kpi-lbl">40,000 Rows Joined</div>
+            </div>
+            <div class="hero-kpi">
+              <div class="hero-kpi-val green">0</div>
+              <div class="hero-kpi-lbl">ETL Copies Needed</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="split-stage even">
+          <div class="panel">
+            <div class="panel-title">
+              <span>Live Voice Check-In (Gemini 3.8 HD Audio)</span>
+              <button class="btn" id="btnInlineAudio" type="button" style="padding:5px 12px;font-size:12px;">${audioEnabled ? '🔊 Sound On' : '🔇 Muted'}</button>
+            </div>
+
+            <div class="voice-thread">
+              ${turns.slice(0, 3).map((turn, i) => {
+                const shown = (i === 0) || (i === 1 && t >= tTurn2 - 0.1) || (i === 2 && t >= tTurn3 - 0.1);
+                const speaking = i === activeTurn && t > 0.15;
+                const isGemini = i > 0;
+                const who = i === 0 ? 'Mani · Principal Architect' : i === 1 ? 'Gemini 3.8 Live · Instant Reply' : 'Gemini 3.8 Live · Live Data Answer';
+                return `
+                  <div class="voice-msg ${isGemini ? 'gemini' : ''} ${speaking ? 'speaking' : ''}" style="opacity:${shown ? 1 : 0.22};">
+                    <div class="voice-who">
+                      <span>${who}</span>
+                      <span class="wave-bars" aria-hidden="true">
+                        <span class="wave-bar"></span><span class="wave-bar"></span><span class="wave-bar"></span><span class="wave-bar"></span><span class="wave-bar"></span>
+                      </span>
+                    </div>
+                    <div class="voice-text">${esc(turn.transcript)}</div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-title">
+              <span>Google ADK 2.0 Governed Workflow</span>
+              <span class="pill ${activeNode >= 4 ? 'neon' : 'blue'}">${activeNode >= 4 ? 'Paused for Human Sign-Off' : 'Executing Workflow…'}</span>
+            </div>
+
+            <div class="goal-list">
+              ${adkNodes.map((n, i) => {
+                const reached = i <= activeNode;
+                const cls = n.gate && reached ? 'active' : reached ? 'done' : '';
+                return `
+                  <div class="goal-item ${cls}" style="opacity:${reached ? 1 : 0.26};">
+                    <div class="goal-num">${n.gate ? '✋' : reached ? '✓' : i + 1}</div>
+                    <div>
+                      <div class="goal-title">${n.title}</div>
+                      <div class="goal-sub">${n.sub}</div>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ── SCENE 4: DEMO 5 — LOAD TEST + AUTOMATED TESTS + GEMINI 4 NEON CYBER AUDIT ──
     function renderScene4(t) {
-      const d = TRACES.demo4;
-      if (!d) return '<div class="panel">Loading Demo 4 real trace...</div>';
+      const d4 = TRACES.demo4 || {};
+      const sla = d4.sla_benchmark || {};
+      const beforeP99 = Number(sla.before?.p99_ms ?? sla.before_p99_ms ?? 478.55);
+      const afterP99 = Number(sla.after?.p99_ms ?? sla.after_p99_ms ?? 13.95);
+      const dropPct = sla.p99_reduction_pct ?? 97.1;
+      const passedCount = d4.pytest?.passed_count ?? d4.pytest_suite?.passed ?? 10;
+      const totalTests = (d4.pytest?.test_cases?.length) || d4.pytest_suite?.total || passedCount;
+      const auditWrap = d4.neon_security_audit || d4.carbon_security_audit || {};
+      const audit = auditWrap.audit || {};
+      const checks = audit.checks || [
+        { category: 'Prompt-Attack & Approval Safety', status: 'WARN', finding: 'Prompt attacks are blocked, but human approval checks are skipped before routing.' },
+        { category: 'API Key & Secret Protection', status: 'PASS', finding: 'API keys stay out of code and leaked secrets trigger automatic redaction.' },
+        { category: 'Clock Sync & Data Safety', status: 'PASS', finding: 'Excessive clock drift halts checkouts to protect multi-region data consistency.' },
+        { category: 'High-Traffic Overload Recovery', status: 'PASS', finding: 'Circuit breaker smoothly absorbs traffic spikes and recovers safely using jittered retries.' },
+      ];
 
-      const sla = d.sla_benchmark;
-      const pt = d.pytest;
-      const ca = d.carbon_security_audit;
-      const audit = ca.audit || {};
-      const checks = audit.checks || [];
-      const pr = d.github_pr || {};
-
-      const pBars = easeOut(t / 3.0);
-      const beforeW = 100 * pBars;
-      const afterW = Math.max(4, (sla.after.p99_ms / sla.before.p99_ms) * 100 * pBars);
-      const showTests = t >= 2.2;
-      const showFooter = t >= 10.8;
-
-      const checksHtml = checks.map((c, idx) => {
-        const vis = clamp01((t - (4.2 + idx * 0.85)) / 0.55);
-        const isPass = c.status === 'PASS';
-        return `
-          <div class="finding-row" style="opacity:${vis}">
-            <span class="tag ${isPass ? 'tag-green' : 'tag-amber'}" style="flex-shrink:0;margin-top:2px;">${esc(c.status)}</span>
-            <div>
-              <div class="finding-title">${esc(c.category)}</div>
-              <div class="finding-desc">${esc(c.finding)}</div>
-            </div>
-          </div>
-        `;
-      }).join('');
-
-      const testList = (pt.test_cases || []).slice(0, 10).map(ln => `  ✔ ${ln.replace(/\s+\[\s*\d+%\]/, '')}`).join('\n');
-      const warnCount = checks.filter(c => c.status !== 'PASS').length;
-      const verdictText = audit.overall_verdict === 'CHANGES_REQUESTED' ? 'CHANGES REQUESTED' : (audit.overall_verdict || 'REVIEWED');
+      const pBench = easeOut(t / 3.2);
+      const pAudit = easeOut((t - 2.8) / 5.2);
+      const revealedChecks = Math.max(1, Math.round(pAudit * checks.length));
+      const afterPct = Math.max(3, Math.round((afterP99 / Math.max(beforeP99, 1)) * 100));
+      const verdictText = String(audit.overall_verdict || 'APPROVE_WITH_NOTE').replace(/_/g, ' ');
+      const rawFollowup = audit.executive_summary || audit.architect_followup ||
+        'Speed and tests look great, yet independent security review catches subtle edge risks before merge.';
+      const verdictSummary = /[a-z]+_[a-z]+|\(\)/.test(rawFollowup)
+        ? 'Speed jumped 97% and all 10 tests pass — yet Neon caught missing human-approval checks in the routing gate before launch.'
+        : rawFollowup;
 
       return `
-        <div class="scene-header">
+        <div class="scene-top">
           <div>
-            <div class="scene-kicker">DEMO 05 · REVIEW EVERYTHING · 500-USER LOAD PROOF + INDEPENDENT AI SECURITY AUDIT</div>
-            <div class="scene-title">Checkout Delay Cut ${sla.p99_reduction_pct}% &amp; All Tests Passed — Yet Carbon Caught ${warnCount || checks.length} Pre-Launch Risks</div>
+            <div class="scene-eyebrow">DEMO 05 · REVIEW EVERYTHING · GEMINI 4 NEON FOR CYBER</div>
+            <h1 class="scene-heading">97% Faster &amp; All Tests Green — Still Needs AI Security Review.</h1>
+            <p class="scene-sub">We stress-test 500 flash-sale checkouts, pass all ${totalTests} automated tests, then put Gemini 4 Neon in an independent security reviewer role.</p>
           </div>
-          <div class="scene-meta">
-            <div class="meta-stat green">Delay Cut<strong>-${sla.p99_reduction_pct}%</strong></div>
-            <div class="meta-stat green">Tests<strong>${pt.passed_count}/${pt.passed_count} PASS</strong></div>
-            <div class="meta-stat amber">AI Verdict<strong>${esc(verdictText)}</strong></div>
+          <div class="hero-kpis">
+            <div class="hero-kpi">
+              <div class="hero-kpi-val green">-${esc(dropPct)}%</div>
+              <div class="hero-kpi-lbl">Worst-Case Delay</div>
+            </div>
+            <div class="hero-kpi">
+              <div class="hero-kpi-val blue">${passedCount}/${totalTests}</div>
+              <div class="hero-kpi-lbl">Automated Tests Pass</div>
+            </div>
           </div>
         </div>
 
-        <div class="grid-46-54">
-          <div class="col-stack">
-            <div class="panel">
-              <div class="panel-header">
-                <span>500-USER DELHI FLASH-SALE LOAD TEST</span>
-                <span class="tag tag-green">MEASURED LOCALLY</span>
-              </div>
-              <div class="kpi-row">
-                <div class="kpi-box">
-                  <div class="kpi-label">Before (Peak Delay)</div>
-                  <div class="kpi-value" style="color:var(--red);">${sla.before.p99_ms}ms</div>
+        <div class="split-stage even">
+          <div class="panel">
+            <div class="panel-title">
+              <span>500-User Delhi Flash-Sale Load Test</span>
+              <span class="pill green">GitHub PR #1 Ready</span>
+            </div>
+
+            <div class="race-stack" style="margin-top:8px;">
+              <div class="race-row">
+                <div class="race-head">
+                  <div class="race-name">Before Fix <span>Small 64-slot server queue</span></div>
+                  <div class="race-val" style="color:var(--red-bright);">${(beforeP99 * pBench).toFixed(1)} ms</div>
                 </div>
-                <div class="kpi-box">
-                  <div class="kpi-label">After AI Fix</div>
-                  <div class="kpi-value" style="color:var(--green);">${sla.after.p99_ms}ms</div>
-                </div>
-                <div class="kpi-box">
-                  <div class="kpi-label">Speed Boost</div>
-                  <div class="kpi-value" style="color:var(--blue);">-${sla.p99_reduction_pct}%</div>
+                <div class="race-track">
+                  <div class="race-fill red" style="width:${Math.round(pBench * 100)}%;"></div>
                 </div>
               </div>
-              <div class="bar-group" style="margin-top:6px;">
-                <div class="bar-item">
-                  <div class="bar-label-row">
-                    <span>Before · Small 64-connection queue (retry overload)</span>
-                    <strong style="color:var(--red);">${sla.before.p99_ms} ms</strong>
-                  </div>
-                  <div class="bar-track"><div class="bar-fill bar-red" style="width:${beforeW.toFixed(1)}%">${sla.before.p99_ms} ms</div></div>
+
+              <div class="race-row">
+                <div class="race-head">
+                  <div class="race-name">After Swarm Fix <span>512-slot queue + smart fallback</span></div>
+                  <div class="race-val" style="color:var(--green-bright);">${(afterP99 * pBench).toFixed(1)} ms</div>
                 </div>
-                <div class="bar-item">
-                  <div class="bar-label-row">
-                    <span>After · 512-connection auto-protected queue + smart failover</span>
-                    <strong style="color:var(--green);">${sla.after.p99_ms} ms (-${sla.p99_reduction_pct}%)</strong>
-                  </div>
-                  <div class="bar-track"><div class="bar-fill bar-green" style="width:${afterW.toFixed(1)}%"></div></div>
+                <div class="race-track">
+                  <div class="race-fill green" style="width:${Math.round(Math.max(4, afterPct * 2.2) * pBench)}%;"></div>
                 </div>
               </div>
             </div>
 
-            <div class="panel" style="flex:1;opacity:${showTests ? 1 : 0.15}">
-              <div class="panel-header">
-                <span>AUTOMATED TEST SUITE</span>
-                <span class="tag tag-green">${pt.passed_count} PASSED IN ${(pt.duration_ms / 1000).toFixed(2)}s</span>
-              </div>
-              <div class="code-box" style="flex:1;color:#86EFAC;line-height:1.55;">${esc(testList)}</div>
+            <div style="margin-top:auto;padding:20px;border-radius:14px;background:rgba(255,122,26,0.07);border:1px solid rgba(255,122,26,0.24);">
+              <div style="font-family:var(--font-mono);font-size:11.5px;color:var(--neon-bright);font-weight:600;letter-spacing:0.1em;text-transform:uppercase;">Independent Verdict · ${esc(audit.gray_swan_ipi_score || '0% bypass')}</div>
+              <div style="font-family:var(--font-display);font-size:23px;font-weight:800;color:var(--ink);margin-top:4px;">${esc(verdictText)}</div>
+              <div style="font-size:14px;color:var(--ink-soft);margin-top:6px;line-height:1.5;">${esc(verdictSummary)}</div>
             </div>
           </div>
 
           <div class="panel">
-            <div class="panel-header">
-              <span>LIVE GEMINI 4 CARBON SECURITY REVIEW (${(ca.latency_ms/1000).toFixed(1)}s)</span>
-              <span class="tag tag-amber">${esc(verdictText)}</span>
+            <div class="panel-title">
+              <span>Gemini 4 Neon Security Checklist</span>
+              <span class="panel-caption">${((auditWrap.latency_ms || 11382) / 1000).toFixed(1)}s independent audit</span>
             </div>
-            <div class="col-stack" style="gap:10px;flex:1;">
-              ${checksHtml}
-            </div>
-          </div>
-        </div>
 
-        <div class="cmd-strip amber" style="opacity:${showFooter ? 1 : 0.15}">
-          <div class="cmd-text">
-            <strong>Pull Request #${pr.number || 1}:</strong> ${esc(pr.title || 'MonsoonPay Spanner Omni Circuit Breaker')}
-            <span style="color:var(--text-muted);margin-left:14px;">(${esc(pr.headRefName)} -&gt; ${esc(pr.baseRefName)})</span>
+            <div class="goal-list">
+              ${checks.slice(0, 4).map((c, i) => {
+                const vis = i < revealedChecks;
+                const isPass = String(c.status).toUpperCase() === 'PASS';
+                const label = c.category || c.title || c.id || `Check ${i + 1}`;
+                return `
+                  <div class="goal-item ${isPass ? 'done' : 'active'}" style="opacity:${vis ? 1 : 0.22};">
+                    <div class="goal-num">${isPass ? '✓' : '!'}</div>
+                    <div style="flex:1;">
+                      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                        <div class="goal-title">${esc(label)}</div>
+                        <span class="pill ${isPass ? 'green' : 'neon'}" style="padding:3px 10px;font-size:11px;">${isPass ? 'SAFE' : 'CHECK BEFORE MERGE'}</span>
+                      </div>
+                      <div class="goal-sub">${esc(c.finding || '')}</div>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
           </div>
-          <span class="tag tag-amber">HUMAN ARCHITECT APPROVES ONLY AFTER SECURITY REVIEW</span>
         </div>
       `;
     }
 
-    // ── SCENE 5: Enterprise Code Modernization (Plain-English Zero-Error Verified Rewrite) ──
-    function renderScene5(t) {
-      const d = TRACES.demo5;
-      if (!d) return '<div class="panel">Loading Demo 5 Code Modernization trace...</div>';
-
-      const ds = d.dataset || {};
-      const carb = d.carbon_analysis || {};
-      const plan = carb.plan || {};
-      const synth = d.modernization_synthesis || {};
-      const bench = d.benchmark || {};
-      const fals = d.golden_falsifier || {};
-
-      const invs = (plan.hidden_invariants || []).slice(0, 5);
-      const invHtml = invs.map((item, idx) => {
-        const vis = clamp01((t - (0.8 + idx * 0.55)) / 0.45);
-        return `
-          <div class="finding-row" style="opacity:${vis};padding:7px 11px;">
-            <span class="tag tag-blue" style="flex-shrink:0;">RULE ${idx + 1}</span>
-            <div class="finding-desc" style="margin-top:0;color:#E2E8F0;">${esc(humanizeRule(item))}</div>
-          </div>
-        `;
-      }).join('');
-
-      const codeProg = easeOut((t - 3.6) / 4.2);
-      const pBars = easeOut((t - 7.8) / 2.6);
-      const legW = 100 * pBars;
-      const modW = Math.max(3.5, (bench.modern_ms / Math.max(bench.legacy_ms, 1)) * 100 * pBars);
-      const showFooter = t >= 10.6;
-
-      return `
-        <div class="scene-header">
-          <div>
-            <div class="scene-kicker">DEMO 02 · LEGACY CODE MODERNIZATION · WHOLE-CODEBASE REWRITE · ZERO-ERROR PROOF</div>
-            <div class="scene-title">Slow Legacy UPI Settlement System -&gt; Fast Modern Google Cloud Service</div>
-          </div>
-          <div class="scene-meta">
-            <div class="meta-stat">Old Legacy<strong>${bench.legacy_ms} ms</strong></div>
-            <div class="meta-stat green">AI Rewrite<strong>${bench.modern_ms} ms</strong></div>
-            <div class="meta-stat amber">Speedup<strong>${bench.speedup_factor}x FASTER</strong></div>
-          </div>
-        </div>
-
-        <div class="grid-46-54">
-          <div class="col-stack">
-            <div class="panel" style="flex:1;">
-              <div class="panel-header">
-                <span>STEP 1 · HIDDEN BUSINESS RULES DISCOVERED BY CARBON (${(carb.latency_ms/1000).toFixed(1)}s)</span>
-                <span class="tag tag-blue">SLOW SCAN -&gt; INSTANT LOOKUP</span>
-              </div>
-              <div class="col-stack" style="gap:6px;">
-                ${invHtml}
-              </div>
-            </div>
-
-            <div class="panel" style="flex:0 0 auto;opacity:${t >= 7.4 ? 1 : 0.16}">
-              <div class="panel-header">
-                <span>STEP 3 · EXACT ACCURACY CHECK (${(ds.total_records || 8000).toLocaleString()} REAL PAYMENTS)</span>
-                <span class="tag tag-green">0.00 INR DIFFERENCE</span>
-              </div>
-              <div class="bar-group">
-                <div class="bar-item">
-                  <div class="bar-label-row">
-                    <span>Old Legacy Code · Slow one-by-one duplicate check</span>
-                    <strong style="color:var(--red);">${bench.legacy_ms} ms</strong>
-                  </div>
-                  <div class="bar-track"><div class="bar-fill bar-red" style="width:${legW.toFixed(1)}%">${bench.legacy_ms} ms</div></div>
-                </div>
-                <div class="bar-item">
-                  <div class="bar-label-row">
-                    <span>AI-Modernized (${esc(synth.model)}) · Instant lookup + exact paisa math</span>
-                    <strong style="color:var(--green);">${bench.modern_ms} ms (${bench.speedup_factor}x faster!)</strong>
-                  </div>
-                  <div class="bar-track"><div class="bar-fill bar-green" style="width:${modW.toFixed(1)}%"></div></div>
-                </div>
-              </div>
-              <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-family:var(--font-mono);font-size:12.5px;color:var(--text-muted);padding-top:6px;">
-                <span>Output Fingerprint: <strong style="color:var(--green);">${esc((fals.sha256_parity_digest || '').slice(0, 22))}… (100% MATCH)</strong></span>
-                <span>Net Payout: <strong style="color:#E2E8F0;">INR ${((fals.total_net_payout_paise || 0) / 100).toLocaleString('en-IN', {minimumFractionDigits: 2})}</strong></span>
-              </div>
-            </div>
-          </div>
-
-          <div class="panel">
-            <div class="panel-header">
-              <span>STEP 2 · AI-GENERATED MODERN ENGINE (${esc(synth.model)} · ${(synth.latency_ms/1000).toFixed(1)}s)</span>
-              <span class="tag tag-green">${synth.code_lines} lines · pass #${synth.attempts}</span>
-            </div>
-            <div class="code-box" style="flex:1;line-height:1.48;color:#DCE8FA;">${esc(typewriter(humanizeRule(synth.code_preview || ''), codeProg))}</div>
-            <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:12.5px;color:var(--text-muted);padding-top:6px;border-top:1px solid var(--border);">
-              <span>Unique Payments: <strong style="color:#E2E8F0;">${(ds.unique_records || 0).toLocaleString()}</strong> · Duplicates Blocked: <strong style="color:#E2E8F0;">${ds.duplicate_utrs || 0}</strong></span>
-              <span>Boundary Checks: <strong style="color:var(--green);">${ds.edge_cases_verified || 6}/6 PASS</strong></span>
-            </div>
-          </div>
-        </div>
-
-        <div class="cmd-strip green" style="opacity:${showFooter ? 1 : 0.15}">
-          <div class="cmd-text">
-            <strong>VERIFIED ZERO-ERROR REWRITE:</strong> 100% Identical Payouts to the Last Paisa (${bench.speedup_factor}x faster, -${bench.latency_reduction_pct}% runtime)
-          </div>
-          <span class="tag tag-green">ZERO FINANCIAL DRIFT · READY FOR CLOUD RUN</span>
-        </div>
-      `;
-    }
-
-    // ── SCENE 6: Mani's Real Voice AI Recordings Showcase (Interactive Stage Tab) ──
+    // ── SCENE 6: EMBEDDED VOICE AI VIDEOS (ZERO DRIVE CLICK-OUT!) ──
     function renderScene6() {
+      const isFlight = voiceVideoTab === 'flight';
+      const archImg = isFlight ? '/assets/diagrams/09_arch_live_flight.jpg' : '/assets/diagrams/10_arch_voice_pstn.jpg';
+      const videoSrc = isFlight ? '/assets/videos/demo4a_gemini38_live_flight.mp4' : '/assets/videos/demo4b_gemini_voiceai_pstn.mp4';
+      const posterSrc = isFlight ? '/assets/videos/demo4a_gemini38_live_flight_poster.png' : '/assets/videos/demo4b_gemini_voiceai_pstn_poster.png';
+      const title = isFlight
+        ? 'Camera + Voice Flight Rebooking (Zero Dead Air)'
+        : 'Real Indian Phone Calls Across 6 Languages';
+      const sub = isFlight
+        ? 'Gemini 3.8 Live watches a boarding pass on camera and speaks naturally while rebooking Frankfurt flight PNR LH8942X in BigQuery & Firestore.'
+        : 'Real PSTN Indian telephony running on Google Cloud Run (Mumbai) — switching live across English, Hindi, Tamil, Kannada, Telugu & Hinglish.';
+
       return `
-        <div class="scene-header">
+        <div class="scene-top">
           <div>
-            <div class="scene-kicker">DEMO 06 · GEMINI 3.8 LIVE &amp; VOICEAI · REAL RECORDED MULTIMODAL &amp; INDIAN PHONE-LINE DEMOS</div>
-            <div class="scene-title">Voice Agents That Reason While They Speak — Zero Awkward Silence</div>
+            <div class="scene-eyebrow">DEMO 06 · REAL PRODUCTION VOICE AI · PLAYS INLINE</div>
+            <h1 class="scene-heading">${title}</h1>
+            <p class="scene-sub">${sub}</p>
           </div>
-          <div class="scene-meta">
-            <div class="meta-stat green">Voice Track<strong>Live Natural Speech</strong></div>
-            <div class="meta-stat">Background<strong>Live Cloud Lookups</strong></div>
-            <div class="meta-stat amber">Languages<strong>EN · HI · TA · KN · TE</strong></div>
+          <div class="video-switcher" role="tablist">
+            <button class="video-switch-btn ${isFlight ? 'active' : ''}" type="button" data-vtab="flight">6A · Live Camera + Voice</button>
+            <button class="video-switch-btn ${!isFlight ? 'active' : ''}" type="button" data-vtab="pstn">6B · Indian Phone-Line AI</button>
           </div>
         </div>
 
-        <div class="grid-2">
-          <div class="panel">
-            <div class="panel-header">
-              <span>DEMO 4A · GEMINI 3.8 LIVE EXTENDED THINKING</span>
-              <span class="tag tag-green">LIVE CAMERA + VOICE + BACKGROUND DATA</span>
-            </div>
-            <img class="voice-poster" src="/assets/videos/demo4a_gemini38_live_flight_poster.png" alt="Gemini 3.8 Live Extended Thinking Flight Cancellation Rebooking Demo" />
-            <div class="arch-steps">
-              <div class="arch-step"><strong>LIVE INPUT:</strong> Streams live camera video + natural voice for cancelled Frankfurt flight <code>PNR LH8942X</code>.</div>
-              <div class="arch-step"><strong>NO DEAD AIR:</strong> Runs background BigQuery &amp; Firestore database lookups and EU261 compensation checks while keeping the conversation flowing naturally.</div>
-            </div>
-            <div style="margin-top:auto;display:flex;justify-content:space-between;align-items:center;padding-top:8px;">
-              <span class="tag tag-blue">Real-Time Voice + Video Stream</span>
-              <a class="drive-launch-btn" href="https://drive.google.com/file/d/1KkvhldhlXGUEYQMLs28EMQXsSeAbZRZO/view" target="_blank" rel="noopener noreferrer">
-                ▶ Launch Full Recording on Google Drive ↗
-              </a>
-            </div>
+        <div class="split-stage video-split">
+          <div class="arch-card-frame">
+            <img src="${archImg}" alt="${esc(title)} Architecture" />
           </div>
-
-          <div class="panel">
-            <div class="panel-header">
-              <span>DEMO 4B · GEMINI VOICEAI — INDIAN PHONE TELEPHONY</span>
-              <span class="tag tag-amber">REAL CARRIER CALL · MUMBAI CLOUD RUN</span>
-            </div>
-            <img class="voice-poster" src="/assets/videos/demo4b_gemini_voiceai_pstn_poster.png" alt="Gemini VoiceAI Indian PSTN Telephony Integration Demo" />
-            <div class="arch-steps">
-              <div class="arch-step"><strong>GOOGLE CLOUD FLOW:</strong> Real Indian phone / mobile call -&gt; Cloud Load Balancing + Cloud Armor -&gt; Cloud Run (<code>asia-south1</code> Mumbai) -&gt; Firestore.</div>
-              <div class="arch-step"><strong>6 INDIAN LANGUAGES:</strong> Compares Direct Voice-to-Voice vs. Step-by-Step pipelines across English, Hindi, Tamil, Kannada, Telugu &amp; Hinglish.</div>
-            </div>
-            <div style="margin-top:auto;display:flex;justify-content:space-between;align-items:center;padding-top:8px;">
-              <span class="tag tag-green">Direct Voice-to-Voice &amp; Step-by-Step</span>
-              <a class="drive-launch-btn" href="https://drive.google.com/file/d/1kv3NheXiAbhIBhYuBDUMRBCa054gIE9M/view" target="_blank" rel="noopener noreferrer">
-                ▶ Launch Full Recording on Google Drive ↗
-              </a>
+          <div class="cinema-video-frame">
+            <video controls playsinline preload="metadata" poster="${posterSrc}" key="${voiceVideoTab}">
+              <source src="${videoSrc}" type="video/mp4" />
+            </video>
+            <div class="cinema-video-caption">
+              <span>${isFlight ? 'Real Gemini 3.8 Live Extended Thinking Recording (2:40)' : 'Real Indian PSTN Phone Integration Recording (3:03)'}</span>
+              <span class="pill green">Embedded Local MP4 · Instant Playback</span>
             </div>
           </div>
         </div>
       `;
     }
 
+    // ── RENDER DISPATCHER (COMPATIBLE WITH `record_demos.mjs`!) ──
     window.renderDemoAt = function (sceneId, t) {
-      currentScene = sceneId;
       const stage = document.getElementById('stage');
       if (sceneId === 0) stage.innerHTML = renderScene0();
       else if (sceneId === 1) stage.innerHTML = renderScene1(t);
@@ -2135,446 +1990,371 @@
       else if (sceneId === 4) stage.innerHTML = renderScene4(t);
       else if (sceneId === 5) stage.innerHTML = renderScene5(t);
       else if (sceneId === 6) stage.innerHTML = renderScene6();
+
+      // Re-wire inline audio toggle on Scene 3
+      const inlineAudioBtn = document.getElementById('btnInlineAudio');
+      if (inlineAudioBtn) {
+        inlineAudioBtn.onclick = () => {
+          audioEnabled = !audioEnabled;
+          if (!audioEnabled) liveAudios.forEach(a => { try { a.pause(); } catch {} });
+          else playPreview(3);
+          inlineAudioBtn.textContent = audioEnabled ? '🔊 Sound On' : '🔇 Muted';
+        };
+      }
     };
 
-    function stopPlayback() {
-      if (rafId) cancelAnimationFrame(rafId);
-      rafId = null;
-      audioTimers.forEach(id => clearTimeout(id));
-      audioTimers = [];
-      liveAudios.forEach(a => { try { a.pause(); a.currentTime = 0; } catch {} });
-      liveAudios = [];
+    // ── TECHNICAL DETAILS DRAWER CONTENT ──
+    function updateTechDrawer(sceneId) {
+      const titleEl = document.getElementById('techTitle');
+      const bodyEl = document.getElementById('techBody');
+      const d1 = TRACES.demo1 || {};
+      const d2 = TRACES.demo2 || {};
+      const d3 = TRACES.demo3 || {};
+      const d4 = TRACES.demo4 || {};
+      const d5 = TRACES.demo5 || {};
+
+      let title = 'Technical Details & Live Telemetry';
+      let sections = [];
+
+      if (sceneId === 0) {
+        title = 'Architecture & Environment Details';
+        sections = [
+          { lbl: 'Live Stack', copy: 'Models: gemini-4-neon (Orchestrator / Modernization / Cyber Audit), gemini-4-hydrogen (Parallel /swarm workers), gemini-decision-1 (Single-pass guardrails), gemini-3.8-flash-tts & gemini-3.8-live-extended-thinking (Voice). Orchestration: Google ADK 2.14.1. Data: Spanner Omni (10,000 rows) + BigQuery Apache Iceberg (40,000 rows).' },
+          { lbl: 'How Preview vs Live Works', copy: 'Preview replays smooth motion graphics hydrated from real captured traces (100% Wi-Fi-proof). Run Live invokes real Gemini APIs over Server-Sent Events (SSE) and automatically resets temporary sandboxes and database rows afterward.' },
+        ];
+      } else if (sceneId === 1) {
+        title = 'Demo 1 · Neon Orchestrator + 3x Hydrogen Worktrees';
+        const neon = d1.neon_orchestrator || d1.carbon_architect || {};
+        sections = [
+          { lbl: 'Models & Usage', copy: `Orchestrator: ${neon.model || 'gemini-4-neon'} (${neon.latency_ms || 0}ms, ${neon.usage?.input_tokens || 0} in / ${neon.usage?.output_tokens || 0} out / ${neon.usage?.thoughts_tokens || 0} thoughts). Workers: 3× gemini-4-hydrogen running concurrently inside isolated git worktrees.` },
+          { lbl: 'Remote Agent Handoff Command', code: d1.remote_agent_cmd || 'agy --remote-agent --repo cmanikandan/gdg-blr-talk-nov14-2026 --plan .antigravity/plan.json' },
+          { lbl: 'Generated Worker Branches & Patches', code: (d1.hydrogen_swarm?.workers || []).map(w => `# ${w.worker_id} (${w.branch}) — ${w.latency_ms}ms\n${w.code_snippet || ''}`).join('\n\n') },
+        ];
+      } else if (sceneId === 5) {
+        title = 'Demo 2 · Legacy UPI Rewrite & Exact Falsifier';
+        const synth = d5.modernization_synthesis || {};
+        sections = [
+          { lbl: 'Exact Parity Proof', copy: `Model: ${synth.model || 'gemini-4-neon'} | Attempt ${synth.attempts || 1} | SHA-256 Digest: ${d5.golden_falsifier?.sha256_parity_digest || '—'} | Drift: ${d5.golden_falsifier?.financial_drift_inr ?? 0.0} INR.` },
+          { lbl: 'AI-Generated Modern Settlement Code (Preview)', code: synth.code_preview || '# Run live or load trace to view generated module.' },
+        ];
+      } else if (sceneId === 2) {
+        title = 'Demo 3 · Decisions API 8Q / 50Q / Multimodal Telemetry';
+        sections = [
+          { lbl: 'Methodology', copy: d2.methodology || 'Apples-to-apples live calls comparing POST /v1beta/decisions (0 output tokens) against gemini-3.8-flash and gemini-4-hydrogen returning structured JSON.' },
+          { lbl: '8-Question & 50-Question Raw Benchmarks', code: JSON.stringify({ benchmark_8q: d2.round_b_head_to_head?.benchmark_8q, benchmark_50q: d2.round_b_head_to_head?.benchmark_50q }, null, 2) },
+        ];
+      } else if (sceneId === 3) {
+        title = 'Demo 4 · Google ADK 2.14.1 DAG & Zero-Copy SQL';
+        sections = [
+          { lbl: 'Zero-Copy Federated Query', copy: 'DuckDB queries local Spanner Omni SQLite (10,000 rows) joined directly with Apache Iceberg Parquet telemetry (40,000 rows) — zero ETL copy.' },
+          { lbl: 'ADK Workflow Execution Trace', code: JSON.stringify(d3.adk_workflow_steps || [], null, 2) },
+        ];
+      } else if (sceneId === 4) {
+        title = 'Demo 5 · Load Benchmark + Neon Cyber Security Notes';
+        const audit = (d4.neon_security_audit || d4.carbon_security_audit || {}).audit || {};
+        sections = [
+          { lbl: 'Adversarial Reviewer Model', copy: `${(d4.neon_security_audit || d4.carbon_security_audit || {}).model || 'gemini-4-neon'} audited monsoonpay/circuit_breaker.py independently with zero shared context from the builders.` },
+          { lbl: 'Detailed Engineering Notes', code: (audit.checks || []).map(c => `[${c.status}] ${c.category || c.title || c.id}\n  Summary: ${c.finding}\n  Engineering Note: ${c.technical_note || '—'}`).join('\n\n') },
+        ];
+      } else if (sceneId === 6) {
+        title = 'Demo 6 · Embedded Local Voice AI Videos';
+        sections = [
+          { lbl: 'Zero-Wi-Fi Stage Playback', copy: 'Both real Google Drive recordings are pre-transcoded to crisp H.264 + AAC MP4s inside assets/videos/ (6.9 MB & 5.2 MB) so playback starts instantaneously on stage with zero external redirect.' },
+        ];
+      }
+
+      if (liveLogs.length > 0) {
+        sections.push({ lbl: 'Latest Live SSE Stream Log', code: liveLogs.slice(-30).join('\n') });
+      }
+
+      titleEl.textContent = title;
+      bodyEl.innerHTML = sections.map(s => `
+        <div>
+          <div class="tech-section-lbl">${esc(s.lbl)}</div>
+          ${s.copy ? `<div class="tech-copy">${esc(s.copy)}</div>` : ''}
+          ${s.code ? `<pre class="tech-code">${esc(s.code)}</pre>` : ''}
+        </div>
+      `).join('');
     }
 
-    function playInteractive(sceneId) {
+    function playPreview(sceneId) {
       stopPlayback();
       if (sceneId === 0 || sceneId === 6) {
-        window.renderDemoAt(sceneId, 0);
+        window.renderDemoAt(sceneId, 1.0);
         return;
       }
 
-      const durations = { 1: 14.0, 2: 16.0, 3: 44.0, 4: 14.0, 5: 14.5 };
-      if (sceneId === 3 && TRACES.demo3?.voice_turns?.length) {
-        const vt = TRACES.demo3.voice_turns;
-        const d1 = vt[0]?.duration_sec || 8.3;
-        const d2 = vt[1]?.duration_sec || 10.0;
-        const d3 = vt[2]?.duration_sec || 24.3;
-        durations[3] = d1 + d2 + d3 + 1.5;
+      const d3Turns = TRACES.demo3?.voice_turns || [];
+      const dur = sceneId === 3 && d3Turns.length >= 3
+        ? 0.2 + d3Turns[0].duration_sec + 0.35 + d3Turns[1].duration_sec + 0.35 + d3Turns[2].duration_sec + 1.0
+        : (DURATIONS[sceneId] || 12.0);
 
-        if (!IS_RECORD_MODE && audioEnabled) {
-          const schedule = [
-            { delayMs: 200, url: `/traces/audio/turn1_mani_checkin.wav?v=${audioBust}` },
-            { delayMs: (d1 + 0.55) * 1000, url: `/traces/audio/turn2_gemini_ack.wav?v=${audioBust}` },
-            { delayMs: (d1 + d2 + 0.90) * 1000, url: `/traces/audio/turn3_gemini_report.wav?v=${audioBust}` },
-          ];
-          schedule.forEach(item => {
-            const a = new Audio(item.url);
+      // Schedule real Gemini 3.8 HD audio on Scene 3
+      if (sceneId === 3 && audioEnabled && d3Turns.length >= 3 && !IS_RECORD_MODE) {
+        const starts = [
+          200,
+          Math.round((0.2 + d3Turns[0].duration_sec + 0.35) * 1000),
+          Math.round((0.2 + d3Turns[0].duration_sec + 0.35 + d3Turns[1].duration_sec + 0.35) * 1000),
+        ];
+        d3Turns.slice(0, 3).forEach((turn, idx) => {
+          const fname = (turn.wav_relpath || turn.wav_path || '').split('/').pop();
+          if (!fname) return;
+          const timer = setTimeout(() => {
+            if (currentScene !== 3 || !audioEnabled) return;
+            const a = new Audio(`/traces/audio/${fname}?v=${audioBust}`);
             liveAudios.push(a);
-            const tid = setTimeout(() => {
-              if (audioEnabled && liveAudios.includes(a)) {
-                a.play().catch(() => {});
-              }
-            }, item.delayMs);
-            audioTimers.push(tid);
-          });
-        }
+            a.play().catch(() => {});
+          }, starts[idx]);
+          audioTimers.push(timer);
+        });
       }
 
-      const dur = durations[sceneId] || 14.0;
-      const t0 = performance.now();
+      const startTs = performance.now();
       function step(now) {
-        const elapsed = (now - t0) / 1000;
-        window.renderDemoAt(sceneId, Math.min(elapsed, dur));
+        const elapsed = Math.min(dur, (now - startTs) / 1000);
+        window.renderDemoAt(sceneId, elapsed);
         if (elapsed < dur) rafId = requestAnimationFrame(step);
+        else rafId = null;
       }
       rafId = requestAnimationFrame(step);
     }
 
-    // ── Interactive Stage Command Center Logic (disabled in ?record=1) ──
+    // ── INTERACTIVE CONTROLS (NON-RECORD MODE) ──
     if (!IS_RECORD_MODE) {
-      const btnStartDemo1 = document.getElementById('btnStartDemo1');
+      const btnPreview = document.getElementById('btnPreview');
       const btnRunLive = document.getElementById('btnRunLive');
-      const btnReplay = document.getElementById('btnReplay');
-      const btnAudioToggle = document.getElementById('btnAudioToggle');
-      const btnBtsToggle = document.getElementById('btnBtsToggle');
-      const btsDrawer = document.getElementById('btsDrawer');
-      const liveDrawer = document.getElementById('liveDrawer');
-      const liveSpinner = document.getElementById('liveSpinner');
-      const liveTitleText = document.getElementById('liveTitleText');
-      const liveTimer = document.getElementById('liveTimer');
-      const liveStepper = document.getElementById('liveStepper');
-      const liveFeed = document.getElementById('liveFeed');
-      const btnHideLiveDrawer = document.getElementById('btnHideLiveDrawer');
-      const chkAutoReset = document.getElementById('chkAutoReset');
       const btnResetMenu = document.getElementById('btnResetMenu');
       const resetPopover = document.getElementById('resetPopover');
-      const btnQuickReset = document.getElementById('btnQuickReset');
-      const btnFactoryReset = document.getElementById('btnFactoryReset');
-      const toastWrap = document.getElementById('toastWrap');
+      const chkAutoReset = document.getElementById('chkAutoReset');
+      const livePill = document.getElementById('livePill');
+      const liveSpinner = document.getElementById('liveSpinner');
+      const livePillText = document.getElementById('livePillText');
+      const livePillTimer = document.getElementById('livePillTimer');
+      const techDrawer = document.getElementById('techDrawer');
+      const techBackdrop = document.getElementById('techBackdrop');
+      const toastEl = document.getElementById('toast');
+      let toastTimer = null;
 
-      function showToast(title, detail, isErr = false) {
-        const el = document.createElement('div');
-        el.className = `toast ${isErr ? 'err' : ''}`;
-        el.innerHTML = `<strong>${esc(title)}</strong><div>${esc(detail)}</div>`;
-        toastWrap.appendChild(el);
-        setTimeout(() => {
-          el.style.transition = 'opacity 0.25s';
-          el.style.opacity = '0';
-          setTimeout(() => el.remove(), 260);
-        }, 4200);
+      function showToast(title, msg, isErr = false) {
+        clearTimeout(toastTimer);
+        document.getElementById('toastTitle').textContent = title;
+        document.getElementById('toastMsg').textContent = msg;
+        toastEl.className = `toast show${isErr ? ' err' : ''}`;
+        toastTimer = setTimeout(() => toastEl.classList.remove('show'), 4500);
+      }
+
+      function setTechOpen(open) {
+        if (open) updateTechDrawer(currentScene);
+        techDrawer.classList.toggle('open', open);
+        techBackdrop.classList.toggle('open', open);
       }
 
       function updateStatusUI(st) {
         if (!st) return;
-        liveKeyConfigured = Boolean(st.live_key_configured);
-        const apiDot = document.getElementById('apiDot');
-        const apiText = document.getElementById('apiText');
-        if (liveKeyConfigured) {
-          apiDot.className = 'status-dot green';
-          apiText.textContent = 'Gemini API: LIVE';
+        liveKeyConfigured = !!st.live_key_configured;
+        const apiEl = document.getElementById('popApiStatus');
+        const dataEl = document.getElementById('popDataStatus');
+        apiEl.innerHTML = liveKeyConfigured
+          ? '<span class="dot-indicator"></span> Connected (Live Ready)'
+          : '<span class="dot-indicator warn"></span> Preview Only (No Key)';
+        dataEl.textContent = `${(st.spanner_rows || 10000).toLocaleString()} Spanner · ${(st.iceberg_rows || 40000).toLocaleString()} Iceberg`;
+        updateTopButtons();
+      }
+
+      function updateTopButtons() {
+        const runnable = !!SCENE_TO_DEMO_ID[currentScene];
+        btnPreview.style.display = (currentScene === 0 || currentScene === 6) ? 'none' : 'inline-flex';
+        btnRunLive.style.display = runnable ? 'inline-flex' : 'none';
+        if (activeEventSource) {
+          btnRunLive.classList.add('running');
+          btnRunLive.textContent = '■ Stop Live';
+          btnRunLive.disabled = false;
         } else {
-          apiDot.className = 'status-dot amber';
-          apiText.textContent = 'Replay Mode';
-        }
-
-        const backendDot = document.getElementById('backendDot');
-        const backendText = document.getElementById('backendText');
-        const backendChip = document.getElementById('backendChip');
-        if (st.backend_clean) {
-          backendDot.className = 'status-dot green';
-          backendText.textContent = `Backend: CLEAN (${(st.spanner_rows/1000).toFixed(0)}k/${(st.iceberg_rows/1000).toFixed(0)}k)`;
-          backendChip.title = `Clean: ${st.spanner_rows.toLocaleString()} Spanner Omni rows · ${st.iceberg_rows.toLocaleString()} BigQuery Iceberg rows · 0 stale worktrees`;
-        } else {
-          backendDot.className = 'status-dot amber';
-          backendText.textContent = `Backend: Reset Needed`;
-          backendChip.title = `Stale worktrees: ${st.stale_worktrees} · Modified code files: ${(st.modified_code_files||[]).length}`;
-        }
-
-        syncControlsForScene(currentScene);
-      }
-
-      function renderBtsDrawer(sceneId) {
-        const info = BEHIND_THE_SCENES[sceneId];
-        if (!info) return;
-        btsDrawer.innerHTML = `
-          <div class="bts-top">
-            <span class="bts-heading">BEHIND THE SCENES · ${esc(info.title)}</span>
-            <button class="ctrl-btn" id="btnCloseBts" type="button" style="padding:4px 10px;font-size:11.5px;">Close ✕</button>
-          </div>
-          <div class="bts-grid">
-            <div class="bts-card">
-              <div class="bts-card-label">1. The Business Scenario</div>
-              <div class="bts-card-body">${esc(info.scenario)}</div>
-            </div>
-            <div class="bts-card">
-              <div class="bts-card-label green">2. What Executes LIVE</div>
-              <div class="bts-card-body">${esc(info.live)}</div>
-            </div>
-            <div class="bts-card">
-              <div class="bts-card-label amber">3. Local Stage Fixtures</div>
-              <div class="bts-card-body">${esc(info.local)}</div>
-            </div>
-            <div class="bts-card">
-              <div class="bts-card-label blue">4. Keynote Punchline</div>
-              <div class="bts-card-body" style="font-style:italic;color:#F1F5F9;">${esc(info.takeaway)}</div>
-            </div>
-          </div>
-        `;
-        const closeBtn = document.getElementById('btnCloseBts');
-        if (closeBtn) closeBtn.addEventListener('click', () => setBtsOpen(false));
-      }
-
-      function setBtsOpen(open) {
-        btsOpen = open;
-        btsDrawer.classList.toggle('open', btsOpen);
-        btnBtsToggle.classList.toggle('info-active', btsOpen);
-        if (btsOpen) renderBtsDrawer(currentScene);
-      }
-
-      function syncControlsForScene(sceneId) {
-        const isArchOverview = sceneId === 0;
-        const isVoiceShowcase = sceneId === 6;
-        const isStaticScene = isArchOverview || isVoiceShowcase;
-        const isRunning = Boolean(activeEventSource);
-        btnStartDemo1.style.display = isArchOverview ? 'inline-flex' : 'none';
-        btnAudioToggle.style.display = sceneId === 3 ? 'inline-flex' : 'none';
-        btnReplay.style.display = isStaticScene ? 'none' : 'inline-flex';
-        btnRunLive.style.display = isStaticScene ? 'none' : 'inline-flex';
-        if (!isRunning) {
-          btnRunLive.className = 'ctrl-btn primary';
-          btnRunLive.textContent = '⚡ Run LIVE';
+          btnRunLive.classList.remove('running');
+          btnRunLive.textContent = '⚡ Run Live';
           btnRunLive.disabled = !liveKeyConfigured;
           btnRunLive.title = liveKeyConfigured
-            ? 'Execute this demo live against Google Gemini APIs right from the browser'
-            : 'Export GEMINI_API_KEY in your terminal before launching stage_workbench.py to enable live runs';
+            ? 'Execute real live Gemini API calls'
+            : 'Export GEMINI_API_KEY before starting stage_workbench.py';
         }
       }
 
       function switchScene(sceneId) {
+        if (activeEventSource) return;
         currentScene = sceneId;
         document.querySelectorAll('.tab-btn').forEach(b => {
           b.classList.toggle('active', Number(b.dataset.scene) === sceneId);
         });
-        syncControlsForScene(sceneId);
-        if (btsOpen) renderBtsDrawer(sceneId);
-        playInteractive(sceneId);
-      }
-
-      function renderStepper(steps, activeIdx, allDone = false) {
-        liveStepper.innerHTML = steps.map((label, idx) => {
-          let cls = '';
-          let icon = `${idx + 1}.`;
-          if (allDone || idx < activeIdx) { cls = 'done'; icon = '✔'; }
-          else if (idx === activeIdx) { cls = 'active'; icon = '▶'; }
-          return `<div class="step-pill ${cls}"><span>${icon}</span><span>${esc(label)}</span></div>`;
-        }).join('');
-      }
-
-      function appendLiveLine(line, elapsedMs) {
-        const row = document.createElement('div');
-        row.className = 'live-feed-line';
-        const sec = (elapsedMs / 1000).toFixed(1).padStart(5, ' ') + 's';
-        row.innerHTML = `<span class="live-feed-ts">${esc(sec)}</span><span>${esc(line)}</span>`;
-        liveFeed.appendChild(row);
-        liveFeed.scrollTop = liveFeed.scrollHeight;
+        updateTopButtons();
+        playPreview(sceneId);
+        if (techDrawer.classList.contains('open')) updateTechDrawer(sceneId);
       }
 
       function cleanupLiveStream() {
-        if (activeEventSource) {
-          activeEventSource.close();
-          activeEventSource = null;
-        }
-        if (liveTimerInterval) {
-          clearInterval(liveTimerInterval);
-          liveTimerInterval = null;
-        }
-        syncControlsForScene(currentScene);
+        if (activeEventSource) { activeEventSource.close(); activeEventSource = null; }
+        if (liveTimerInterval) { clearInterval(liveTimerInterval); liveTimerInterval = null; }
+        liveActiveStep = -1;
+        updateTopButtons();
       }
 
       function startLiveStream(sceneId) {
         const demoId = SCENE_TO_DEMO_ID[sceneId];
         if (!demoId) return;
-
+        if (!liveKeyConfigured) {
+          showToast('API Key Required', 'Export GEMINI_API_KEY in your terminal to run live calls.', true);
+          return;
+        }
         stopPlayback();
         cleanupLiveStream();
+        liveLogs = [];
+        liveActiveStep = 0;
 
         const autoReset = chkAutoReset.checked ? 1 : 0;
-        const url = `/api/stream/${demoId}?auto_reset=${autoReset}`;
+        const tStart = performance.now();
+        liveSpinner.style.display = 'block';
+        livePillText.textContent = 'Calling live Gemini API…';
+        livePillTimer.textContent = '0.0s';
+        livePill.classList.add('visible');
 
-        liveDrawer.className = 'live-drawer interactive-only visible';
-        liveSpinner.style.display = 'inline-block';
-        liveTitleText.textContent = `Starting live ${demoId}...`;
-        liveStepper.innerHTML = '';
-        liveFeed.innerHTML = '';
-        liveTimer.textContent = '0.0s';
-
-        btnRunLive.className = 'ctrl-btn danger';
-        btnRunLive.textContent = '■ Cancel Live Run';
-        btnRunLive.disabled = false;
-
-        let steps = [];
-        let currentStep = 0;
-        const startTime = performance.now();
+        // Animate stage progress smoothly while waiting for real API response!
+        window.renderDemoAt(sceneId, 1.5);
         liveTimerInterval = setInterval(() => {
-          liveTimer.textContent = `${((performance.now() - startTime) / 1000).toFixed(1)}s`;
-        }, 100);
+          const sec = (performance.now() - tStart) / 1000;
+          livePillTimer.textContent = `${sec.toFixed(1)}s`;
+          const pseudoT = Math.min((DURATIONS[sceneId] || 12) * 0.72, 1.5 + liveActiveStep * 2.8 + (sec % 3) * 0.4);
+          window.renderDemoAt(sceneId, pseudoT);
+        }, 250);
 
-        const es = new EventSource(url);
+        const es = new EventSource(`/api/stream/${demoId}?auto_reset=${autoReset}`);
         activeEventSource = es;
+        updateTopButtons();
 
         es.addEventListener('start', (e) => {
           const d = JSON.parse(e.data);
-          steps = d.steps || [];
-          currentStep = 0;
-          liveTitleText.textContent = `LIVE · ${d.title}`;
-          renderStepper(steps, 0, false);
-          appendLiveLine(`Connected to live runner (${demoId}, auto_reset=${d.auto_reset ? 'ON' : 'OFF'})`, 0);
+          livePillText.textContent = d.title || 'Running live Gemini demo…';
         });
 
         es.addEventListener('phase', (e) => {
           const d = JSON.parse(e.data);
-          currentStep = d.step_index;
-          renderStepper(steps, currentStep, false);
+          liveActiveStep = d.step_index || 0;
+          livePillText.textContent = d.label || 'Executing…';
         });
 
         es.addEventListener('log', (e) => {
           const d = JSON.parse(e.data);
-          appendLiveLine(d.line, d.elapsed_ms || 0);
+          if (d.line) liveLogs.push(d.line);
+          if (techDrawer.classList.contains('open')) updateTechDrawer(currentScene);
         });
 
         es.addEventListener('trace', (e) => {
           const d = JSON.parse(e.data);
           TRACES[d.demo_id] = d.trace;
           if (d.audio_bust) audioBust = d.audio_bust;
-          appendLiveLine(`Fresh live trace captured for ${d.demo_id} — rendering visual stage!`, performance.now() - startTime);
-        });
-
-        es.addEventListener('reset', (e) => {
-          const r = JSON.parse(e.data);
-          appendLiveLine(`Auto-Reset complete in ${r.elapsed_ms}ms: ${(r.actions || []).join(' · ')}`, performance.now() - startTime);
-          updateStatusUI(r.status);
         });
 
         es.addEventListener('done', (e) => {
           const d = JSON.parse(e.data);
           cleanupLiveStream();
           liveSpinner.style.display = 'none';
-          liveDrawer.classList.add('done');
-          renderStepper(steps, steps.length, true);
-          const sec = (d.elapsed_ms / 1000).toFixed(1);
-          liveTitleText.textContent = `✔ Live Run Complete (${sec}s)${d.auto_reset ? ' · Code & Backend Auto-Reset Clean' : ''}`;
-          liveTimer.textContent = `${sec}s`;
+          livePillText.textContent = `✔ Live Run Complete (${(d.elapsed_ms / 1000).toFixed(1)}s)`;
           if (d.status) updateStatusUI(d.status);
-          showToast(
-            `Live ${d.demo_id.toUpperCase()} Complete (${sec}s)`,
-            d.auto_reset
-              ? 'Fresh live results rendered & backend auto-reset cleanly (10k Spanner · 40k Iceberg).'
-              : 'Fresh live API results rendered on stage.'
-          );
-          if (SCENE_TO_DEMO_ID[currentScene] === d.demo_id) {
-            playInteractive(currentScene);
-          }
+          playPreview(sceneId);
+          setTimeout(() => livePill.classList.remove('visible'), 3600);
+          showToast('Live Gemini Run Complete', `Updated with real live results in ${(d.elapsed_ms / 1000).toFixed(1)}s.`);
         });
 
         es.addEventListener('error', (e) => {
-          let msg = 'Live stream interrupted or API error.';
-          if (e && e.data) {
-            try {
-              const parsed = JSON.parse(e.data);
-              msg = parsed.message || msg;
-              if (parsed.status) updateStatusUI(parsed.status);
-            } catch {}
-          }
+          let msg = 'Live stream interrupted.';
+          try { if (e.data) msg = JSON.parse(e.data).message || msg; } catch {}
           cleanupLiveStream();
-          liveSpinner.style.display = 'none';
-          liveDrawer.classList.add('err');
-          liveTitleText.textContent = `✖ Live Run Failed`;
-          appendLiveLine(`ERROR: ${msg}`, performance.now() - startTime);
-          showToast('Live Demo Error', msg, true);
+          livePill.classList.remove('visible');
+          showToast('Live Run Error', msg, true);
         });
       }
 
       async function performReset({ restoreTraces = false, verifyTests = false }) {
         resetPopover.classList.remove('open');
-        const backendDot = document.getElementById('backendDot');
-        const backendText = document.getElementById('backendText');
-        backendDot.className = 'status-dot blue';
-        backendText.textContent = restoreTraces ? 'Factory Resetting...' : 'Resetting Backend...';
-        btnResetMenu.disabled = true;
-
+        showToast('Resetting…', 'Cleaning temporary sandboxes and refreshing data…');
         try {
           const res = await fetch('/api/reset', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              reset_code: true,
-              restore_traces: restoreTraces,
-              verify_tests: verifyTests,
-            }),
+            body: JSON.stringify({ reset_code: true, restore_traces: restoreTraces, verify_tests: verifyTests }),
           });
           if (!res.ok) throw new Error(await res.text());
           const data = await res.json();
           updateStatusUI(data.status);
           if (restoreTraces && data.traces) {
             TRACES = data.traces;
-            audioBust = data.audio_bust || Date.now();
-            playInteractive(currentScene);
+            if (data.audio_bust) audioBust = data.audio_bust;
+            playPreview(currentScene);
           }
-          const summary = (data.actions || []).join(' · ');
-          showToast(
-            restoreTraces ? `Factory Reset Clean (${data.elapsed_ms}ms)` : `Code & Backend Reset (${data.elapsed_ms}ms)`,
-            summary
-          );
+          showToast('Environment Ready', `Reset completed cleanly in ${data.elapsed_ms} ms.`);
         } catch (err) {
           showToast('Reset Failed', err.message || String(err), true);
-          fetch('/api/status').then(r => r.json()).then(updateStatusUI).catch(() => {});
-        } finally {
-          btnResetMenu.disabled = false;
         }
       }
 
       // Wire events
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => switchScene(Number(btn.dataset.scene)));
+      document.getElementById('brandHome').addEventListener('click', () => switchScene(0));
+      document.querySelectorAll('.tab-btn').forEach(b => {
+        b.addEventListener('click', () => switchScene(Number(b.dataset.scene)));
       });
 
-      btnStartDemo1.addEventListener('click', () => switchScene(1));
-
       document.getElementById('stage').addEventListener('click', (e) => {
-        const card = e.target.closest('.flow-card[data-jump-scene]');
-        if (card) {
-          switchScene(Number(card.dataset.jumpScene));
+        const tile = e.target.closest('.story-tile[data-jump]');
+        if (tile) { switchScene(Number(tile.dataset.jump)); return; }
+        const vbtn = e.target.closest('.video-switch-btn[data-vtab]');
+        if (vbtn) {
+          voiceVideoTab = vbtn.dataset.vtab;
+          window.renderDemoAt(6, 1.0);
         }
       });
 
-      btnReplay.addEventListener('click', () => {
-        if (currentScene !== 0 && currentScene !== 6) playInteractive(currentScene);
-      });
-
+      btnPreview.addEventListener('click', () => playPreview(currentScene));
       btnRunLive.addEventListener('click', () => {
         if (activeEventSource) {
           cleanupLiveStream();
-          liveSpinner.style.display = 'none';
-          liveTitleText.textContent = 'Live Run Cancelled (cleaning temporary sandboxes...)';
-          showToast('Live Run Cancelled', 'Cancelled stream cleanly.');
-          fetch('/api/status').then(r => r.json()).then(updateStatusUI).catch(() => {});
+          livePill.classList.remove('visible');
+          showToast('Cancelled', 'Stopped live run cleanly.');
         } else {
           startLiveStream(currentScene);
         }
       });
-
-      btnAudioToggle.addEventListener('click', () => {
-        audioEnabled = !audioEnabled;
-        btnAudioToggle.textContent = audioEnabled ? '🔊 Audio' : '🔇 Muted';
-        if (!audioEnabled) {
-          liveAudios.forEach(a => { try { a.pause(); } catch {} });
-        } else if (currentScene === 3) {
-          playInteractive(3);
-        }
-      });
-
-      btnBtsToggle.addEventListener('click', () => setBtsOpen(!btsOpen));
-      btnHideLiveDrawer.addEventListener('click', () => liveDrawer.classList.remove('visible'));
 
       btnResetMenu.addEventListener('click', (e) => {
         e.stopPropagation();
         resetPopover.classList.toggle('open');
       });
       document.addEventListener('click', (e) => {
-        if (!resetPopover.contains(e.target) && e.target !== btnResetMenu) {
-          resetPopover.classList.remove('open');
-        }
+        if (!resetPopover.contains(e.target) && e.target !== btnResetMenu) resetPopover.classList.remove('open');
       });
-      btnQuickReset.addEventListener('click', () => performReset({ restoreTraces: false, verifyTests: false }));
-      btnFactoryReset.addEventListener('click', () => performReset({ restoreTraces: true, verifyTests: true }));
+      document.getElementById('btnQuickReset').addEventListener('click', () => performReset({ restoreTraces: false, verifyTests: false }));
+      document.getElementById('btnFactoryReset').addEventListener('click', () => performReset({ restoreTraces: true, verifyTests: true }));
 
-      // Stage keyboard shortcuts (0 overview, 1-6 demos, R replay, B behind the scenes)
+      document.getElementById('btnTechDrawer').addEventListener('click', () => setTechOpen(true));
+      document.getElementById('btnCloseTech').addEventListener('click', () => setTechOpen(false));
+      techBackdrop.addEventListener('click', () => setTechOpen(false));
+
       document.addEventListener('keydown', (e) => {
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-        const tabOrder = [1, 5, 2, 3, 4, 6];
-        if (e.key === '0') {
-          switchScene(0);
-        } else if (e.key >= '1' && e.key <= '6') {
-          switchScene(tabOrder[Number(e.key) - 1]);
-        } else if (e.key.toLowerCase() === 'r' && currentScene !== 0 && currentScene !== 6) {
-          playInteractive(currentScene);
-        } else if (e.key.toLowerCase() === 'b') {
-          setBtsOpen(!btsOpen);
-        }
+        const map = { '0': 0, '1': 1, '2': 5, '3': 2, '4': 3, '5': 4, '6': 6 };
+        if (e.key in map) switchScene(map[e.key]);
+        else if (e.key.toLowerCase() === 'r') playPreview(currentScene);
+        else if (e.key.toLowerCase() === 'd') setTechOpen(!techDrawer.classList.contains('open'));
+        else if (e.key === 'Escape') setTechOpen(false);
       });
 
-      // Initial data hydration — land on Tab 00 (Architecture & Flow)
+      // Hydrate traces + live status on boot
       fetch('/api/traces')
         .then(r => r.json())
         .then(data => {
           TRACES = data.traces || {};
           if (data.audio_bust) audioBust = data.audio_bust;
-          updateStatusUI(data.status || { live_key_configured: data.live_key_configured, backend_clean: true, spanner_rows: 10000, iceberg_rows: 40000 });
+          updateStatusUI(data.status || { live_key_configured: data.live_key_configured });
           switchScene(0);
         })
-        .catch(() => {
-          window.renderDemoAt(0, 0);
-        });
+        .catch(() => switchScene(0));
     }
   </script>
 </body>

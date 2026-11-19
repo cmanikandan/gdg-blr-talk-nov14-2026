@@ -167,13 +167,23 @@ def _run_llm_json_benchmark(
         # Fair minimal-thinking fast baseline for Flash
         cfg_kwargs["thinking_config"] = types.ThinkingConfig(thinking_budget=0)
 
-    t0 = time.perf_counter()
-    resp = client.models.generate_content(
-        model=model,
-        contents=prompt,
-        config=types.GenerateContentConfig(**cfg_kwargs),
-    )
-    elapsed_ms = int((time.perf_counter() - t0) * 1000)
+    resp = None
+    elapsed_ms = 0
+    for attempt in range(3):
+        t0 = time.perf_counter()
+        try:
+            resp = client.models.generate_content(
+                model=model,
+                contents=prompt,
+                config=types.GenerateContentConfig(**cfg_kwargs),
+            )
+            elapsed_ms = int((time.perf_counter() - t0) * 1000)
+            break
+        except Exception as exc:
+            if attempt < 2 and ("503" in str(exc) or "UNAVAILABLE" in str(exc)):
+                time.sleep(2.5 * (attempt + 1))
+                continue
+            raise
 
     um = getattr(resp, "usage_metadata", None)
     in_tok = int(getattr(um, "prompt_token_count", 0) or 0)
@@ -351,15 +361,15 @@ def run_demo2() -> Dict[str, Any]:
 
     # ── ROUND C: MULTIMODAL SINGLE-PASS (Architecture Image + Alert Text) ───────
     console.print("\n[bold cyan]▶ Round C:[/bold cyan] LIVE Multimodal Architecture Audit (Image + Text in 1 Pass)...")
-    arch_img = REPO_ROOT / "assets" / "diagrams" / "07_gcp_data_cloud.jpg"
+    arch_img = REPO_ROOT / "assets" / "diagrams" / "07_gcp_data_cloud_v4.jpg"
     mm_questions = {
         "depicts_google_cloud_data_architecture": {
             "type": "noul",
-            "instructions": "Does the attached diagram depict a unified Google Cloud data architecture with Spanner Omni, BigQuery, AlloyDB, and Knowledge Catalog?",
+            "instructions": "Does the attached diagram depict a Google Cloud data architecture with Spanner Omni, BigQuery Apache Iceberg, Google ADK 2.0, Knowledge Catalog, and a Human Approval Gate?",
         },
         "contains_spanner_and_iceberg": {
             "type": "noul",
-            "instructions": "Does the diagram reference Spanner Omni and Apache Iceberg?",
+            "instructions": "Does the diagram reference Spanner Omni and BigQuery Apache Iceberg?",
         },
         "contains_sensitive_passwords": {
             "type": "noul",
@@ -396,7 +406,7 @@ def run_demo2() -> Dict[str, Any]:
         questions=mm_questions,
     )
     mm_result = {
-        "image_file": "assets/diagrams/07_gcp_data_cloud.jpg",
+        "image_file": "assets/diagrams/07_gcp_data_cloud_v4.jpg",
         "latency_ms": mm_raw["_latency_ms"],
         "input_tokens": int(mm_raw.get("usage", {}).get("total_input_tokens", 0)),
         "output_tokens": int(mm_raw.get("usage", {}).get("total_output_tokens", 0)),

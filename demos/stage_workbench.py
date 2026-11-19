@@ -45,11 +45,11 @@ DEMO_REGISTRY: Dict[str, Dict[str, Any]] = {
     "demo1": {
         "script": "demo1_antigravity_swarm.py",
         "trace": "demo1_trace.json",
-        "title": "Plan Big with Carbon + 3 Parallel Hydrogen Builders",
+        "title": "Gemini 4 Neon Plans + 3 Parallel Hydrogen Builders",
         "steps": [
-            "Step 1: Gemini 4 Carbon Plans the Fix",
-            "Step 2: 3 Parallel Hydrogen Workers Build in Sandboxes",
-            "Step 3: Automated Tests & Result Capture",
+            "Step 1: Gemini 4 Neon Plans the Fix",
+            "Step 2: 3 Hydrogen Workers Build in Parallel",
+            "Step 3: Automated Tests & Cloud Handoff",
         ],
         "phase_markers": [
             ("Phase 1:", 0),
@@ -61,11 +61,11 @@ DEMO_REGISTRY: Dict[str, Dict[str, Any]] = {
     "demo5": {
         "script": "demo5_code_modernization.py",
         "trace": "demo5_trace.json",
-        "title": "Modernize Legacy UPI Engine (Verified Zero-Error Rewrite)",
+        "title": "Gemini 4 Neon Rewrites Legacy UPI Engine (0.00 INR Error)",
         "steps": [
-            "Step 1: Measure Slow Legacy Code (8,000 Payments)",
-            "Step 2: Carbon Extracts Hidden RBI & GST Rules",
-            "Step 3: Generate Fast Code & Prove 0.00 INR Drift",
+            "Step 1: Measure Slow Legacy Code",
+            "Step 2: Neon Discovers 5 Hidden RBI Rules",
+            "Step 3: Neon Rewrites & Proves 0.00 INR Error",
         ],
         "phase_markers": [
             ("Phase 1:", 0),
@@ -95,7 +95,7 @@ DEMO_REGISTRY: Dict[str, Dict[str, Any]] = {
         "trace": "demo3_trace.json",
         "title": "Voice Check-In + Automated Workflow + Unified Cloud Data",
         "steps": [
-            "Step 1: Run Google ADK 2.0 + Live Spanner & BigQuery Join",
+            "Step 1: Google ADK 2.0 + Zero-Copy Cloud Data Join",
             "Step 2: Generate Gemini 3.8 HD Voice Response",
             "Step 3: Pause at Human Approval Gate",
         ],
@@ -108,16 +108,16 @@ DEMO_REGISTRY: Dict[str, Dict[str, Any]] = {
     "demo4": {
         "script": "demo4_review_shipped_pr.py",
         "trace": "demo4_trace.json",
-        "title": "Review Everything: Load Test + Automated Tests + AI Security Audit",
+        "title": "Review Everything: Load Test + Gemini 4 Neon Cyber Audit",
         "steps": [
             "Step 1: 500-User Flash-Sale Load Test",
-            "Step 2: Run Full Automated Test Suite (10 Tests)",
-            "Step 3: Live Gemini 4 Carbon Security Review",
+            "Step 2: Run Automated Test Suite (10 Tests)",
+            "Step 3: Live Gemini 4 Neon Security Review",
         ],
         "phase_markers": [
             ("500-Request Burst", 0),
             ("pytest suite", 1),
-            ("Adversarial Security Review", 2),
+            ("Independent Security Review", 2),
             ("Trace saved", 2),
         ],
     },

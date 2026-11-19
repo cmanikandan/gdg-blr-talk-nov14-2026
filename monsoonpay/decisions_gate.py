@@ -43,8 +43,8 @@ CONTROL_PLANE_QUESTIONS: Dict[str, Dict[str, Any]] = {
         "instructions": "Select the optimal Gemini 4 model tier for the reasoning horizon and latency budget.",
         "criteria": {
             "gemini-4-hydrogen": "Fast everyday coding, CSS/UI adjustment, boilerplate, or single-file test update.",
-            "gemini-4-argon": "Standard multi-package service refactor, SQL pipeline, or domain analysis.",
-            "gemini-4-carbon": "Deep multi-subsystem outage root-cause, security audit, or multi-region architecture fix.",
+            "gemini-4-neon": "Fast frontier orchestrator for outage root-cause, multi-file fixes, code modernization, and security review.",
+            "gemini-4-carbon": "Extended multi-day research or deep formal proofs beyond interactive outage response.",
         },
     },
     "mcp_data_target": {
@@ -93,6 +93,19 @@ class PolicyVerdict:
     cost_usd: float
 
 
+def _sanitize_no_proxy_ipv6() -> None:
+    """Strip bracketed IPv6 tokens (e.g., [::1]) from NO_PROXY that break httpx URL parsing."""
+    for env_key in ("NO_PROXY", "no_proxy"):
+        raw = os.environ.get(env_key)
+        if raw and "[" in raw:
+            cleaned = ",".join(
+                tok.strip()
+                for tok in raw.split(",")
+                if tok.strip() and "[" not in tok and "]" not in tok
+            )
+            os.environ[env_key] = cleaned
+
+
 def call_decisions_api(
     input_blocks: List[Dict[str, Any]],
     questions: Dict[str, Dict[str, Any]],
@@ -104,6 +117,7 @@ def call_decisions_api(
     if not key:
         raise RuntimeError("GEMINI_API_KEY environment variable is required for live Decisions API calls.")
 
+    _sanitize_no_proxy_ipv6()
     payload = {
         "model": "gemini-decision-1",
         "input": input_blocks,
@@ -159,8 +173,8 @@ def apply_policy_gate(api_response: Dict[str, Any]) -> PolicyVerdict:
     elif sec >= 0.70:
         verdict = "REDACT_AND_ROTATE_SECRET"
         adk_route = "dlp_redact"
-    elif model_choice == "gemini-4-carbon" or mc >= 0.70:
-        verdict = "DISPATCH_CARBON_DATA_SWARM"
+    elif model_choice in ("gemini-4-neon", "gemini-4-carbon") or mc >= 0.70:
+        verdict = "DISPATCH_NEON_DATA_SWARM"
         adk_route = "lakehouse_carbon"
     else:
         verdict = "FAST_LANE_HYDROGEN_WORKER"

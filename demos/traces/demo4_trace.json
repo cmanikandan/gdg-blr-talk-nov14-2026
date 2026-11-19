@@ -1,6 +1,6 @@
 {
   "demo": "demo4_review_shipped_pr",
-  "timestamp_utc": "2026-11-18T05:12:18Z",
+  "timestamp_utc": "2026-11-19T05:15:46Z",
   "live_api": true,
   "sla_benchmark": {
     "before": {
@@ -23,75 +23,112 @@
   },
   "pytest": {
     "exit_code": 0,
-    "duration_ms": 1877,
+    "duration_ms": 2039,
     "passed_count": 10,
     "test_cases": [
-      "test_google_cloud_dataset_integrity PASSED     [ 10%]",
-      "test_circuit_breaker_sla_improvement PASSED    [ 20%]",
-      "test_circuit_breaker_truetime_uncertainty_guard PASSED [ 30%]",
-      "test_circuit_breaker_state_transitions PASSED  [ 40%]",
-      "test_decisions_policy_gate_routes_and_zero_output_cost PASSED [ 50%]",
-      "test_make_image_input_block PASSED             [ 60%]",
-      "test_adk_workflow_graph_structure PASSED       [ 70%]",
-      "test_adk_workflow_offline_lakehouse_and_hitl PASSED [ 80%]",
-      "test_adk_workflow_offline_quarantine_and_fast_lane PASSED [ 90%]",
-      "test_legacy_settlement_golden_invariants PASSED [100%]"
+      "test_google_cloud_dataset_integrity PASSED                                                                 [ 10%]",
+      "test_circuit_breaker_sla_improvement PASSED                                                                [ 20%]",
+      "test_circuit_breaker_truetime_uncertainty_guard PASSED                                                     [ 30%]",
+      "test_circuit_breaker_state_transitions PASSED                                                              [ 40%]",
+      "test_decisions_policy_gate_routes_and_zero_output_cost PASSED                                              [ 50%]",
+      "test_make_image_input_block PASSED                                                                         [ 60%]",
+      "test_adk_workflow_graph_structure PASSED                                                                   [ 70%]",
+      "test_adk_workflow_offline_lakehouse_and_hitl PASSED                                                        [ 80%]",
+      "test_adk_workflow_offline_quarantine_and_fast_lane PASSED                                                  [ 90%]",
+      "test_legacy_settlement_golden_invariants PASSED                                                            [100%]"
     ]
   },
-  "carbon_security_audit": {
-    "model": "gemini-4-carbon",
-    "latency_ms": 10076,
+  "neon_security_audit": {
+    "model": "gemini-4-neon",
+    "latency_ms": 12781,
     "usage": {
-      "input_tokens": 3809,
-      "output_tokens": 315,
-      "thoughts_tokens": 0
+      "input_tokens": 3838,
+      "output_tokens": 384,
+      "thoughts_tokens": 1227
     },
     "audit": {
-      "overall_verdict": "CHANGES_REQUESTED",
+      "overall_verdict": "APPROVE_WITH_NOTE",
       "gray_swan_ipi_score": "0% bypass",
       "confidence_pct": 94,
       "checks": [
         {
-          "category": "Gray Swan IPI & Policy Gate",
+          "category": "Prompt-Attack & Approval Safety",
           "status": "WARN",
-          "finding": "apply_policy_gate ignores requires_human_approval and autonomy_readiness outputs, permitting unverified production mutation routing."
+          "finding": "Prompt attacks are blocked, but high-risk production changes skip required human approval.",
+          "technical_note": "apply_policy_gate checks prompt_injection (>=0.70) but never enforces requires_human_approval or autonomy_readiness."
         },
         {
-          "category": "Gray Swan IPI & Policy Gate",
-          "status": "WARN",
-          "finding": "call_decisions_api lacks fail-closed exception handling and make_image_input_block permits unbounded local path reads."
-        },
-        {
-          "category": "Secret Handling & Credentials",
+          "category": "API Key & Secret Protection",
           "status": "PASS",
-          "finding": "GEMINI_API_KEY transmitted securely via x-goog-api-key header over HTTPS without URL query or log exposure."
+          "finding": "No hardcoded keys exist, and leaked credentials trigger automatic redaction and rotation.",
+          "technical_note": "call_decisions_api loads GEMINI_API_KEY via env; apply_policy_gate routes leaked_secret_or_pii >= 0.70 to dlp_redact."
         },
         {
-          "category": "Spanner Omni TrueTime Bounds",
-          "status": "WARN",
-          "finding": "execute_checkout fails to validate negative or NaN truetime_drift_ms values, risking invalid latency calculations."
+          "category": "Clock Sync & Data Safety",
+          "status": "PASS",
+          "finding": "Strict clock-drift limits halt unsafe commits and cap stale-read fallbacks tightly.",
+          "technical_note": "execute_checkout rejects truetime_drift_ms > 7.0 with ValueError and bounds open-state reads via truetime_stale_read_fallback_ms."
         },
         {
-          "category": "Circuit Breaker & Thundering Herd",
-          "status": "WARN",
-          "finding": "HALF_OPEN failure leaves consecutive_failures >= threshold without immediately re-opening, allowing concurrent probe stampedes."
+          "category": "High-Traffic Overload Recovery",
+          "status": "PASS",
+          "finding": "Circuit breaker sheds load during spikes and safely probes recovery with jittered backoff.",
+          "technical_note": "SpannerOmniCircuitBreaker trips OPEN at failure_threshold=5, probes HALF_OPEN every 4 fallbacks, and applies jittered backoff."
         }
       ],
-      "architect_followup": "Enforce requires_human_approval and autonomy_readiness in apply_policy_gate, immediately re-open failed HALF_OPEN probes, and reject non-positive/NaN TrueTime drift."
+      "architect_followup": "Wire requires_human_approval and autonomy_readiness into apply_policy_gate so production mutations require explicit human sign-off before autonomous dispatch."
+    }
+  },
+  "carbon_security_audit": {
+    "model": "gemini-4-neon",
+    "latency_ms": 12781,
+    "usage": {
+      "input_tokens": 3838,
+      "output_tokens": 384,
+      "thoughts_tokens": 1227
+    },
+    "audit": {
+      "overall_verdict": "APPROVE_WITH_NOTE",
+      "gray_swan_ipi_score": "0% bypass",
+      "confidence_pct": 94,
+      "checks": [
+        {
+          "category": "Prompt-Attack & Approval Safety",
+          "status": "WARN",
+          "finding": "Prompt attacks are blocked, but high-risk production changes skip required human approval.",
+          "technical_note": "apply_policy_gate checks prompt_injection (>=0.70) but never enforces requires_human_approval or autonomy_readiness."
+        },
+        {
+          "category": "API Key & Secret Protection",
+          "status": "PASS",
+          "finding": "No hardcoded keys exist, and leaked credentials trigger automatic redaction and rotation.",
+          "technical_note": "call_decisions_api loads GEMINI_API_KEY via env; apply_policy_gate routes leaked_secret_or_pii >= 0.70 to dlp_redact."
+        },
+        {
+          "category": "Clock Sync & Data Safety",
+          "status": "PASS",
+          "finding": "Strict clock-drift limits halt unsafe commits and cap stale-read fallbacks tightly.",
+          "technical_note": "execute_checkout rejects truetime_drift_ms > 7.0 with ValueError and bounds open-state reads via truetime_stale_read_fallback_ms."
+        },
+        {
+          "category": "High-Traffic Overload Recovery",
+          "status": "PASS",
+          "finding": "Circuit breaker sheds load during spikes and safely probes recovery with jittered backoff.",
+          "technical_note": "SpannerOmniCircuitBreaker trips OPEN at failure_threshold=5, probes HALF_OPEN every 4 fallbacks, and applies jittered backoff."
+        }
+      ],
+      "architect_followup": "Wire requires_human_approval and autonomy_readiness into apply_policy_gate so production mutations require explicit human sign-off before autonomous dispatch."
     }
   },
   "github_pr": {
-    "author": {
-      "id": "MDQ6VXNlcjM2NzYwNDM=",
-      "is_bot": false,
-      "login": "cmanikandan",
-      "name": "Mani"
-    },
-    "baseRefName": "main",
-    "headRefName": "feat/omnipulse-agent-mesh",
     "number": 1,
+    "title": "feat(monsoonpay): Google Cloud Spanner Omni circuit breaker, ADK 2.14.1 workflow, Decisions API & Argon UPI modernization",
+    "url": "https://github.com/cmanikandan/gdg-blr-talk-nov14-2026/pull/1",
     "state": "MERGED",
-    "title": "feat(monsoonpay): Spanner Omni circuit breaker, ADK 2.14.1 workflow & Decisions API control plane",
-    "url": "https://github.com/cmanikandan/gdg-blr-talk-nov14-2026/pull/1"
+    "headRefName": "feat/omnipulse-agent-mesh",
+    "baseRefName": "main",
+    "author": {
+      "login": "cmanikandan"
+    }
   }
 }

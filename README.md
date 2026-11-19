@@ -1,10 +1,12 @@
-# The Periodic Table of Agents: Building with Gemini 4 and Antigravity
+# The Periodic Table of Agents — Gemini 4 Neon Keynote
 
-> **DevFest Bengaluru 2026 Opening Keynote**  
+> **DevFest Bengaluru 2026 Keynote**  
 > **Speaker:** Mani, Principal Architect, Google Cloud — [linkedin.com/in/cmanikandan](https://www.linkedin.com/in/cmanikandan)  
-> **Core Mental Model:** *Plan big, execute fast, decide small, and review everything.*
+> **Core Mental Model:** *Plan big. Build fast. Decide instant. Ship safe.*
 
-Every slide, architecture diagram, live Gemini 4 (`Carbon`, `Argon`, `Hydrogen`), Gemini Decisions API (`gemini-decision-1`), Gemini 3.8 Live & Voice AI showcase, real **Google ADK 2.14.1** workflow graph, and zero-copy **Spanner Omni × BigQuery Borderless Apache Iceberg** telemetry pipeline in this repository runs end-to-end on Google Cloud architecture with live measured numbers.
+Every slide, bespoke architecture visual, live **Gemini 4 Neon** (`gemini-4-neon`) + **Gemini 4 Hydrogen** (`gemini-4-hydrogen`) + **Gemini Decisions API** (`gemini-decision-1`) + **Gemini 3.8 Live & Voice AI** showcase, real **Google ADK 2.14.1** workflow, and zero-copy **Spanner Omni × BigQuery Apache Iceberg** telemetry pipeline in this repository runs end-to-end on Google Cloud architecture with verified live measurements.
+
+All Gemini 4 Neon launch benchmarks strictly cite the public announcement: [Introducing Gemini 4 Neon (blog.google)](https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-neon/).
 
 ---
 
@@ -12,29 +14,29 @@ Every slide, architecture diagram, live Gemini 4 (`Carbon`, `Argon`, `Hydrogen`)
 
 ### 1. Head-to-Head Control Plane Race: `gemini-decision-1` vs. `gemini-3.8-flash` vs. `gemini-4-hydrogen`
 
-- **Use Case:** MonsoonPay incoming SEV-1 payment alert gated on **8 real-time security & routing rules** OR **50 simultaneous RBI / PCI-DSS / SOC-2 compliance checks** before invoking an agent.
-- **Methodology:** Identical alert payload evaluated live on the Gemini API — `gemini-decision-1` via `POST /v1beta/decisions` (1 forward pass, **0 output tokens**) vs. `gemini-3.8-flash` (`thinking_budget=0`) and `gemini-4-hydrogen` (`thinking_level=low`) returning strict JSON via `generateContent`. Costs calculated from exact API `usage_metadata` at Nov 2026 list prices.
+- **Use Case:** MonsoonPay incoming Delhi checkout incident gated on **8 real-time security & routing rules** OR **50 simultaneous RBI / PCI-DSS compliance rules** before invoking an agent.
+- **Methodology:** Identical incident payload evaluated live on the Gemini API — `gemini-decision-1` via `POST /v1beta/decisions` (1 forward pass, **0 output tokens**) vs. `gemini-3.8-flash` (`thinking_budget=0`) and `gemini-4-hydrogen` (`thinking_level=low`) returning strict JSON via `generateContent`. Costs calculated from exact API `usage_metadata` at published pricing.
 
-| Benchmark | Model | Latency | Billed Output Tokens | Cost / 1M Calls | Speedup / Savings |
+| Benchmark | Model | Latency | Billed Output Tokens | Cost / 1M Calls | Decisions Advantage |
 | :--- | :--- | ---: | ---: | ---: | :--- |
-| **8-Question Guardrail Gate** *(Live)* | **`gemini-decision-1`** | **290 ms** | **0** | **$80.50** | **Baseline ($0 output)** |
-| **8-Question Guardrail Gate** *(Live)* | `gemini-3.8-flash` *(budget=0)* | 2,921 ms | 111 | $381.90 | 10.1x slower · 4.7x costlier |
-| **8-Question Guardrail Gate** *(Live)* | `gemini-4-hydrogen` *(low)* | 7,817 ms | 733 | $6,159.00 | 27.0x slower · 76.5x costlier |
-| **50 Simultaneous RBI/PCI Checks** *(Live)* | **`gemini-decision-1`** | **270 ms** | **0** | **$270.70** | **Baseline ($0 output)** |
-| **50 Simultaneous RBI/PCI Checks** *(Live)* | `gemini-3.8-flash` *(budget=0)* | 5,479 ms | 755 | $2,296.70 | **20.3x slower · 8.5x costlier** |
-| **50 Simultaneous RBI/PCI Checks** *(Live)* | `gemini-4-hydrogen` *(low)* | 7,693 ms | 1,641 | $14,457.00 | **28.5x slower · 53.4x costlier** |
-| **100-Question Scaling** *(Google Nov 2026)* | **`gemini-decision-1`** | **359 ms** | **0** | — | **20.1x vs Flash (7.2s) · 24.0x vs Hydrogen (8.6s)** |
+| **8 Security & Routing Rules** *(Live)* | **`gemini-decision-1`** | **240 ms** | **0** | **$82.80** | **Baseline ($0 output)** |
+| **8 Security & Routing Rules** *(Live)* | `gemini-3.8-flash` *(budget=0)* | 3,507 ms | 108 | $374.40 | 14.6× slower · 4.5× costlier |
+| **8 Security & Routing Rules** *(Live)* | `gemini-4-hydrogen` *(low)* | 2,727 ms | 673 | $5,709.00 | 11.4× slower · 68.9× costlier |
+| **50 Simultaneous RBI/PCI Rules** *(Live)* | **`gemini-decision-1`** | **283 ms** | **0** | **$270.70** | **Baseline ($0 output)** |
+| **50 Simultaneous RBI/PCI Rules** *(Live)* | `gemini-3.8-flash` *(budget=0)* | 6,347 ms | 755 | $2,296.70 | **22.4× slower · 8.5× costlier** |
+| **50 Simultaneous RBI/PCI Rules** *(Live)* | `gemini-4-hydrogen` *(low)* | 4,947 ms | 1,700 | $14,899.50 | **17.5× slower · 55.0× costlier** |
+| **100-Rule Scaling** *(Google Pub.)* | **`gemini-decision-1`** | **359 ms** | **0** | — | **20.1× vs Flash (7.2s) · 24.0× vs Hydrogen (8.6s)** |
 
-### 2. Six Live Engineering & Voice AI Demos
+### 2. Six Live Engineering & Production Voice AI Demos
 
-1. **Demo 01 — Plan Big + Execute Fast (`demos/demo1_antigravity_swarm.py`):** Live `gemini-4-carbon` planned the Google Cloud `asia-south2` (Delhi) Cloud Run / Envoy recovery (`12.3s`) and caught subtle probe edge cases; 3 parallel `gemini-4-hydrogen` workers executed inside isolated `git worktree add --detach` sandboxes (`24.30s` wall vs. `43.25s` sequential → **`1.78x` speedup**, `0` merge conflicts), handing off to an Antigravity Remote Agent VM (`agy --remote-agent`).
-2. **Demo 02 — Enterprise Code Modernization (`demos/demo5_code_modernization.py`):** Live `gemini-4-carbon` extracted 5 hidden RBI/GST/idempotency invariants from a legacy `O(N²)` Indian UPI settlement monolith (`358.4 ms`), live **`gemini-4-argon`** synthesized a clean 87-line `O(N)` engine on Attempt 1 (`11.1s`), and our locked unmodified golden conformance falsifier proved **`94.3x` faster (`358.4 ms → 3.80 ms`, `-98.94%`)**, **100% bit-exact SHA-256 parity**, **`0.00 INR` drift** on 8,000 transactions (`INR 56,232,066.19` net payout), and `6/6` adversarial edge cases passing.
-3. **Demo 03 — Gemini Decisions API Arena (`demos/demo2_decisions_arena.py`):** Live 4-event security & routing control plane (`0` output tokens), live 8Q & 50Q race against `gemini-3.8-flash` & `gemini-4-hydrogen`, plus single-pass multimodal scoring of `assets/diagrams/07_gcp_data_cloud.jpg` (`illustrated_architecture_diagram`, clarity `2.52/3.0`).
-4. **Demo 04A & 04B — Real Voice AI Recordings (Google Drive):**
-   - **4A (`Gemini 3.8 Live Extended Thinking`):** Live 1 FPS camera + 16kHz voice flight cancellation rebooking (`PNR LH8942X`) executing `NON_BLOCKING` BigQuery & Firestore SQL + EU261 compensation with zero dead air — [Watch on Google Drive](https://drive.google.com/file/d/1KkvhldhlXGUEYQMLs28EMQXsSeAbZRZO/view).
-   - **4B (`Gemini VoiceAI — Indian PSTN Integration`):** Real multilingual Indian PSTN/VoLTE call (EN, HI, TA, KN, TE, Hinglish) into Cloud Load Balancing + Cloud Armor → Cloud Run Gen2 (`asia-south1`) → Firestore, comparing Direct Speech-to-Speech vs. Cascading Listen-Think-Speak — [Watch on Google Drive](https://drive.google.com/file/d/1kv3NheXiAbhIBhYuBDUMRBCa054gIE9M/view).
-5. **Demo 05 — Google ADK 2.14.1 + Zero-Copy Data Cloud (`demos/demo3_voice_adk_multicloud.py`):** Real `google.adk.Workflow` DAG calls live `gemini-decision-1`, resolves Knowledge Catalog semantic join paths, executes a zero-copy DuckDB join over **40,000 Spanner Omni × BigQuery Apache Iceberg Parquet rows in `162.4 ms`** (isolating `gcp:asia-south2` `p99=431.8ms` / `18,006` Envoy retries vs. healthy `gcp:asia-south1` `p99=16.1ms`, Software TrueTime drift `2.75ms`), and pauses natively at `@node(require_confirmation=True)` — narrated with real **Gemini 3.8 HD Audio**.
-6. **Demo 06 — Review Everything (`demos/demo4_review_shipped_pr.py`):** Deterministic 500-request burst benchmark verified **`-97.1%` checkout p99 drop** (`478.55 ms → 13.95 ms`) with **10/10 `pytest` passing** — yet live `gemini-4-carbon` adversarial code review returned **`CHANGES_REQUESTED`**, catching **4 subtle pre-merge security and concurrency findings**.
+1. **Demo 1 — Parallel Swarm (`demos/demo1_antigravity_swarm.py`):** Live **`gemini-4-neon`** reads our Google Cloud Delhi (`asia-south2`) payment gateway code (`14.8s`), plans a 3-part fix, and spawns **3 parallel `gemini-4-hydrogen` builders** in isolated sandboxes (`10.8s` wall vs. `19.8s` sequential → **`1.83×` speedup**, `0` merge conflicts), handing off cleanly to a Cloud VM.
+2. **Demo 2 — Legacy UPI Rewrite (`demos/demo5_code_modernization.py`):** Live **`gemini-4-neon`** reads a slow legacy Indian UPI settlement engine (`411.1 ms` on 8,000 payments), extracts all 5 hidden RBI & GST rounding rules (`7.1s`), writes a clean modern version on Attempt 1, and passes our locked verification suite **`100.5×` faster (`411.1 ms → 4.09 ms`)** with **`₹0.00` error** across **₹5.62 Cr**!
+3. **Demo 3 — Instant Guardrails & 50-Rule Race (`demos/demo2_decisions_arena.py`):** Live `gemini-decision-1` blocks prompt attacks & leaked keys before any agent runs, routes UI tweaks to Hydrogen and outages to **Gemini 4 Neon**, wins the 50-rule race **`22.4×` faster than Flash** and **`55.0×` cheaper than Hydrogen**, and audits our Google Cloud architecture diagram in **`440 ms`** (`0` output tokens).
+4. **Demo 4 — Voice Check-In + Zero-Copy Cloud Data (`demos/demo3_voice_adk_multicloud.py`):** Real **Google ADK 2.14.1** workflow (`google.adk.Workflow`) joins **40,000 Spanner Omni × BigQuery Apache Iceberg rows in `170 ms`** with zero copying, pinpoints Delhi's 64-slot queue, and pauses natively at a built-in Human Approval Gate — narrated with studio **Gemini 3.8 HD Audio**.
+5. **Demo 5 — Neon Cyber Audit (`demos/demo4_review_shipped_pr.py`):** 500-user load test confirms **`-97.1%` checkout delay drop (`478.55 ms → 13.95 ms`)** and **10/10 `pytest` green** — yet an independent live **`gemini-4-neon`** cyber reviewer (`90.5%` SEC-bench Pro · `0.0%` IPI bypass) still catches a real human-approval gap (`APPROVE WITH NOTE`) before a human clicks Merge!
+6. **Demo 6 — Embedded Production Voice AI Recordings (Slides 15 & 16 + Studio Tab 6):**
+   - **Part A (`Gemini 3.8 Live Extended Thinking`):** 1 FPS live camera + voice boarding-pass flight rebooking running non-blocking BigQuery & Firestore updates with zero dead air — embedded directly inline inside Slide 15 & Studio Tab 6!
+   - **Part B (`Indian Phone-Line Telephony on Google Cloud`):** Real Indian PSTN phone calls routed through Cloud Armor + Cloud Run Mumbai across 6 Indian languages (English, Hindi, Tamil, Kannada, Telugu, Hinglish) — embedded directly inline inside Slide 16 & Studio Tab 6!
 
 ---
 
@@ -43,74 +45,69 @@ Every slide, architecture diagram, live Gemini 4 (`Carbon`, `Argon`, `Hydrogen`)
 ```text
 ├── monsoonpay/                       # 100% Google Cloud-native reference platform
 │   ├── seed_multicloud_data.py       # Seeds 10k Spanner Omni SQLite + 40k BigQuery Iceberg Parquet rows
-│   ├── circuit_breaker.py            # Spanner Omni Software TrueTime bounded stale-read circuit breaker
+│   ├── circuit_breaker.py            # Spanner Omni TrueTime stale-read circuit breaker
 │   ├── decisions_gate.py             # Real REST client for POST /v1beta/decisions (text + multimodal)
-│   ├── adk_workflow.py               # Real Google ADK 2.14.1 Workflow DAG + DuckDB + native HITL pause
-│   └── legacy_settlement.py          # Legacy O(N²) Indian UPI settlement monolith + golden conformance falsifier
+│   ├── adk_workflow.py               # Real Google ADK 2.14.1 Workflow + DuckDB + built-in HITL pause
+│   └── legacy_settlement.py          # Legacy Indian UPI settlement monolith + exact verification harness
 ├── tests/
 │   └── test_monsoonpay.py            # 10 automated pytest verification tests
 ├── demos/
-│   ├── demo1_antigravity_swarm.py    # Live Carbon architect + 3 parallel Hydrogen git-worktree workers
-│   ├── demo2_decisions_arena.py      # 4 events + Live 8Q/50Q Flash/Hydrogen race + Multimodal check
-│   ├── demo3_voice_adk_multicloud.py # Real ADK 2.14.1 + DuckDB + Gemini 3.8 HD Audio (+ --live-mic)
-│   ├── demo4_review_shipped_pr.py    # SLA burst benchmark + pytest + Live Carbon adversarial PR review
-│   ├── demo5_code_modernization.py   # Live Carbon invariant extraction + Argon O(N) synthesis + Golden Falsifier
-│   ├── reset_environment.py          # Clean reset utility (git worktrees, code, Spanner/Iceberg DB, optional traces)
-│   ├── stage_workbench.py            # FastAPI Stage Command Center (SSE live streaming + Reset API on :8765)
-│   ├── studio.html                   # Interactive Web UI + 1920x1080 cinema recorder (`?record=1`)
+│   ├── demo1_antigravity_swarm.py    # Live Neon orchestrator + 3 parallel Hydrogen sandbox builders
+│   ├── demo2_decisions_arena.py      # 4 events + Live 8Q/50Q Flash/Hydrogen race + Diagram audit
+│   ├── demo3_voice_adk_multicloud.py # Real ADK 2.14.1 + DuckDB + Gemini 3.8 HD Audio
+│   ├── demo4_review_shipped_pr.py    # 500-user load test + 10/10 pytest + Live Neon cyber audit
+│   ├── demo5_code_modernization.py   # Live Neon invariant extraction + rewrite + ₹0.00 proof
+│   ├── reset_environment.py          # Clean reset utility (sandboxes, code, Spanner/Iceberg DB, tests)
+│   ├── stage_workbench.py            # FastAPI Stage Studio backend (SSE live streaming + Reset API)
+│   ├── studio.html                   # Uncluttered auditorium Stage Studio Web UI + cinema recorder
 │   ├── record_demos.mjs              # 1080p 30fps CDP + FFmpeg MP4 & Gemini 3.8 audio muxer
-│   └── traces/                       # Real captured API traces + mastered Gemini 3.8 HD WAV tracks
+│   └── traces/                       # Captured live API traces + mastered Gemini 3.8 HD WAV tracks
 ├── assets/
-│   ├── diagrams/                     # 8 clean 16:9 architecture diagrams (01..08)
-│   └── videos/                       # 5 embedded 1080p 30fps H.264 MP4s + 7 crisp PNG posters
+│   ├── diagrams/                     # Bespoke Obsidian + Neon hero & architecture visuals
+│   └── videos/                       # All 7 embedded MP4 videos (5 live demos + 2 real Voice AI recordings)
 ├── presentation/
-│   ├── keynote_deck.html             # Self-contained 25-slide HTML5 keynote (F, S, G shortcuts)
+│   ├── keynote_deck.html             # Self-contained 18-slide HTML5 keynote (all 7 videos play inline!)
 │   ├── build_html_keynote.py         # Builds keynote_deck.html dynamically from live traces
-│   ├── build_google_slides.py        # Builds 25-slide Google Slides v3 deck + PDF/PPTX export
+│   ├── build_google_slides.py        # Builds 18-slide Google Slides v4 deck + PDF + video-embedded PPTX
 │   ├── Periodic_Table_of_Agents_DevFest_Keynote.pdf
-│   ├── Periodic_Table_of_Agents_DevFest_Keynote.pptx
-│   └── google_slides_metadata.json   # Live Google Slides v3 & Drive video URLs
-└── SPEAKER_RUN_OF_SHOW.md            # 30-minute stage playbook for all 25 slides
+│   ├── Periodic_Table_of_Agents_DevFest_Keynote.pptx  # Native embedded playable MP4s on all 7 video slides!
+│   └── google_slides_metadata.json   # Live Google Slides v4 & Drive video URLs
+└── SPEAKER_RUN_OF_SHOW.md            # Stage playbook for all 18 slides
 ```
 
 ---
 
-## Quickstart
+## Quickstart (MacBook / Linux)
 
-### 1. Install Dependencies & Run Tests
+### 1. Clone, Install Dependencies & Verify Tests
 ```bash
+git clone https://github.com/cmanikandan/gdg-blr-talk-nov14-2026.git
+cd gdg-blr-talk-nov14-2026
 python3 -m venv .venv
 .venv/bin/pip install -e ".[dev]"
 .venv/bin/python monsoonpay/seed_multicloud_data.py
 .venv/bin/pytest -v
 ```
 
-### 2. Launch the Interactive Stage Command Center Web UI (Recommended — No CLI on Stage!)
-Export `GEMINI_API_KEY` transiently in your shell and launch the Web UI on your laptop:
+### 2. Launch the Redesigned Stage Studio Web UI (No Terminal on Stage!)
+Export `GEMINI_API_KEY` transiently in your shell and launch Stage Studio:
 ```bash
 export GEMINI_API_KEY="<your-gemini-api-key>"
 .venv/bin/python demos/stage_workbench.py --open
 # Opens http://127.0.0.1:8765 automatically
 ```
-Inside the Web UI:
-- **7 Keynote Tabs (`0`–`6`)**: Starts on **`00 · Architecture & Flow`** (an interactive business + technical blueprint with clickable journey cards), followed by `01 · Parallel Fix`, `02 · Legacy Rewrite`, `03 · Instant Guardrails`, `04 · Voice + Cloud Data`, `05 · AI Security Audit`, and `06 · Voice AI Live` (1-click Google Drive launch for Demos 4A & 4B).
-- **`⚡ Run LIVE`**: Executes real Gemini APIs with a live visual phase stepper & event stream — then renders fresh live results directly on the visual stage.
-- **`▶ Replay` (`R`)**: Instant zero-Wi-Fi animated replay from the latest verified trace (including synchronized Gemini 3.8 HD audio with **`🔊 Audio ON/OFF`** on Tab `04`).
-- **`? Behind the Scenes` (`B`)**: Plain-English 4-card breakdown explaining what executes live vs. local fixtures and the exact stage takeaway for every tab.
-- **`Auto-Reset` toggle + `⟲ Reset ▾` menu**: Automatically cleans temporary sandboxes, verifies clean `monsoonpay/` code, and refreshes Spanner Omni (`10k` rows) + BigQuery Iceberg (`40k` rows) after every live demo — or trigger **Reset Code & Backend** / **Full Factory Reset (+ Baseline & Tests)** anytime with one click.
+Inside Stage Studio:
+- **7 Spacious, Auditorium-Readable Views (`Overview` + Tabs `1`–`6`)**: Designed in plain English for both experienced engineers and newcomers, with a clean **`</> Technical Details & Code`** slide-over drawer tucked away until you want to dive deep.
+- **`▶ Preview` (`P`)**: Smooth animated walkthrough from the latest verified live run (works even with zero conference Wi-Fi; includes synchronized Gemini 3.8 HD Audio on Tab 4).
+- **`⚡ Run Live`**: Streams live Gemini 4 Neon, Hydrogen, Decisions API, and ADK 2.14.1 execution directly onto the stage UI.
+- **Tab `6 · Live Videos`**: Plays both real Voice AI recordings (Flight Rebooking + Indian 6-Language Phone Calls) inline beside their architecture diagrams — zero Google Drive click-out!
+- **`↺` Reset Popover**: One-click **Auto-Reset after each live run**, **Reset Code & Backend**, or **Full Factory Reset (+ Verify 10 Tests)**.
 
-### 3. Clean Reset via CLI (Optional)
-```bash
-# Quick reset: prune git worktrees, restore clean monsoonpay/ code, re-seed 10k Spanner + 40k Iceberg
-.venv/bin/python demos/reset_environment.py
-
-# Full Factory Reset: also restore committed baseline traces & audio + run 10/10 pytest
-.venv/bin/python demos/reset_environment.py --restore-traces --verify-tests
-```
-
-### 4. Present the 25-Slide Keynote Deck (Offline-Safe, Embedded 1080p 30fps Videos + Audio)
-Open [`presentation/keynote_deck.html`](presentation/keynote_deck.html) in Chrome/Edge:
-- **`ArrowRight` / `Space`** — Next slide
-- **`F`** — Fullscreen auditorium mode
-- **`S`** — Private Speaker Teleprompter & 30:00 keynote timer
-- **`G`** — 25-slide jump grid
+### 3. Present the 18-Slide Gemini 4 Neon Keynote (All 7 Videos Play Directly Inline!)
+- **Option A — Browser HTML5 Keynote (Recommended, Works 100% Offline):** Open [`presentation/keynote_deck.html`](presentation/keynote_deck.html) in Chrome/Edge.
+  - **`ArrowRight` / `Space`** — Next slide
+  - **`F`** — Fullscreen auditorium mode
+  - **`S`** — Private Speaker Teleprompter & timer
+  - **`G`** — 18-slide overview grid
+- **Option B — PowerPoint / Apple Keynote (Self-Contained Inline Videos):** Open [`presentation/Periodic_Table_of_Agents_DevFest_Keynote.pptx`](presentation/Periodic_Table_of_Agents_DevFest_Keynote.pptx) — all 7 MP4 videos (including Slides 15 & 16 Voice AI recordings) are embedded directly inside the slides.
+- **Option C — Google Slides (v4):** Open the link in [`presentation/google_slides_metadata.json`](presentation/google_slides_metadata.json) for Presenter View with full speaker notes on all 18 slides.

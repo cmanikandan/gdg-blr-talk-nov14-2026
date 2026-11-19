@@ -84,15 +84,18 @@ def _load_modern_fn(code_str: str):
     return fn
 
 
-def run_carbon_invariant_analysis(client: Any, legacy_src: str) -> Dict[str, Any]:
-    """Step 2: LIVE `gemini-4-carbon` extracts undocumented invariants & modernization plan."""
+def run_neon_rule_discovery(client: Any, legacy_src: str) -> Dict[str, Any]:
+    """Step 2: LIVE `gemini-4-neon` extracts hidden business rules in crystal-clear plain English."""
     from google.genai import types
 
     prompt = (
-        "You are a Principal Cloud Architect at Google Cloud leading a legacy payment system modernization.\n"
-        "Analyze the legacy Indian UPI/Merchant settlement code below and return STRICT JSON (no fences).\n"
-        "Write each hidden_invariants item in clear, concise plain English (<=20 words each) that both business leaders and engineers understand (avoid Big-O math notation like O(N^2)):\n"
-        '{"bottleneck_complexity": "Slow full-list scan -> Instant lookup", '
+        "You are an Architect powered by Gemini 4 Neon modernizing an Indian UPI payment settlement program.\n"
+        "Read the legacy code below and return STRICT JSON (no fences).\n"
+        "STRICT STYLE RULES (this will be projected on a keynote stage for both beginners and engineers):\n"
+        "- Write every `hidden_invariants` item in simple, crystal-clear everyday English (max 14 words each).\n"
+        "- NEVER include Python field names (like gross_paise, amount_paise, rbi_flagged_utrs, txn_count), Big-O math (O(N^2)), or code syntax.\n"
+        "- Use rupees (INR 2,000 / INR 50,000) instead of raw paise where natural!\n"
+        'Schema: {"bottleneck_complexity": "Slow one-by-one scan -> Instant lookup", '
         '"primary_bottleneck": str, '
         '"hidden_invariants": [str, str, str, str, str], '
         '"modernization_strategy": str, '
@@ -101,7 +104,7 @@ def run_carbon_invariant_analysis(client: Any, legacy_src: str) -> Dict[str, Any
     )
     t0 = time.perf_counter()
     resp = client.models.generate_content(
-        model="gemini-4-carbon",
+        model="gemini-4-neon",
         contents=prompt,
         config=types.GenerateContentConfig(
             thinking_config=types.ThinkingConfig(thinking_level="low"),
@@ -114,20 +117,20 @@ def run_carbon_invariant_analysis(client: Any, legacy_src: str) -> Dict[str, Any
         plan = json.loads((resp.text or "{}").strip())
     except json.JSONDecodeError:
         plan = {
-            "bottleneck_complexity": "Slow full-list scan -> Instant lookup",
-            "primary_bottleneck": "Checking every previous transaction one by one slows down dramatically as batch size grows.",
+            "bottleneck_complexity": "Slow one-by-one scan -> Instant lookup",
+            "primary_bottleneck": "Checking past payments one by one gets dramatically slower as daily volume grows.",
             "hidden_invariants": [
-                "Duplicate payment IDs are skipped automatically so merchants are never charged or credited twice",
-                "Payment reversals deduct from merchant totals with zero fee, zero GST, and no high-value alert",
-                "UPI <= 200,000 paise carries 0% MDR (RBI zero-MDR mandate)",
-                "Exact integer-paise ROUND_HALF_UP for MDR (45/85 bps) and 18% GST",
-                "CAPTURE gross >= 5,000,000 paise appends UTR to sorted rbi_flagged_utrs",
+                "Duplicate payment IDs are skipped so merchants are never paid twice.",
+                "Refunds reduce merchant totals with zero fees, zero tax, and no alert.",
+                "UPI payments up to INR 2,000 carry zero merchant fee under RBI rules.",
+                "Merchant fees and 18% GST use exact half-up rounding to the last paisa.",
+                "Payments of INR 50,000 or more are flagged automatically for RBI review.",
             ],
-            "modernization_strategy": "Replace linear scan with O(1) hash set + pure integer half-up rounding ((num*2 + den)//(2*den)) avoiding Decimal overhead.",
-            "target_gcp_runtime": "Google Cloud Run Gen2 + Spanner Omni ledger sink",
+            "modernization_strategy": "Replace one-by-one duplicate scanning with an instant lookup table and exact whole-paisa math.",
+            "target_gcp_runtime": "Google Cloud Run + Spanner Omni",
         }
     return {
-        "model": "gemini-4-carbon",
+        "model": "gemini-4-neon",
         "latency_ms": elapsed_ms,
         "usage": _extract_usage(resp),
         "plan": plan,
@@ -140,28 +143,28 @@ def synthesize_modern_module(
     plan: Dict[str, Any],
     feedback: str | None = None,
 ) -> Dict[str, Any]:
-    """Step 3: LIVE `gemini-4-argon` (fallback `gemini-4-hydrogen`) generates an O(N) bit-exact modernized module."""
+    """Step 3: LIVE `gemini-4-neon` (fallback `gemini-4-hydrogen`) generates a bit-exact fast modernized module."""
     from google.genai import types
 
     prompt = (
-        "You are an Antigravity `/teamwork` Modernization Specialist Engineer.\n"
+        "You are a Principal Engineer powered by Gemini 4 Neon.\n"
         "Rewrite `legacy_settle_batch` from the legacy module below into a clean, fast, production-grade Python module "
         "exposing `def modern_settle_batch(records: List[Dict[str, Any]]) -> Dict[str, Any]:`.\n"
-        "REQUIREMENTS (enforced by an unmodified golden conformance falsifier):\n"
-        "  1. Eliminate O(N^2) list scanning using O(1) `set` deduplication.\n"
-        "  2. Eliminate slow per-row `Decimal` allocations using exact integer arithmetic for ROUND_HALF_UP:\n"
-        "     - For non-negative integers `n` and `d`: `(n + d // 2) // d` matches `Decimal(n)/Decimal(d)` ROUND_HALF_UP EXACTLY when `d` is even (10000 and 100 are both even!).\n"
+        "REQUIREMENTS (enforced by an exact accuracy check against 8,000 payments):\n"
+        "  1. Replace linear list duplicate scanning with fast `set` lookup deduplication.\n"
+        "  2. Replace slow per-row `Decimal` allocations with exact integer half-up math:\n"
+        "     - For non-negative integers `n` and `d`: `(n + d // 2) // d` matches `Decimal(n)/Decimal(d)` ROUND_HALF_UP EXACTLY when `d` is even (10000 and 100 are even!).\n"
         "  3. Return the EXACT same dictionary keys and exact canonical JSON + SHA-256 `sha256_parity_digest` as `legacy_settle_batch`.\n"
         "  4. Use only Python standard library (`hashlib`, `json`, `typing`, `collections`).\n"
-        "  5. Output ONLY executable Python code (no markdown fences, no commentary).\n\n"
+        "  5. Write clean, readable comments in plain English (avoid Big-O notation in docstrings).\n"
+        "  6. Output ONLY executable Python code (no markdown fences, no commentary).\n\n"
         f"ARCHITECT PLAN:\n{json.dumps(plan, indent=2)}\n\n"
         f"LEGACY SOURCE:\n{legacy_src}"
     )
     if feedback:
-        prompt += f"\n\nPREVIOUS FALSIFIER FEEDBACK (FIX IMMEDIATELY):\n{feedback}\n"
+        prompt += f"\n\nPREVIOUS ACCURACY CHECK FEEDBACK (FIX IMMEDIATELY):\n{feedback}\n"
 
-    # Prefer gemini-4-argon (the exact /teamwork modernization element); fallback to gemini-4-hydrogen if unavailable
-    chosen_model = "gemini-4-argon"
+    chosen_model = "gemini-4-neon"
     t0 = time.perf_counter()
     try:
         resp = client.models.generate_content(
@@ -198,9 +201,9 @@ def synthesize_modern_module(
 def run_demo5() -> Dict[str, Any]:
     console.print(
         Panel.fit(
-            "[bold cyan]DEMO 5 · ENTERPRISE CODE MODERNIZATION (1M CONTEXT + LONG DECODE + /TEAMWORK FALSIFIER)[/bold cyan]\n"
-            "Legacy O(N^2) UPI Settlement Monolith -> LIVE Gemini 4 Modernization -> Unmodified Golden Conformance Falsifier",
-            border_style="cyan",
+            "[bold orange1]DEMO 5 · LEGACY CODE MODERNIZATION (GEMINI 4 NEON)[/bold orange1]\n"
+            "Slow Legacy UPI Engine -> LIVE Gemini 4 Neon Rewrite -> Exact Zero-Error Proof on 8,000 Payments",
+            border_style="orange1",
         )
     )
 
@@ -211,28 +214,28 @@ def run_demo5() -> Dict[str, Any]:
     batch = generate_golden_upi_batch(n=8000, seed=20261114)
     edge_batch = _build_adversarial_edge_batch()
 
-    console.print("[bold yellow]▶ Phase 1:[/bold yellow] Running legacy O(N^2) monolith on [bold]8,000 Indian UPI/Card records[/bold] to lock golden digest...")
+    console.print("[bold yellow]▶ Phase 1:[/bold yellow] Measuring slow legacy engine on [bold]8,000 Indian UPI/Card payments[/bold]...")
     t0 = time.perf_counter()
     legacy_golden = legacy_settle_batch(batch)
     legacy_ms = round((time.perf_counter() - t0) * 1000, 1)
     legacy_edge = legacy_settle_batch(edge_batch)
     console.print(
-        f"  [red]● Legacy O(N^2) baseline:[/red] [bold]{legacy_ms} ms[/bold] | "
+        f"  [red]● Legacy baseline:[/red] [bold]{legacy_ms} ms[/bold] | "
         f"unique={legacy_golden['processed_unique']:,}, dups={legacy_golden['duplicate_count']:,}, "
-        f"digest={legacy_golden['sha256_parity_digest'][:16]}..."
+        f"fingerprint={legacy_golden['sha256_parity_digest'][:16]}..."
     )
 
     client = get_genai_client()
 
-    # 2. Carbon Invariant Extraction & Architecture Plan
-    console.print("\n[bold yellow]▶ Phase 2:[/bold yellow] Calling LIVE [bold]gemini-4-carbon[/bold] to extract undocumented RBI/GST invariants...")
-    carbon_res = run_carbon_invariant_analysis(client, legacy_src)
+    # 2. Neon Rule Discovery & Plan
+    console.print("\n[bold yellow]▶ Phase 2:[/bold yellow] Calling LIVE [bold]gemini-4-neon[/bold] to discover hidden RBI & GST rules...")
+    carbon_res = run_neon_rule_discovery(client, legacy_src)
     console.print(
-        f"  [green]✔ Carbon Architect extracted {len(carbon_res['plan'].get('hidden_invariants', []))} invariants in {carbon_res['latency_ms']} ms[/green]"
+        f"  [green]✔ Neon extracted {len(carbon_res['plan'].get('hidden_invariants', []))} business rules in {carbon_res['latency_ms']} ms[/green]"
     )
 
-    # 3. Synthesize Modern O(N) Module + Run Unmodified Golden Falsifier (with 1 self-heal iteration if needed)
-    console.print("\n[bold yellow]▶ Phase 3:[/bold yellow] Synthesizing O(N) modernized settlement engine + running [bold]Unmodified Golden Falsifier[/bold]...")
+    # 3. Synthesize Fast Modern Engine + Verify 100% Exact Parity (with 1 self-heal iteration if needed)
+    console.print("\n[bold yellow]▶ Phase 3:[/bold yellow] Generating fast modern code with [bold]gemini-4-neon[/bold] & verifying 0.00 INR error...")
     attempts = 0
     feedback: str | None = None
     synth_res: Dict[str, Any] = {}
@@ -281,22 +284,22 @@ def run_demo5() -> Dict[str, Any]:
     speedup = round(legacy_ms / max(modern_ms, 0.01), 1)
     latency_drop_pct = round((1.0 - modern_ms / max(legacy_ms, 0.01)) * 100.0, 2)
 
-    tbl = Table(title="Live Enterprise Code Modernization — Unmodified Golden Falsifier Proof")
+    tbl = Table(title="Live Legacy Code Rewrite — Automated Zero-Error Proof")
     tbl.add_column("Metric", style="bold")
-    tbl.add_column("Legacy Monolith (O(N^2))", justify="right", style="red")
-    tbl.add_column(f"AI-Modernized ({synth_res['model']}, O(N))", justify="right", style="green bold")
-    tbl.add_row("8,000-Txn Batch Latency", f"{legacy_ms:.1f} ms", f"{modern_ms:.2f} ms ({speedup}x faster!)")
-    tbl.add_row("Unique Txns / Duplicates", f"{legacy_golden['processed_unique']:,} / {legacy_golden['duplicate_count']:,}", f"{modern_golden['processed_unique']:,} / {modern_golden['duplicate_count']:,}")
+    tbl.add_column("Old Legacy Code (Slow Scan)", justify="right", style="red")
+    tbl.add_column(f"Modernized ({synth_res['model']})", justify="right", style="green bold")
+    tbl.add_row("8,000-Payment Batch Time", f"{legacy_ms:.1f} ms", f"{modern_ms:.2f} ms ({speedup}x faster!)")
+    tbl.add_row("Unique / Duplicate Payments", f"{legacy_golden['processed_unique']:,} / {legacy_golden['duplicate_count']:,}", f"{modern_golden['processed_unique']:,} / {modern_golden['duplicate_count']:,}")
     tbl.add_row("Total Net Payout (INR)", f"INR {legacy_golden['total_net_payout_paise']/100:,.2f}", f"INR {modern_golden['total_net_payout_paise']/100:,.2f}")
     tbl.add_row("RBI High-Value Flags", str(legacy_golden["rbi_flagged_count"]), str(modern_golden["rbi_flagged_count"]))
-    tbl.add_row("SHA-256 Parity Digest", legacy_golden["sha256_parity_digest"][:20] + "...", modern_golden["sha256_parity_digest"][:20] + "...")
-    tbl.add_row("Financial Drift", "Baseline", "0.00 INR (100% BIT-EXACT)")
+    tbl.add_row("Exact Parity Fingerprint", legacy_golden["sha256_parity_digest"][:20] + "...", modern_golden["sha256_parity_digest"][:20] + "...")
+    tbl.add_row("Financial Difference", "Baseline", "0.00 INR (100% Exact Match)")
     console.print(tbl)
 
     console.print(
-        f"  [bold green]✔ FALSIFIER PASSED (attempt {attempts}):[/bold green] "
-        f"[bold]{speedup}x speedup[/bold] ({legacy_ms:.1f}ms -> {modern_ms:.2f}ms, -{latency_drop_pct}%) "
-        f"with [bold]100% bit-exact SHA-256 conformance[/bold]!"
+        f"  [bold green]✔ EXACT VERIFICATION PASSED (attempt {attempts}):[/bold green] "
+        f"[bold]{speedup}x faster[/bold] ({legacy_ms:.1f}ms -> {modern_ms:.2f}ms, -{latency_drop_pct}%) "
+        f"with [bold]0.00 INR difference[/bold]!"
     )
 
     trace = {
@@ -310,6 +313,7 @@ def run_demo5() -> Dict[str, Any]:
             "rbi_flagged": legacy_golden["rbi_flagged_count"],
             "edge_cases_verified": len(edge_batch),
         },
+        "neon_analysis": carbon_res,
         "carbon_analysis": carbon_res,
         "modernization_synthesis": {
             "model": synth_res["model"],

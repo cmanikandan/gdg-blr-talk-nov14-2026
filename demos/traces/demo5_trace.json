@@ -1,6 +1,6 @@
 {
   "demo": "demo5_code_modernization",
-  "timestamp_utc": "2026-11-18T05:11:58Z",
+  "timestamp_utc": "2026-11-19T04:36:51Z",
   "live_api": true,
   "dataset": {
     "total_records": 8000,
@@ -9,45 +9,67 @@
     "rbi_flagged": 170,
     "edge_cases_verified": 6
   },
-  "carbon_analysis": {
-    "model": "gemini-4-carbon",
-    "latency_ms": 8505,
+  "neon_analysis": {
+    "model": "gemini-4-neon",
+    "latency_ms": 7051,
     "usage": {
-      "input_tokens": 2075,
-      "output_tokens": 525,
-      "thoughts_tokens": 0
+      "input_tokens": 2190,
+      "output_tokens": 211,
+      "thoughts_tokens": 620
     },
     "plan": {
-      "bottleneck_complexity": "O(N^2) -> O(N)",
-      "primary_bottleneck": "Linear O(N) membership scan across a Python list (seen_utrs) for every transaction record, yielding O(N^2) total deduplication time coupled with repeated Decimal object instantiations and nested dictionary lookups.",
+      "bottleneck_complexity": "Slow one-by-one scan -> Instant lookup",
+      "primary_bottleneck": "Every new transaction scans the entire history list one-by-one to check for duplicates.",
       "hidden_invariants": [
-        "Idempotent first-seen-wins UTR deduplication: duplicate UTRs increment duplicate_count and are skipped completely without affecting merchant ledgers or RBI flags.",
-        "REVERSAL transactions increment txn_count and subtract gross_paise from both gross_paise and net_payout_paise with 0 MDR, 0 GST, and strictly bypass RBI high-value flagging even if amount_paise >= 5,000,000.",
-        "RBI zero-MDR mandate: non-REVERSAL UPI transactions with amount_paise <= 200,000 incur 0 MDR and 0 GST; UPI > 200,000 and all CARD/NETBANKING transactions apply 45 bps for ENTERPRISE tier and 85 bps for all other tiers.",
-        "Exact integer-paise ROUND_HALF_UP arithmetic: MDR is rounded half-up to the nearest integer paise before computing 18% GST, which is also rounded half-up independently; net_payout_paise = gross_paise - mdr_paise - gst_paise.",
-        "RBI compliance flagging and canonical digest parity: only non-duplicate, non-REVERSAL transactions with gross_paise >= 5,000,000 are appended to rbi_flagged_utrs, and the SHA-256 parity digest requires sorted merchant keys, sorted rbi_flagged_utrs, and compact JSON separators (',', ':')."
+        "Duplicate transactions are safely ignored so only the first one counts.",
+        "Reversals subtract the full amount with zero processing fee or tax.",
+        "UPI payments up to INR 2,000 have zero processing fee.",
+        "Payments of INR 50,000 or more are flagged for RBI compliance.",
+        "GST is 18% of the fee, rounded half-up to the nearest paisa."
       ],
-      "modernization_strategy": "Replace the O(N) list scan with an O(1) hash-set lookup for UTR deduplication, replace slow Decimal instantiations with exact integer-math half-up rounding ((val * num + den // 2) // den), aggregate merchant ledgers via local dataclass/slots or vectorized Polars/PyArrow structures, and verify bit-exact SHA-256 digest parity against unmodified golden batch tests via Antigravity /teamwork falsifiers.",
-      "target_gcp_runtime": "Cloud Run Jobs (for containerized batch execution up to millions of rows) or Google Cloud Dataflow (Apache Beam) for horizontally scaled streaming/massive-batch UPI settlement."
+      "modernization_strategy": "Replace the slow list scan with an instant hash-set lookup and modular settlement rules verified against an exact parity digest.",
+      "target_gcp_runtime": "Cloud Run Jobs with Cloud Spanner"
+    }
+  },
+  "carbon_analysis": {
+    "model": "gemini-4-neon",
+    "latency_ms": 7051,
+    "usage": {
+      "input_tokens": 2190,
+      "output_tokens": 211,
+      "thoughts_tokens": 620
+    },
+    "plan": {
+      "bottleneck_complexity": "Slow one-by-one scan -> Instant lookup",
+      "primary_bottleneck": "Every new transaction scans the entire history list one-by-one to check for duplicates.",
+      "hidden_invariants": [
+        "Duplicate transactions are safely ignored so only the first one counts.",
+        "Reversals subtract the full amount with zero processing fee or tax.",
+        "UPI payments up to INR 2,000 have zero processing fee.",
+        "Payments of INR 50,000 or more are flagged for RBI compliance.",
+        "GST is 18% of the fee, rounded half-up to the nearest paisa."
+      ],
+      "modernization_strategy": "Replace the slow list scan with an instant hash-set lookup and modular settlement rules verified against an exact parity digest.",
+      "target_gcp_runtime": "Cloud Run Jobs with Cloud Spanner"
     }
   },
   "modernization_synthesis": {
-    "model": "gemini-4-argon",
-    "latency_ms": 11141,
+    "model": "gemini-4-neon",
+    "latency_ms": 15003,
     "usage": {
-      "input_tokens": 2736,
-      "output_tokens": 878,
-      "thoughts_tokens": 0
+      "input_tokens": 2398,
+      "output_tokens": 1233,
+      "thoughts_tokens": 831
     },
     "attempts": 1,
-    "code_lines": 87,
-    "code_preview": "from __future__ import annotations\n\nimport hashlib\nimport json\nfrom typing import Any, Dict, List, Set\n\n\ndef modern_settle_batch(records: List[Dict[str, Any]]) -> Dict[str, Any]:\n    \"\"\"Fast O(N) settlement engine with exact integer-paise arithmetic and O(1) deduplication.\"\"\"\n    seen_utrs: Set[str] = set()\n    merchant_totals: Dict[str, Dict[str, int]] = {}\n    duplicate_count = 0\n    rbi_flagged_utrs: List[str] = []\n\n    total_net_payout_paise = 0\n    total_mdr_paise = 0\n    total_gst_paise = 0\n\n    for rec in records:\n        utr = rec[\"utr\"]\n        if utr in seen_utrs:\n            duplicate_count += 1\n            continue\n        seen_utrs.add(utr)\n\n        mid = rec[\"merchant_id\"]\n        ledger = merchant_totals.get(mid)\n        if ledger is None:"
+    "code_lines": 118,
+    "code_preview": "from __future__ import annotations\n\nimport hashlib\nimport json\nfrom typing import Any, Dict, List, Set\n\n# Settlement business rule constants (in paise and basis points)\nRBI_HIGH_VALUE_THRESHOLD_PAISE = 5_000_000  # INR 50,000\nUPI_ZERO_MDR_LIMIT_PAISE = 200_000          # INR 2,000\n\nENTERPRISE_MDR_BPS = 45                     # 0.45%\nSTANDARD_MDR_BPS = 85                       # 0.85%\nBPS_DIVISOR = 10_000\nBPS_HALF_DIVISOR = 5_000\n\nGST_RATE_PERCENT = 18                       # 18% GST on MDR\nPERCENT_DIVISOR = 100\nPERCENT_HALF_DIVISOR = 50\n\n\ndef modern_settle_batch(records: List[Dict[str, Any]]) -> Dict[str, Any]:\n    \"\"\"\n    Settle a batch of UPI, Card, and NetBanking payment records.\n\n    Uses hash-set deduplication for instant duplicate detection and exact\n    integer half-up arithmetic for MDR and GST calculations, preserving\n    bit-exact parity with the legacy settlement engine.\n    \"\"\""
   },
   "benchmark": {
-    "legacy_ms": 358.4,
-    "modern_ms": 3.8,
-    "speedup_factor": 94.3,
-    "latency_reduction_pct": 98.94
+    "legacy_ms": 411.1,
+    "modern_ms": 4.09,
+    "speedup_factor": 100.5,
+    "latency_reduction_pct": 99.01
   },
   "golden_falsifier": {
     "bit_exact_match": true,
