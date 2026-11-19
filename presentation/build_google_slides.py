@@ -1105,7 +1105,7 @@ def build_deck_ops(
         slide_id="S17", slide_index=16,
         kicker="LIVE DEMO 05 · GEMINI 4 NEON FOR CYBER DEFENSE",
         title=f"-{drop4}% Delay & {tests4}/{tests4} Green — Still Audited by Neon.",
-        kpi1=(f"{bef4} → {aft4} ms", "500-User Flash-Sale Load Test", GREEN_BRIGHT),
+        kpi1=(f"{round(bef4)} → {aft4:.1f} ms", "500-User Flash-Sale Load Test", GREEN_BRIGHT),
         kpi2=("90.5%", "SEC-bench Pro · 0.0% IPI", NEON_BRIGHT),
         bullets=[
             f"Independent Reviewer Verdict: {verdict4}",
