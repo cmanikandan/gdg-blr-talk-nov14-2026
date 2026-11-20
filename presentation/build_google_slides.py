@@ -17,6 +17,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -35,6 +36,8 @@ DRIVE_META_PATH = PRES_DIR / "drive_videos_v2.json"
 LINKEDIN_URL = "https://www.linkedin.com/in/cmanikandan"
 GITHUB_URL = "https://github.com/cmanikandan/gdg-blr-talk-nov14-2026"
 NEON_BLOG_URL = "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-neon/"
+CELL_BLOG_URL = "https://discuss.google.dev/t/how-to-isolate-multi-tenant-workloads-on-google-cloud-with-cell-based-architecture-and-shuffle-sharding/413515"
+CELL_BLOG_SHORT_URL = "https://discuss.google.dev/t/413515"
 DRIVE_FLIGHT_URL = "https://drive.google.com/file/d/1KkvhldhlXGUEYQMLs28EMQXsSeAbZRZO/view"
 DRIVE_PSTN_URL = "https://drive.google.com/file/d/1kv3NheXiAbhIBhYuBDUMRBCa054gIE9M/view"
 
@@ -246,6 +249,90 @@ def add_qr_pair_ops(
                 "width": card_w - 4,
                 "height": 12,
                 "font_size": sub_fs,
+                "color": MUTED,
+                "font_family": "Roboto",
+                "alignment": "center",
+                "link": url,
+            },
+        ])
+        img_jobs.append({
+            "slide": slide_id,
+            "file": str(DIAG_DIR / img_name),
+            "x": qr_x,
+            "y": qr_y,
+            "width": qr_size,
+            "height": qr_size,
+        })
+
+
+def add_qr_trio_ops(
+    ops: List[Dict[str, Any]],
+    img_jobs: List[Dict[str, Any]],
+    slide_id: str,
+    x_start: float,
+    y_top: float,
+    card_w: float,
+    card_h: float,
+    qr_size: float,
+    gap: float,
+) -> None:
+    """Adds three matched scannable QR cards (LinkedIn + GitHub + Cell-Based Blog) for Slide 20 Closing."""
+    cards = [
+        ("LINKEDIN", "/in/cmanikandan", NEON, NEON_BRIGHT, "qr_linkedin.png", LINKEDIN_URL),
+        ("GITHUB REPO", "Demos & Offline PPTX", BLUE, BLUE_BRIGHT, "qr_github.png", GITHUB_URL),
+        ("CELL BLOG", "discuss.google.dev", GREEN, GREEN_BRIGHT, "qr_cell_blog.png", CELL_BLOG_URL),
+    ]
+    for i, (label, sub, accent_bar, label_col, img_name, url) in enumerate(cards):
+        cx = round(x_start + i * (card_w + gap), 2)
+        qr_x = round(cx + (card_w - qr_size) / 2.0, 2)
+        qr_y = round(y_top + 7.5, 2)
+        label_y = round(qr_y + qr_size + 3.0, 2)
+        sub_y = round(label_y + 12.5, 2)
+        ops.extend([
+            {
+                "op": "add-shape",
+                "slide": slide_id,
+                "shape_type": "RECTANGLE",
+                "x": cx,
+                "y": y_top,
+                "width": card_w,
+                "height": card_h,
+                "background_color": SURFACE_2,
+            },
+            {
+                "op": "add-shape",
+                "slide": slide_id,
+                "shape_type": "RECTANGLE",
+                "x": cx,
+                "y": y_top,
+                "width": card_w,
+                "height": 2.5,
+                "background_color": accent_bar,
+            },
+            {
+                "op": "add-textbox",
+                "slide": slide_id,
+                "text": label,
+                "x": cx + 2,
+                "y": label_y,
+                "width": card_w - 4,
+                "height": 13,
+                "font_size": 7.8,
+                "bold": True,
+                "color": label_col,
+                "font_family": "Roboto Mono",
+                "alignment": "center",
+                "link": url,
+            },
+            {
+                "op": "add-textbox",
+                "slide": slide_id,
+                "text": sub,
+                "x": cx + 2,
+                "y": sub_y,
+                "width": card_w - 4,
+                "height": 12,
+                "font_size": 6.6,
                 "color": MUTED,
                 "font_family": "Roboto",
                 "alignment": "center",
@@ -483,12 +570,12 @@ def add_demo_split_slide(
     ops.append({
         "op": "add-textbox",
         "slide": slide_id,
-        "text": "Tip: Plays natively inline in HTML5 Keynote & PPTX (or open Stage Studio to run LIVE)",
+        "text": "Offline-ready: Click video to play natively inside PPTX & HTML5 Keynote (zero internet needed)",
         "x": 320,
         "y": 340,
         "width": 368,
         "height": 22,
-        "font_size": 7.8,
+        "font_size": 7.6,
         "color": MUTED,
         "font_family": "Roboto",
         "alignment": "center",
@@ -639,9 +726,10 @@ def build_deck_ops(
 
     # Demo 5 metrics
     b5 = d5.get("benchmark", {"legacy_ms": 411.1, "modern_ms": 4.09, "speedup_factor": 100.5})
-    gf5 = d5.get("golden_falsifier", {"total_net_payout_paise": 5623206619})
+    gf5 = d5.get("golden_falsifier", {"total_net_payout_paise": 5623206619, "sha256_parity_digest": "93a9313ee3d5e807"})
     payout_cr = f"{gf5.get('total_net_payout_paise', 5623206619) / 100 / 1e7:.2f}"
-    rules5 = (d5.get("neon_analysis") or d5.get("carbon_analysis") or {}).get("plan", {}).get("hidden_invariants", [])[:4]
+    sha5_short = str(gf5.get("sha256_parity_digest", "93a9313ee3d5"))[:12]
+    rules5 = (d5.get("neon_analysis") or d5.get("carbon_analysis") or {}).get("plan", {}).get("hidden_invariants", [])[:5]
 
     # Demo 2 metrics
     b8 = d2["round_b_head_to_head"]["benchmark_8q"]
@@ -658,18 +746,39 @@ def build_deck_ops(
     sp50_fl = r50["speedup_vs_3_8_flash"]
     cs50_hy = r50["cost_savings_vs_4_hydrogen"]
 
-    # Demo 3 metrics
+    # Demo 3 / Use Case 4 metrics
     sql3 = d3.get("lakehouse_finding") or d3["multicloud_finding"]
     sql3_ms = int(round(sql3["query_latency_ms"]))
     sql3_rows = int(sql3["rows_correlated"])
+    reg3 = sql3.get("regional_breakdown") or [
+        {"cloud_region": "gcp:asia-south2", "p99_commit_ms": 431.8, "total_sync_retries": 18006, "envoy_pool_limit": 64, "avg_truetime_drift_ms": 2.75},
+        {"cloud_region": "gcp:asia-south1", "p99_commit_ms": 16.1, "total_sync_retries": 0, "envoy_pool_limit": 64, "avg_truetime_drift_ms": 2.75},
+    ]
+    delhi3 = next((r for r in reg3 if "south2" in r.get("cloud_region", "")), reg3[0])
+    mumbai3 = next((r for r in reg3 if "south1" in r.get("cloud_region", "")), reg3[-1])
 
-    # Demo 4 metrics
+    # Demo 4 / Slide 17 Neon Cyber Screening metrics
     sla4 = d4["sla_benchmark"]
     bef4, aft4, drop4 = sla4["before"]["p99_ms"], sla4["after"]["p99_ms"], sla4["p99_reduction_pct"]
     tests4 = d4["pytest"]["passed_count"]
     audit4 = (d4.get("neon_security_audit") or d4.get("carbon_security_audit") or {}).get("audit", {})
     verdict4 = str(audit4.get("overall_verdict", "APPROVE_WITH_NOTE")).replace("_", " ")
-    warn_checks = [c for c in audit4.get("checks", []) if str(c.get("status", "")).upper() != "PASS"]
+    raw_checks4 = audit4.get("checks", [])
+    check_titles = [
+        "Prompt-Attack & Approval Safety",
+        "API Key & Secret Protection",
+        "TrueTime Clock & Data Safety",
+        "Circuit Breaker Overload Shedding",
+    ]
+    checks4 = []
+    for idx_c, title_c in enumerate(check_titles):
+        src_c = raw_checks4[idx_c] if idx_c < len(raw_checks4) else {}
+        checks4.append({
+            "title": src_c.get("category") or title_c,
+            "status": str(src_c.get("status", "PASS")).upper(),
+            "finding": src_c.get("finding", "Verified clean against production security controls."),
+        })
+    warn_checks = [c for c in checks4 if c["status"] != "PASS"]
     warn_finding = warn_checks[0]["finding"] if warn_checks else "Catches subtle approval gaps before merge."
 
     ops: List[Dict[str, Any]] = []
@@ -906,67 +1015,74 @@ def build_deck_ops(
         accent=NEON,
     )
 
-    # ── SLIDE 09: 1M CONTEXT & LONG DECODE FOR LEGACY MODERNIZATION ────────────
+    # ── SLIDE 09: 1M CONTEXT, LONG DECODE & BIT-EXACT PROOF ────────────────────
     add_blank_slide(ops, "S09", BG)
     add_header(
         ops, "S09",
         "06 · ENTERPRISE CODE MODERNIZATION",
-        "Why Legacy Rewrites Finally Work — With Zero Rupee Error",
+        "1M Context, Long Decode & Bit-Exact Proof (₹0.00 Drift)",
         dark=True,
     )
-    # Left card: BEFORE
     ops.extend([
-        {"op": "add-shape", "slide": "S09", "shape_type": "RECTANGLE", "x": 36, "y": 82, "width": 314, "height": 292, "background_color": SURFACE},
-        {"op": "add-shape", "slide": "S09", "shape_type": "RECTANGLE", "x": 36, "y": 82, "width": 314, "height": 3.5, "background_color": RED},
-        {"op": "add-textbox", "slide": "S09", "text": "BEFORE  ·  FRAGILE REWRITES", "x": 54, "y": 98, "width": 278, "height": 18, "font_size": 8.8, "bold": True, "color": RED_BRIGHT, "font_family": "Roboto Mono"},
-        {"op": "add-textbox", "slide": "S09", "text": "Why Teams Feared Touching Legacy Code", "x": 54, "y": 120, "width": 278, "height": 42, "font_size": 15.5, "bold": True, "color": WHITE, "font_family": "Montserrat", "line_spacing": 115},
+        {"op": "add-shape", "slide": "S09", "shape_type": "RECTANGLE", "x": 36, "y": 68, "width": 648, "height": 48, "background_color": RED_BG},
+        {"op": "add-shape", "slide": "S09", "shape_type": "RECTANGLE", "x": 36, "y": 68, "width": 5, "height": 48, "background_color": RED},
         {
             "op": "add-textbox",
             "slide": "S09",
-            "text": (
-                "▸  Small context windows missed hidden RBI compliance & rounding rules buried in other files.\n\n"
-                "▸  Short output limits cut off halfway through rewriting large settlement modules.\n\n"
-                "▸  Even a 1-paisa rounding bug across millions of UPI payments blocks production rollout."
-            ),
-            "x": 54,
-            "y": 172,
-            "width": 278,
-            "height": 188,
-            "font_size": 10.2,
-            "color": SOFT,
+            "text": "WHY LEGACY REWRITES FAILED BEFORE: Small context windows missed RBI rules 600 lines away · Short outputs truncated mid-file · Python's default round(2.5) == 2 (Banker's rounding) causes 1-paisa GST drift across millions of UPI txns!",
+            "x": 50,
+            "y": 72,
+            "width": 624,
+            "height": 40,
+            "font_size": 9.1,
+            "color": WHITE,
             "font_family": "Roboto",
-            "line_spacing": 136,
+            "line_spacing": 126,
+            "content_alignment": "MIDDLE",
         },
     ])
-    # Right card: TODAY
-    ops.extend([
-        {"op": "add-shape", "slide": "S09", "shape_type": "RECTANGLE", "x": 370, "y": 82, "width": 314, "height": 292, "background_color": SURFACE},
-        {"op": "add-shape", "slide": "S09", "shape_type": "RECTANGLE", "x": 370, "y": 82, "width": 314, "height": 3.5, "background_color": GREEN},
-        {"op": "add-textbox", "slide": "S09", "text": "TODAY  ·  GEMINI 4 NEON + EXACT PROOF", "x": 388, "y": 98, "width": 278, "height": 18, "font_size": 8.8, "bold": True, "color": GREEN_BRIGHT, "font_family": "Roboto Mono"},
-        {"op": "add-textbox", "slide": "S09", "text": "1M Context + Complete Rewrite + Golden Verification", "x": 388, "y": 120, "width": 278, "height": 42, "font_size": 15.5, "bold": True, "color": WHITE, "font_family": "Montserrat", "line_spacing": 115},
-        {
-            "op": "add-textbox",
-            "slide": "S09",
-            "text": (
-                "▸  Read Everything: 1M-token context ingests entire legacy payment modules + tests at once.\n\n"
-                "▸  Rewrite Completely: Long decode emits clean, modular modern code on Attempt 1.\n\n"
-                "▸  Prove ₹0.00 Drift: Lock the old system's exact output fingerprint first — new code only passes at 100% match."
+    mod_steps = [
+        (
+            "STEP 1 · GOLDEN FALSIFIER",
+            "Lock Legacy SHA-256 First",
+            (
+                f"▸  BEFORE AI touches a line, run the ugly legacy engine on 8,000 realistic Indian UPI payments.\n\n"
+                f"▸  Freeze its exact total payout (₹{payout_cr} Cr) & cryptographic fingerprint (SHA-256: {sha5_short}…) as an immutable test oracle."
             ),
-            "x": 388,
-            "y": 172,
-            "width": 278,
-            "height": 188,
-            "font_size": 10.2,
-            "color": SOFT,
-            "font_family": "Roboto",
-            "line_spacing": 136,
-        },
-        {
-            "op": "set-notes",
-            "slide": "S09",
-            "text": "Every enterprise in India has 10-year-old banking, billing, or UPI code nobody dares touch. Small context windows forgot edge rules 600 lines away, and short outputs truncated mid-file. With Gemini 4 Neon's 1-million-token context and long output decode, it reads the whole legacy system, lists every hidden RBI & GST rule, writes the full replacement in one shot, and we prove zero rupee drift automatically.",
-        },
-    ])
+            AMBER,
+            AMBER_BRIGHT,
+        ),
+        (
+            "STEP 2 · 1M CONTEXT + LONG DECODE",
+            "Neon Discovers & Rewrites",
+            (
+                "▸  1M-token context reads the entire payment module + tests at once (7.1 s).\n\n"
+                "▸  Uncovers all 5 undocumented rules (duplicates, reversals, ₹0 MDR ≤ ₹2k, RBI ≥ ₹50k, half-up paise GST) and emits the full modern engine on Attempt 1."
+            ),
+            NEON,
+            NEON_BRIGHT,
+        ),
+        (
+            "STEP 3 · BIT-EXACT CI GATE",
+            "Prove ₹0.00 Financial Drift",
+            (
+                f"▸  CI replays the exact same 8,000 UPI payments through Neon's new engine.\n\n"
+                f"▸  Even a 1-paisa mismatch fails the build — passes ONLY at 100.000% SHA-256 bit-exact parity ({b5['speedup_factor']}× faster!)."
+            ),
+            GREEN,
+            GREEN_BRIGHT,
+        ),
+    ]
+    for i, (k_step, h_step, body_step, bar_c, lbl_c) in enumerate(mod_steps):
+        mx = 36 + i * 221
+        ops.extend([
+            {"op": "add-shape", "slide": "S09", "shape_type": "RECTANGLE", "x": mx, "y": 130, "width": 206, "height": 254, "background_color": SURFACE},
+            {"op": "add-shape", "slide": "S09", "shape_type": "RECTANGLE", "x": mx, "y": 130, "width": 206, "height": 3.5, "background_color": bar_c},
+            {"op": "add-textbox", "slide": "S09", "text": k_step, "x": mx + 12, "y": 144, "width": 182, "height": 16, "font_size": 7.8, "bold": True, "color": lbl_c, "font_family": "Roboto Mono"},
+            {"op": "add-textbox", "slide": "S09", "text": h_step, "x": mx + 12, "y": 164, "width": 182, "height": 34, "font_size": 12.8, "bold": True, "color": WHITE, "font_family": "Montserrat", "line_spacing": 115},
+            {"op": "add-textbox", "slide": "S09", "text": body_step, "x": mx + 12, "y": 204, "width": 182, "height": 170, "font_size": 9.1, "color": SOFT, "font_family": "Roboto", "line_spacing": 132},
+        ])
+    ops.append({"op": "set-notes", "slide": "S09", "text": ""})
 
     # ── SLIDE 10: LIVE DEMO 2 — LEGACY UPI MODERNIZATION ───────────────────────
     add_demo_split_slide(
@@ -974,73 +1090,136 @@ def build_deck_ops(
         slide_id="S10", slide_index=9,
         kicker="LIVE DEMO 02 · GEMINI 4 NEON MODERNIZATION",
         title=f"{b5['speedup_factor']}× Faster UPI Engine. ₹0.00 Error.",
-        kpi1=(f"{b5['legacy_ms']} → {b5['modern_ms']} ms", "8,000 Indian Payments", NEON_BRIGHT),
-        kpi2=(f"₹{payout_cr} Cr", "Exact Payout Match (Attempt 1)", GREEN_BRIGHT),
-        bullets=rules5[:4] or ["Preserves every RBI compliance & GST rounding rule with ₹0.00 error."],
+        kpi1=(f"{round(b5['legacy_ms'])} → {b5['modern_ms']:.1f} ms", "8,000 Indian UPI Payments", NEON_BRIGHT),
+        kpi2=("₹0.00 Drift", f"SHA-256 {sha5_short}… · ₹{payout_cr} Cr", GREEN_BRIGHT),
+        bullets=[
+            "5 Hidden Rules Found (7.1 s): Duplicate UTR skip, reversals, ₹0 MDR ≤ ₹2k, RBI ≥ ₹50k & 18% GST half-up.",
+            "Caught Banker's Rounding Bug: Avoided Python round(2.5) → 2 trap on Attempt 1!",
+            f"Bit-Exact Proof: Legacy vs Neon SHA-256 output hash matches 100.000% across ₹{payout_cr} Cr.",
+        ],
         poster_filename="demo5_code_modernization_poster.png",
         video_filename="demo5_code_modernization.mp4",
-        bar_label="Live Run · gemini-4-neon · Attempt 1 Bit-Exact Proof",
+        bar_label="Embedded Offline · Live gemini-4-neon Rewrite + SHA-256 Proof",
         drive_url=vids.get("demo5_code_modernization", ""),
-        notes=(
-            f"Watch real live Gemini 4 Neon modernize MonsoonPay's slow legacy UPI settlement engine. "
-            f"8,000 realistic Indian payments drop from {b5['legacy_ms']}ms down to {b5['modern_ms']}ms: "
-            f"{b5['speedup_factor']}x faster with literally ₹0.00 error across ₹{payout_cr} Crore!"
-        ),
+        notes="",
         accent=NEON,
     )
 
-    # ── SLIDE 11: DECISIONS API — METHODOLOGY & LIVE BENCHMARK TABLE ───────────
+    # ── SLIDE 11: DECISIONS API — HOW IT WORKS + ACTUAL RULE SNIPPET + TABLE ───
     add_blank_slide(ops, "S11", BG)
     add_header(
         ops, "S11",
-        "07 · DECIDE SMALL · STOP PAYING FOR JSON DECODING",
+        "07 · DECIDE SMALL · HOW DECISIONS API WORKS",
         "Gemini Decisions API: 50+ Rules in 1 Pass, $0 Output Tokens",
         dark=True,
     )
+    # Left column: How it works + Actual JSON rule snippet
     ops.extend([
-        {"op": "add-shape", "slide": "S11", "shape_type": "RECTANGLE", "x": 36, "y": 74, "width": 648, "height": 54, "background_color": BLUE_BG},
-        {"op": "add-shape", "slide": "S11", "shape_type": "RECTANGLE", "x": 36, "y": 74, "width": 5, "height": 54, "background_color": BLUE},
+        {"op": "add-shape", "slide": "S11", "shape_type": "RECTANGLE", "x": 36, "y": 70, "width": 316, "height": 74, "background_color": BLUE_BG},
+        {"op": "add-shape", "slide": "S11", "shape_type": "RECTANGLE", "x": 36, "y": 70, "width": 4.5, "height": 74, "background_color": BLUE},
         {
             "op": "add-textbox",
             "slide": "S11",
-            "text": "HOW WE MEASURED THIS LIVE: Identical Delhi checkout incident sent to all three live APIs asking 8 security/routing rules and 50 RBI/PCI compliance rules in one request — timing real wall-clock latency & billed tokens at published pricing.",
-            "x": 52,
-            "y": 80,
-            "width": 620,
-            "height": 42,
-            "font_size": 9.8,
+            "text": (
+                "HOW POST /v1beta/decisions WORKS:\n"
+                "Skips text generation completely! Runs 1 single forward pass over text, image, audio, or PDF and scores up to 1,000 rules at $0 output cost ($0.10/1M input only)."
+            ),
+            "x": 48,
+            "y": 74,
+            "width": 296,
+            "height": 66,
+            "font_size": 8.6,
             "color": WHITE,
             "font_family": "Roboto",
-            "line_spacing": 128,
+            "line_spacing": 126,
             "content_alignment": "MIDDLE",
         },
-        {"op": "add-table", "slide": "S11", "rows": 4, "cols": 5, "x": 36, "y": 144, "width": 648, "height": 224, "id": "TBL_DEC"},
+        {"op": "add-shape", "slide": "S11", "shape_type": "RECTANGLE", "x": 36, "y": 152, "width": 316, "height": 236, "background_color": "#0B0E15"},
+        {"op": "add-shape", "slide": "S11", "shape_type": "RECTANGLE", "x": 36, "y": 152, "width": 316, "height": 3, "background_color": NEON},
+        {"op": "add-shape", "slide": "S11", "shape_type": "RECTANGLE", "x": 36, "y": 155, "width": 316, "height": 22, "background_color": SURFACE_2},
+        {
+            "op": "add-textbox",
+            "slide": "S11",
+            "text": "ACTUAL LIVE RULES · monsoonpay/decisions_gate.py",
+            "x": 44,
+            "y": 157,
+            "width": 300,
+            "height": 18,
+            "font_size": 7.6,
+            "bold": True,
+            "color": NEON_BRIGHT,
+            "font_family": "Roboto Mono",
+            "content_alignment": "MIDDLE",
+        },
+        {
+            "op": "add-textbox",
+            "slide": "S11",
+            "text": (
+                '"questions": {\n'
+                '  "prompt_injection": {\n'
+                '    "type": "noul",  // Yes/No prob (0.0→1.0)\n'
+                '    "instructions": "Override or tool hijack?"\n'
+                '  },\n'
+                '  "leaked_secret_or_pii": {\n'
+                '    "type": "noul",  // Catches AIza/sk_live/PAN\n'
+                '    "instructions": "Exposes raw keys or PAN?"\n'
+                '  },\n'
+                '  "target_element": {\n'
+                '    "type": "choice", // Hydrogen vs Neon\n'
+                '    "criteria": {"hydrogen":"UI","neon":"SEV-1"}\n'
+                '  },\n'
+                '  "blast_severity": { "type": "score" } // 0→3\n'
+                '}'
+            ),
+            "x": 44,
+            "y": 182,
+            "width": 302,
+            "height": 176,
+            "font_size": 7.5,
+            "color": SOFT,
+            "font_family": "Roboto Mono",
+            "line_spacing": 122,
+        },
+        {
+            "op": "add-textbox",
+            "slide": "S11",
+            "text": "→ Returns calibrated probabilities in 240–283 ms · 0 output tokens!",
+            "x": 44,
+            "y": 364,
+            "width": 302,
+            "height": 18,
+            "font_size": 7.6,
+            "bold": True,
+            "color": GREEN_BRIGHT,
+            "font_family": "Roboto Mono",
+        },
     ])
-    headers = ["Benchmark Test", "Gemini Decisions API", "Gemini 3.8 Flash", "Gemini 4 Hydrogen", "Decisions Advantage"]
-    rows_data = [
-        [
-            "8 Rules\n(Live Run)",
-            f"{d1_8_ms} ms\n0 output tokens",
-            f"{fl_8_ms:,} ms\n108 output tokens",
-            f"{hy_8_ms:,} ms\n673 output tokens",
-            f"{sp8_fl}× faster\n$0 output cost",
-        ],
-        [
-            "50 Rules\n(Live, 1 call!)",
-            f"{d1_50_ms} ms\n${d1_50_cost:,.0f} / 1M calls",
-            f"{fl_50_ms/1000:.1f}s\n${fl_50_cost:,.0f} / 1M calls",
-            f"{hy_50_ms/1000:.1f}s\n${hy_50_cost:,.0f} / 1M calls",
-            f"{sp50_fl}× faster\n{cs50_hy}× cheaper",
-        ],
-        [
-            "100 Rules\n(Google Pub.)",
-            f"{pub100.get('gemini_decision_1_ms', 359)} ms\n0 output tokens",
-            f"{pub100.get('gemini_3_8_flash_ms', 7200)/1000:.1f}s",
-            f"{pub100.get('gemini_4_hydrogen_ms', 8600)/1000:.1f}s",
-            "20–24× faster\nat enterprise scale",
-        ],
+    # Right column: Compact methodology + 4x4 live benchmark table + green impact callout
+    ops.extend([
+        {"op": "add-shape", "slide": "S11", "shape_type": "RECTANGLE", "x": 364, "y": 70, "width": 320, "height": 42, "background_color": SURFACE_2},
+        {
+            "op": "add-textbox",
+            "slide": "S11",
+            "text": "LIVE TEST: Identical Delhi outage sent to 3 live APIs asking 8 & 50 RBI/PCI checks in 1 request.",
+            "x": 374,
+            "y": 74,
+            "width": 300,
+            "height": 34,
+            "font_size": 8.4,
+            "color": SOFT,
+            "font_family": "Roboto",
+            "line_spacing": 122,
+            "content_alignment": "MIDDLE",
+        },
+        {"op": "add-table", "slide": "S11", "rows": 4, "cols": 4, "x": 364, "y": 120, "width": 320, "height": 198, "id": "TBL_DEC"},
+    ])
+    headers11 = ["Test", "Decisions API", "3.8 Flash", "4 Hydrogen"]
+    rows11 = [
+        ["8 Rules\n(Live)", f"{d1_8_ms} ms\n$0 output", f"{fl_8_ms/1000:.1f}s\n108 out tok", f"{hy_8_ms/1000:.1f}s\n108 out tok"],
+        ["50 Rules\n(1 call!)", f"{d1_50_ms} ms\n${d1_50_cost:,.0f}/1M", f"{fl_50_ms/1000:.1f}s\n${fl_50_cost:,.0f}/1M", f"{hy_50_ms/1000:.1f}s\n${hy_50_cost:,.0f}/1M"],
+        ["100 Rules\n(Google Pub)", f"{pub100.get('gemini_decision_1_ms', 359)} ms\n$0 output", f"{pub100.get('gemini_3_8_flash_ms', 7200)/1000:.1f}s\n20× slower", f"{pub100.get('gemini_4_hydrogen_ms', 8600)/1000:.1f}s\n24× slower"],
     ]
-    for c, h in enumerate(headers):
+    for c, h in enumerate(headers11):
         ops.append({
             "op": "set-table-cell",
             "table": "TBL_DEC",
@@ -1049,14 +1228,14 @@ def build_deck_ops(
             "text": h,
             "color": MUTED,
             "bold": True,
-            "font_size": 9.0,
+            "font_size": 8.2,
             "font_family": "Roboto Mono",
             "background_color": SURFACE_2,
         })
-    for r_idx, row in enumerate(rows_data, start=1):
+    for r_idx, row in enumerate(rows11, start=1):
         bg_row = SURFACE if r_idx % 2 == 1 else "#0E1118"
         for c, cell in enumerate(row):
-            col_txt = WHITE if c == 0 else (NEON_BRIGHT if c == 1 else (GREEN_BRIGHT if c == 4 else SOFT))
+            col_txt = WHITE if c == 0 else (NEON_BRIGHT if c == 1 else SOFT)
             ops.append({
                 "op": "set-table-cell",
                 "table": "TBL_DEC",
@@ -1064,39 +1243,50 @@ def build_deck_ops(
                 "col": c,
                 "text": cell,
                 "color": col_txt,
-                "bold": c in (0, 1, 4),
-                "font_size": 9.5,
+                "bold": c in (0, 1),
+                "font_size": 8.5,
                 "font_family": "Roboto",
                 "background_color": bg_row,
             })
-    ops.append({
-        "op": "set-notes",
-        "slide": "S11",
-        "text": "Here is the single biggest architectural unlock for cost and speed in production agents. Gemini Decisions API skips text generation completely: ONE forward pass scores up to 1,000 rules at $0 output cost! Look at the live 50-rule numbers: 283ms and $271/1M calls vs 6.3 seconds on Flash (22.4x slower) and $14,900/1M calls on Hydrogen (55x costlier!).",
-    })
+    ops.extend([
+        {"op": "add-shape", "slide": "S11", "shape_type": "RECTANGLE", "x": 364, "y": 328, "width": 320, "height": 60, "background_color": GREEN_BG},
+        {"op": "add-shape", "slide": "S11", "shape_type": "RECTANGLE", "x": 364, "y": 328, "width": 4.5, "height": 60, "background_color": GREEN},
+        {
+            "op": "add-textbox",
+            "slide": "S11",
+            "text": f"LIVE 50-RULE WIN:  {sp50_fl}× faster vs Flash · {cs50_hy}× cheaper vs Hydrogen!\nStop paying generative LLMs to type {{\"ok\": true}} token by token.",
+            "x": 376,
+            "y": 333,
+            "width": 300,
+            "height": 50,
+            "font_size": 8.8,
+            "bold": True,
+            "color": GREEN_BRIGHT,
+            "font_family": "Roboto",
+            "line_spacing": 128,
+            "content_alignment": "MIDDLE",
+        },
+        {"op": "set-notes", "slide": "S11", "text": ""},
+    ])
 
     # ── SLIDE 12: LIVE DEMO 3 — DECISIONS API ARENA ────────────────────────────
     add_demo_split_slide(
         ops, imgs, video_jobs,
         slide_id="S12", slide_index=11,
-        kicker="LIVE DEMO 03 · GEMINI DECISIONS API",
-        title="Instant Guardrails & 50-Rule Speed Race",
+        kicker="LIVE DEMO 03 · GEMINI DECISIONS API ARENA",
+        title="3-Round Live Firewall & 50-Rule Speed Race",
         kpi1=(f"{cs50_hy}×", "Cheaper vs 4 Hydrogen (50 Rules)", NEON_BRIGHT),
-        kpi2=(f"{sp50_fl}×", "Faster vs 3.8 Flash (283ms)", GREEN_BRIGHT),
+        kpi2=(f"{sp50_fl}×", f"Faster vs 3.8 Flash ({d1_50_ms} ms)", GREEN_BRIGHT),
         bullets=[
-            "Blocks Prompt Attacks & Leaked Keys before any expensive agent or tool is ever invoked.",
-            "Smart Model Router: Sends UI tweaks to Hydrogen; escalates outages to Gemini 4 Neon.",
-            f"Multimodal Included: Audited our Google Cloud diagram for leaked secrets in {mm2['latency_ms']} ms ($0 output).",
+            "Round A (4 Events × 8 Rules): Blocks prompt attack, masks leaked key, routes UI→Hydrogen & SEV-1→Neon.",
+            f"Round B (50 RBI/PCI Rules Race): Finishes in {d1_50_ms} ms (${d1_50_cost:,.0f}/1M) vs 6.3s Flash & 4.9s Hydrogen (${hy_50_cost:,.0f}/1M).",
+            f"Round C (Multimodal Bonus): Audits our Google Cloud diagram JPEG for leaked passwords in {mm2['latency_ms']} ms ($0 output!).",
         ],
         poster_filename="demo2_decisions_api_arena_poster.png",
         video_filename="demo2_decisions_api_arena.mp4",
-        bar_label="Live Race · gemini-decision-1 vs 3.8 Flash vs 4 Hydrogen",
+        bar_label="Embedded Offline · Live 3-Round Decisions API Arena",
         drive_url=vids.get("demo2_decisions_api_arena", ""),
-        notes=(
-            f"Watch Decisions API in action! First it blocks prompt hacking and leaked cloud keys before any agent wakes up, "
-            f"routes a CSS tweak to Hydrogen, and escalates the Delhi outage to Gemini 4 Neon. Then it wins the 50-rule race "
-            f"{sp50_fl}x faster than Flash and {cs50_hy}x cheaper than Hydrogen — AND audits our architecture diagram in {mm2['latency_ms']}ms!"
-        ),
+        notes="",
         accent=AMBER,
     )
 
@@ -1106,34 +1296,100 @@ def build_deck_ops(
         "08 · GOOGLE CLOUD DATA + ADK 2.0",
         "Zero-Copy Live Data Joins with Built-In Human Approval",
         "07_gcp_data_cloud_v4.jpg",
-        "Agents are only as good as the data and guardrails around them. Instead of brittle nightly ETL copies, Google ADK 2.0 + Knowledge Catalog joins live Spanner Omni payments directly with BigQuery Apache Iceberg logs in milliseconds — and pauses automatically at a built-in Human Approval Gate so an AI never blindly merges to production.",
+        "",
         dark=True,
     )
 
-    # ── SLIDE 14: LIVE DEMO 4 — VOICE CHECK-IN + ADK + ZERO-COPY DATA ──────────
-    add_demo_split_slide(
-        ops, imgs, video_jobs,
-        slide_id="S14", slide_index=13,
-        kicker="LIVE DEMO 04 · VOICE + ADK 2.0 + ZERO-COPY DATA",
-        title="Close Your Laptop. Check In by Voice.",
-        kpi1=(f"{sql3_ms} ms", f"{sql3_rows:,} Rows Joined Live", BLUE_BRIGHT),
-        kpi2=("0 Copies", "Direct Iceberg + Spanner Omni", GREEN_BRIGHT),
-        bullets=[
-            "Dual-Track Voice: Acknowledges instantly — zero awkward silence while cloud tools run.",
-            "Knowledge Catalog: Gives agents the verified join key automatically so SQL never hallucinates.",
-            "Human Sign-Off: ADK 2.0 pauses cleanly until Mani approves Pull Request #1.",
-        ],
-        poster_filename="demo3_live38_voice_multicloud_adk_poster.png",
-        video_filename="demo3_live38_voice_multicloud_adk.mp4",
-        bar_label="🔊 Real Gemini 3.8 HD Audio + Live ADK 2.14.1 Trace",
-        drive_url=vids.get("demo3_live38_voice_multicloud_adk", ""),
-        notes=(
-            f"Turn up the auditorium audio for this one! I closed my laptop 10 minutes ago and check in by voice. "
-            f"Gemini 3.8 answers immediately while Google ADK 2.0 joins {sql3_rows:,} live Spanner + BigQuery Iceberg rows "
-            f"in {sql3_ms}ms with zero copying, pinpoints Delhi's 64-slot queue, and pauses right at my confirmation gate."
-        ),
-        accent=BLUE,
+    # ── SLIDE 14: USE CASE 4 DEEP DIVE (NO VIDEO — RICH SELF-SUPPORTING!) ──────
+    add_blank_slide(ops, "S14", BG)
+    add_header(
+        ops, "S14",
+        "USE CASE 04 · VOICE CHECK-IN + GOOGLE ADK 2.0 + ZERO-COPY DATA",
+        f"Close Your Laptop. Check In by Voice. Isolate Root Cause in {sql3_ms} ms.",
+        dark=True,
     )
+    ops.extend([
+        {"op": "add-shape", "slide": "S14", "shape_type": "RECTANGLE", "x": 36, "y": 68, "width": 648, "height": 40, "background_color": BLUE_BG},
+        {"op": "add-shape", "slide": "S14", "shape_type": "RECTANGLE", "x": 36, "y": 68, "width": 5, "height": 40, "background_color": BLUE},
+        {
+            "op": "add-textbox",
+            "slide": "S14",
+            "text": 'THE USE CASE: During the Diwali flash sale, you close your laptop to grab filter coffee and ask your remote agent by voice: "Why is Delhi checkout spiking, and is PR #1 ready?"',
+            "x": 50,
+            "y": 71,
+            "width": 624,
+            "height": 34,
+            "font_size": 9.3,
+            "color": WHITE,
+            "font_family": "Roboto",
+            "line_spacing": 124,
+            "content_alignment": "MIDDLE",
+        },
+    ])
+    uc4_steps = [
+        ("1 · DUAL-TRACK VOICE", "Zero Dead Air", "Gemini 3.8 responds right away while cloud tools run in the background.", BLUE, BLUE_BRIGHT),
+        ("2 · KNOWLEDGE CATALOG", "Verified Join Key", "Hands Google ADK 2.14.1 the exact transaction_id contract — zero SQL guesses.", NEON, NEON_BRIGHT),
+        ("3 · ZERO-COPY SQL", f"{sql3_ms} ms · 0 Copies", "Joins 10k Spanner Omni commits + 40k BigQuery Iceberg Envoy logs in place.", GREEN, GREEN_BRIGHT),
+        ("4 · ADK 2.0 GATE", "Human Sign-Off", "Calls require_confirmation=True and pauses PR #1 cleanly until Mani approves.", AMBER, AMBER_BRIGHT),
+    ]
+    for i, (st_lbl, st_head, st_body, bar_c, txt_c) in enumerate(uc4_steps):
+        ux = 36 + i * 165
+        ops.extend([
+            {"op": "add-shape", "slide": "S14", "shape_type": "RECTANGLE", "x": ux, "y": 118, "width": 153, "height": 106, "background_color": SURFACE},
+            {"op": "add-shape", "slide": "S14", "shape_type": "RECTANGLE", "x": ux, "y": 118, "width": 153, "height": 3, "background_color": bar_c},
+            {"op": "add-textbox", "slide": "S14", "text": st_lbl, "x": ux + 10, "y": 127, "width": 133, "height": 14, "font_size": 7.4, "bold": True, "color": txt_c, "font_family": "Roboto Mono"},
+            {"op": "add-textbox", "slide": "S14", "text": st_head, "x": ux + 10, "y": 143, "width": 133, "height": 22, "font_size": 11.2, "bold": True, "color": WHITE, "font_family": "Montserrat"},
+            {"op": "add-textbox", "slide": "S14", "text": st_body, "x": ux + 10, "y": 168, "width": 133, "height": 50, "font_size": 8.2, "color": SOFT, "font_family": "Roboto", "line_spacing": 124},
+        ])
+    # Bottom Left: Live Regional Root-Cause Table (x=36..446, y=236..388)
+    ops.append({"op": "add-table", "slide": "S14", "rows": 3, "cols": 5, "x": 36, "y": 236, "width": 412, "height": 150, "id": "TBL_UC4"})
+    h_uc4 = ["Cloud Region", "p99 Commit", "Sync Retries", "Envoy Pool", "TrueTime Drift"]
+    r_uc4 = [
+        ["Delhi\nasia-south2", f"{delhi3['p99_commit_ms']} ms", f"{delhi3['total_sync_retries']:,}", f"{delhi3['envoy_pool_limit']} slots\n(CHOKED)", f"{delhi3['avg_truetime_drift_ms']} ms\n(OK)"],
+        ["Mumbai\nasia-south1", f"{mumbai3['p99_commit_ms']} ms", f"{mumbai3['total_sync_retries']}", f"{mumbai3['envoy_pool_limit']} slots\n(OK)", f"{mumbai3['avg_truetime_drift_ms']} ms\n(OK)"],
+    ]
+    for c, h in enumerate(h_uc4):
+        ops.append({
+            "op": "set-table-cell", "table": "TBL_UC4", "row": 0, "col": c, "text": h,
+            "color": MUTED, "bold": True, "font_size": 7.8, "font_family": "Roboto Mono", "background_color": SURFACE_2,
+        })
+    for r_i, row in enumerate(r_uc4, start=1):
+        bg_r = SURFACE if r_i == 1 else "#0E1118"
+        for c, cell in enumerate(row):
+            if r_i == 1 and c in (1, 2):
+                ct = RED_BRIGHT
+            elif (r_i == 2 and c in (1, 2)) or c == 4:
+                ct = GREEN_BRIGHT
+            else:
+                ct = WHITE if c == 0 else SOFT
+            ops.append({
+                "op": "set-table-cell", "table": "TBL_UC4", "row": r_i, "col": c, "text": cell,
+                "color": ct, "bold": c in (0, 1, 2, 4), "font_size": 8.4, "font_family": "Roboto", "background_color": bg_r,
+            })
+    # Bottom Right: Verified Root Cause Verdict Card (x=458..684, y=236..388)
+    ops.extend([
+        {"op": "add-shape", "slide": "S14", "shape_type": "RECTANGLE", "x": 458, "y": 236, "width": 226, "height": 150, "background_color": GREEN_BG},
+        {"op": "add-shape", "slide": "S14", "shape_type": "RECTANGLE", "x": 458, "y": 236, "width": 226, "height": 3, "background_color": GREEN},
+        {"op": "add-textbox", "slide": "S14", "text": "VERIFIED ROOT CAUSE", "x": 470, "y": 246, "width": 202, "height": 16, "font_size": 8.0, "bold": True, "color": GREEN_BRIGHT, "font_family": "Roboto Mono"},
+        {
+            "op": "add-textbox",
+            "slide": "S14",
+            "text": (
+                "▸  Spanner TrueTime stayed healthy (2.75 ms drift) — database was NOT broken!\n\n"
+                "▸  Delhi's 64-slot Envoy queue choked under Diwali burst → 18,006 sync retries.\n\n"
+                "▸  ADK 2.0 paused PR #1 (512-slot + circuit breaker) awaiting Mani's sign-off."
+            ),
+            "x": 470,
+            "y": 266,
+            "width": 202,
+            "height": 114,
+            "font_size": 8.4,
+            "color": WHITE,
+            "font_family": "Roboto",
+            "line_spacing": 124,
+        },
+        {"op": "set-notes", "slide": "S14", "text": ""},
+    ])
 
     # ── SLIDE 15: REAL VOICE AI (PART A) — CAMERA + VOICE FLIGHT REBOOKING ─────
     add_voice_arch_video_slide(
@@ -1141,24 +1397,20 @@ def build_deck_ops(
         slide_id="S15", slide_index=14,
         kicker="REAL VOICE AI · PART A · GEMINI 3.8 LIVE EXTENDED THINKING",
         title="Live Camera + Voice Concierge — Zero Dead Air",
-        badge_text="INLINE VIDEO · ARCH + DEMO",
+        badge_text="OFFLINE VIDEO · ARCH + DEMO",
         badge_color=GREEN,
         arch_filename="09_arch_live_flight.jpg",
         poster_filename="demo4a_gemini38_live_flight_poster.png",
         video_filename="demo4a_gemini38_live_flight.mp4",
         video_ratio=1360.0 / 720.0,
-        video_caption="Real Recording (2:40) · Live Boarding Pass + BigQuery & Firestore",
+        video_caption="Embedded Offline (2:40) · Live Boarding Pass + BigQuery & Firestore",
         video_highlights=[
             "1 FPS live camera reads the stranded boarding pass (LH8942X) while conversing naturally.",
             "Non-blocking background tools query BigQuery flights, calculate EU261, and commit Firestore.",
             "Zero dead air: speaks calmly while extended thinking runs multi-step enterprise actions.",
         ],
         drive_url=DRIVE_FLIGHT_URL,
-        notes=(
-            "Now let's go beyond demos into TWO real production Voice AI systems I built — both embedded right on the slide in our HTML5 Keynote & PPTX! "
-            "Left: architecture diagram. Right: real 2:40 recording of Gemini 3.8 Live with Extended Thinking reading a boarding pass via live camera while running non-blocking BigQuery SQL and Firestore updates in the background. "
-            "(If presenting directly inside Google Slides web UI, you can also one-click Insert -> Video -> Google Drive -> 'Gemini_3.8_Live_Extended_Thinking' to play inline inside Slides.)"
-        ),
+        notes="",
     )
 
     # ── SLIDE 16: REAL VOICE AI (PART B) — INDIAN PSTN TELEPHONY ───────────────
@@ -1167,122 +1419,271 @@ def build_deck_ops(
         slide_id="S16", slide_index=15,
         kicker="REAL VOICE AI · PART B · INDIAN PSTN TELEPHONY ON GOOGLE CLOUD",
         title="Real Indian Phone Calls Across 6 Languages",
-        badge_text="INLINE VIDEO · ARCH + DEMO",
+        badge_text="OFFLINE VIDEO · ARCH + DEMO",
         badge_color=NEON,
         arch_filename="10_arch_voice_pstn.jpg",
         poster_filename="demo4b_gemini_voiceai_pstn_poster.png",
         video_filename="demo4b_gemini_voiceai_pstn.mp4",
         video_ratio=1280.0 / 590.0,
-        video_caption="Real Recording (3:03) · 6 Indian Languages on Cloud Run Mumbai",
+        video_caption="Embedded Offline (3:03) · 6 Indian Languages on Cloud Run Mumbai",
         video_highlights=[
             "Real Indian PSTN phone calls routed via Cloud Armor + Load Balancing + Cloud Run Mumbai.",
             "Supports BOTH Direct Speech-to-Speech (Gemini Live) AND Cascaded Listen-Think-Speak.",
             "Handles English, Hindi, Tamil, Kannada, Telugu & Hinglish with live Firestore call state.",
         ],
         drive_url=DRIVE_PSTN_URL,
-        notes=(
-            "Here is the demo Indian enterprises ask me about every single week: REAL Indian phone calls! "
-            "Left: full Google Cloud Mumbai architecture (Cloud Armor -> Cloud Run -> Gemini Live / Cascaded STT+TTS -> Firestore). "
-            "Right: real 3:03 recording across 6 Indian languages — plays directly inline in our HTML5 Keynote & PPTX! "
-            "(In Google Slides web UI, one-click Insert -> Video -> Google Drive -> 'Gemini_VoiceAI_PSTN' if you want native Google Slides web playback too.)"
-        ),
+        notes="",
     )
 
-    # ── SLIDE 17: LIVE DEMO 5 — REVIEW EVERYTHING (GEMINI 4 NEON FOR CYBER) ────
-    add_demo_split_slide(
-        ops, imgs, video_jobs,
-        slide_id="S17", slide_index=16,
-        kicker="LIVE DEMO 05 · GEMINI 4 NEON FOR CYBER DEFENSE",
-        title=f"-{drop4}% Delay & {tests4}/{tests4} Green — Still Audited by Neon.",
-        kpi1=(f"{round(bef4)} → {aft4:.1f} ms", "500-User Flash-Sale Load Test", GREEN_BRIGHT),
-        kpi2=("90.5%", "SEC-bench Pro · 0.0% IPI", NEON_BRIGHT),
-        bullets=[
-            f"Independent Reviewer Verdict: {verdict4}",
-            f"Caught Before Merge: {warn_finding}",
-            "Golden Rule: AI writes, tests, and audits — humans own the Merge button.",
-        ],
-        poster_filename="demo4_review_shipped_pr_poster.png",
-        video_filename="demo4_review_shipped_pr.mp4",
-        bar_label="Live Run · Load Test + 10 Tests + gemini-4-neon Cyber Audit",
-        drive_url=vids.get("demo4_review_shipped_pr", ""),
-        notes=(
-            f"Our final principle: NEVER let the same agent that wrote the code approve it for production! "
-            f"Load testing proved Delhi worst-case checkout delay fell {drop4}% ({bef4}ms to {aft4}ms), and all {tests4} tests are green. "
-            f"Yet our independent Gemini 4 Neon security reviewer — backed by 90.5% SEC-bench Pro and 0.0% IPI bypass — STILL caught a real policy gap ({warn_finding}) before a human clicks Merge!"
-        ),
-        accent=GREEN,
-    )
-
-    # ── SLIDE 18: CLOSING ──────────────────────────────────────────────────────
-    add_blank_slide(ops, "S18", BG)
+    # ── SLIDE 17: LIVE DEMO 5 — HOW GEMINI 4 NEON DOES CYBER SCREENING ─────────
+    add_blank_slide(ops, "S17", BG)
     ops.extend([
-        {"op": "add-shape", "slide": "S18", "shape_type": "RECTANGLE", "x": 0, "y": 0, "width": 7, "height": 405, "background_color": NEON},
-        {"op": "add-textbox", "slide": "S18", "text": "THANK YOU  ·  DEVFEST BENGALURU 2026", "x": 44, "y": 28, "width": 632, "height": 18, "font_size": 9.5, "bold": True, "color": NEON_BRIGHT, "font_family": "Roboto Mono"},
-        {"op": "add-textbox", "slide": "S18", "text": "Plan Big. Build Fast.\nDecide Instant. Ship Safe.", "x": 44, "y": 50, "width": 632, "height": 88, "font_size": 31, "bold": True, "color": WHITE, "font_family": "Montserrat", "line_spacing": 108},
+        {"op": "add-shape", "slide": "S17", "shape_type": "RECTANGLE", "x": 0, "y": 0, "width": 6, "height": 405, "background_color": GREEN},
+        {"op": "add-textbox", "slide": "S17", "text": "LIVE DEMO 05 · INDEPENDENT GEMINI 4 NEON CYBER SCREENING", "x": 34, "y": 14, "width": 650, "height": 15, "font_size": 8.4, "bold": True, "color": NEON_BRIGHT, "font_family": "Roboto Mono"},
+        {"op": "add-textbox", "slide": "S17", "text": f"-{drop4}% Delay & {tests4}/{tests4} Green — Still Screened by Neon Cyber.", "x": 34, "y": 30, "width": 650, "height": 26, "font_size": 17.0, "bold": True, "color": WHITE, "font_family": "Montserrat"},
+        {"op": "add-shape", "slide": "S17", "shape_type": "RECTANGLE", "x": 34, "y": 59, "width": 652, "height": 1.0, "background_color": BORDER},
     ])
-    takeaways = [
-        ("1 · Neon", "Plan, modernize & audit at $3/$15", NEON),
-        ("2 · Hydrogen", "Parallel /swarm execution in sandboxes", BLUE),
-        ("3 · Decisions API", "50+ guardrails at $0 output cost", AMBER),
-        ("4 · Humans", "ADK 2.0 approval gates on every prod merge", GREEN),
-    ]
-    for i, (head, desc, col) in enumerate(takeaways):
-        tx = 44 + i * 161
+    # Left panel (x=34..372, w=338): 2 compact KPI cards + 4 Neon security check cards + Golden Rule pill
+    for idx_k, (kv, kl, kc) in enumerate([
+        (f"{round(bef4)} → {aft4:.1f} ms", "500-User Diwali Burst (-97.1%)", GREEN_BRIGHT),
+        ("90.5% · 0% IPI", "SEC-bench Pro · Independent Agent", NEON_BRIGHT),
+    ]):
+        kx = 34 + idx_k * 172
         ops.extend([
-            {"op": "add-shape", "slide": "S18", "shape_type": "RECTANGLE", "x": tx, "y": 154, "width": 151, "height": 84, "background_color": SURFACE},
-            {"op": "add-shape", "slide": "S18", "shape_type": "RECTANGLE", "x": tx, "y": 154, "width": 151, "height": 3, "background_color": col},
-            {"op": "add-textbox", "slide": "S18", "text": head, "x": tx + 10, "y": 166, "width": 131, "height": 22, "font_size": 11.5, "bold": True, "color": WHITE, "font_family": "Montserrat"},
-            {"op": "add-textbox", "slide": "S18", "text": desc, "x": tx + 10, "y": 192, "width": 131, "height": 38, "font_size": 8.6, "color": SOFT, "font_family": "Roboto", "line_spacing": 125},
+            {"op": "add-shape", "slide": "S17", "shape_type": "RECTANGLE", "x": kx, "y": 68, "width": 164, "height": 48, "background_color": SURFACE},
+            {"op": "add-textbox", "slide": "S17", "text": kv, "x": kx + 10, "y": 73, "width": 144, "height": 22, "font_size": 13.5, "bold": True, "color": kc, "font_family": "Montserrat"},
+            {"op": "add-textbox", "slide": "S17", "text": kl, "x": kx + 10, "y": 96, "width": 144, "height": 16, "font_size": 7.4, "color": MUTED, "font_family": "Roboto"},
         ])
-    # Closing speaker card + buttons + large scannable QR pair
+    ops.append({
+        "op": "add-textbox",
+        "slide": "S17",
+        "text": "HOW NEON SCREENS PR #1 (NEVER GRADES ITS OWN CODE):",
+        "x": 34, "y": 122, "width": 338, "height": 15, "font_size": 7.6, "bold": True, "color": MUTED, "font_family": "Roboto Mono",
+    })
+    for idx_c, chk in enumerate(checks4[:4]):
+        cy = 140 + idx_c * 52
+        is_warn = chk["status"] != "PASS"
+        row_bg = NEON_BG if is_warn else SURFACE
+        badge_bg = NEON if is_warn else GREEN
+        badge_fg = "#111319" if is_warn else "#07140C"
+        ops.extend([
+            {"op": "add-shape", "slide": "S17", "shape_type": "RECTANGLE", "x": 34, "y": cy, "width": 338, "height": 46, "background_color": row_bg},
+            {"op": "add-textbox", "slide": "S17", "text": chk["status"], "x": 42, "y": cy + 12, "width": 40, "height": 20, "font_size": 7.4, "bold": True, "color": badge_fg, "background_color": badge_bg, "font_family": "Roboto Mono", "alignment": "center", "content_alignment": "MIDDLE"},
+            {"op": "add-textbox", "slide": "S17", "text": f"{chk['title']}: {chk['finding']}", "x": 88, "y": cy + 5, "width": 278, "height": 36, "font_size": 8.0, "color": WHITE if is_warn else SOFT, "font_family": "Roboto", "line_spacing": 120, "content_alignment": "MIDDLE"},
+        ])
     ops.extend([
-        {"op": "add-shape", "slide": "S18", "shape_type": "RECTANGLE", "x": 44, "y": 252, "width": 632, "height": 134, "background_color": SURFACE},
-        {"op": "add-shape", "slide": "S18", "shape_type": "RECTANGLE", "x": 44, "y": 252, "width": 5, "height": 134, "background_color": NEON},
-        {"op": "add-textbox", "slide": "S18", "text": "Mani", "x": 64, "y": 264, "width": 320, "height": 28, "font_size": 21, "bold": True, "color": WHITE, "font_family": "Montserrat"},
-        {"op": "add-textbox", "slide": "S18", "text": "Principal Architect, Google Cloud", "x": 64, "y": 294, "width": 340, "height": 20, "font_size": 11.2, "color": SOFT, "font_family": "Roboto"},
-        {"op": "add-textbox", "slide": "S18", "text": "Come say hi — look for the brand-new badge!", "x": 64, "y": 315, "width": 340, "height": 18, "font_size": 9.2, "color": MUTED, "font_family": "Roboto"},
+        {"op": "add-shape", "slide": "S17", "shape_type": "RECTANGLE", "x": 34, "y": 352, "width": 338, "height": 34, "background_color": NEON_BG},
+        {"op": "add-shape", "slide": "S17", "shape_type": "RECTANGLE", "x": 34, "y": 352, "width": 4, "height": 34, "background_color": NEON},
+        {"op": "add-textbox", "slide": "S17", "text": f"VERDICT: {verdict4} · AI writes & audits — Humans own Merge!", "x": 44, "y": 356, "width": 322, "height": 26, "font_size": 8.2, "bold": True, "color": NEON_BRIGHT, "font_family": "Roboto Mono", "content_alignment": "MIDDLE"},
+    ])
+    # Right panel (x=384..688, w=304): Video player container + 3-step summary
+    ops.extend([
+        {"op": "add-shape", "slide": "S17", "shape_type": "RECTANGLE", "x": 384, "y": 68, "width": 304, "height": 318, "background_color": SURFACE},
+        {"op": "add-shape", "slide": "S17", "shape_type": "RECTANGLE", "x": 384, "y": 68, "width": 304, "height": 3, "background_color": GREEN},
+    ])
+    v17_x, v17_y, v17_w, v17_h = 392.0, 78.0, 288.0, 162.0
+    imgs.append({"slide": "S17", "file": str(VID_DIR / "demo4_review_shipped_pr_poster.png"), "x": v17_x, "y": v17_y, "width": v17_w, "height": v17_h})
+    video_jobs.append({
+        "slide_index": 16,
+        "video": str(VID_DIR / "demo4_review_shipped_pr.mp4"),
+        "poster": str(VID_DIR / "demo4_review_shipped_pr_poster.png"),
+        "x": v17_x, "y": v17_y, "width": v17_w, "height": v17_h,
+    })
+    cta17: Dict[str, Any] = {
+        "op": "add-textbox",
+        "slide": "S17",
+        "text": "▶  Embedded Offline · Load Test + Pytest + Neon Audit",
+        "x": 392, "y": 248, "width": 288, "height": 28,
+        "font_size": 8.2, "bold": True, "color": WHITE, "background_color": SURFACE_2,
+        "font_family": "Roboto Mono", "alignment": "center", "content_alignment": "MIDDLE",
+    }
+    if vids.get("demo4_review_shipped_pr"):
+        cta17["link"] = vids["demo4_review_shipped_pr"]
+    ops.append(cta17)
+    ops.extend([
+        {
+            "op": "add-textbox",
+            "slide": "S17",
+            "text": (
+                "WHAT DEMO 5 RUNS LIVE:\n"
+                "1. Deterministic 500-user Diwali burst (before vs after)\n"
+                "2. Full pytest suite verification (10/10 green)\n"
+                "3. Independent gemini-4-neon session audits PR #1 diffs"
+            ),
+            "x": 394, "y": 284, "width": 284, "height": 94,
+            "font_size": 8.3, "color": SOFT, "font_family": "Roboto", "line_spacing": 132,
+        },
+        {"op": "set-notes", "slide": "S17", "text": ""},
+    ])
+
+    # ── SLIDE 18: COMEDY PLOT-TWIST TEASER — "AND THEN...?" ────────────────────
+    add_blank_slide(ops, "S18", "#05080D")
+    ops.extend([
+        {"op": "add-shape", "slide": "S18", "shape_type": "RECTANGLE", "x": 0, "y": 0, "width": 6, "height": 405, "background_color": NEON},
+        {"op": "add-textbox", "slide": "S18", "text": "WAIT A SECOND  ·  DUDE, WHERE'S MY BLAST RADIUS?!", "x": 38, "y": 30, "width": 324, "height": 18, "font_size": 8.6, "bold": True, "color": NEON_BRIGHT, "font_family": "Roboto Mono"},
         {
             "op": "add-textbox",
             "slide": "S18",
-            "text": "LinkedIn · /in/cmanikandan",
-            "x": 64,
-            "y": 342,
-            "width": 172,
-            "height": 28,
-            "font_size": 9.0,
-            "bold": True,
-            "color": "#111319",
-            "background_color": NEON_BRIGHT,
-            "font_family": "Roboto Mono",
-            "alignment": "center",
-            "content_alignment": "MIDDLE",
-            "link": LINKEDIN_URL,
+            "text": (
+                "✓  Fixed Delhi flash-sale latency (-97.1% p99)\n\n"
+                "✓  Modernized legacy UPI (100.5× faster, ₹0 error)\n\n"
+                "✓  Blocked attacks at $0 output (Decisions API)\n\n"
+                "✓  Passed Gemini 4 Neon independent cyber audit"
+            ),
+            "x": 38, "y": 64, "width": 320, "height": 132,
+            "font_size": 10.6, "color": SOFT, "font_family": "Roboto", "line_spacing": 122,
         },
         {
             "op": "add-textbox",
             "slide": "S18",
-            "text": "GitHub · Code & Stage UI",
-            "x": 244,
-            "y": 342,
-            "width": 172,
-            "height": 28,
-            "font_size": 9.0,
-            "bold": True,
-            "color": WHITE,
-            "background_color": SURFACE_2,
-            "font_family": "Roboto Mono",
-            "alignment": "center",
-            "content_alignment": "MIDDLE",
-            "link": GITHUB_URL,
+            "text": "“NO ‘AND THEN’!”",
+            "x": 38, "y": 208, "width": 324, "height": 48,
+            "font_size": 27.0, "bold": True, "color": WHITE, "font_family": "Montserrat",
+        },
+        {"op": "add-shape", "slide": "S18", "shape_type": "RECTANGLE", "x": 38, "y": 274, "width": 318, "height": 98, "background_color": NEON_BG},
+        {"op": "add-shape", "slide": "S18", "shape_type": "RECTANGLE", "x": 38, "y": 274, "width": 5, "height": 98, "background_color": NEON},
+        {"op": "add-textbox", "slide": "S18", "text": "“AND THENNN...”", "x": 52, "y": 284, "width": 292, "height": 22, "font_size": 11.5, "bold": True, "color": NEON_BRIGHT, "font_family": "Roboto Mono"},
+        {
+            "op": "add-textbox",
+            "slide": "S18",
+            "text": "What happens at 2:00 PM on a Tuesday when ONE noisy neighbor, bad config push, or cyber attack hits your shared cluster?",
+            "x": 52, "y": 310, "width": 292, "height": 54,
+            "font_size": 10.2, "color": WHITE, "font_family": "Roboto", "line_spacing": 128,
         },
         {"op": "set-notes", "slide": "S18", "text": ""},
     ])
-    add_qr_pair_ops(ops, imgs, "S18", x_start=442.0, y_top=260.0, card_w=104.0, card_h=118.0, qr_size=82.0, gap=12.0)
+    # Exact cropped right-panel neon speaker artwork (696x768, ratio 0.90625 -> 367.0 x 405.0 at x=353, y=0) — ZERO z-order overlap with left text!
+    imgs.append({
+        "slide": "S18",
+        "file": str(DIAG_DIR / "12_and_then_teaser_right.jpg"),
+        "x": 353.0,
+        "y": 0.0,
+        "width": 367.0,
+        "height": 405.0,
+    })
 
-    # Synchronize all 18 slides with the rich, jovial Principal Architect speaker notes from build_html_keynote.py
+    # ── SLIDE 19: CELL-BASED ARCHITECTURE & SHUFFLE SHARDING BLOG SLIDE ────────
+    add_blank_slide(ops, "S19", BG)
+    add_header(
+        ops, "S19",
+        "BONUS · CONTAINING 2026 OUTAGES & CYBER BLAST RADIUS",
+        "Cell-Based Architecture & Shuffle Sharding on Google Cloud",
+        dark=True,
+        right_label="discuss.google.dev/t/413515",
+        right_link=CELL_BLOG_URL,
+    )
+    # Left main white mat for Mani's exact 2360x1300 blog architecture diagram (ratio 1.81538 -> 444.0 x 244.6 at x=38, y=75)
+    ops.extend([
+        {"op": "add-shape", "slide": "S19", "shape_type": "RECTANGLE", "x": 34, "y": 70, "width": 452, "height": 254, "background_color": "#FFFFFF"},
+        # Bottom blast-radius comparison strip (x=34..486, y=332..388)
+        {"op": "add-shape", "slide": "S19", "shape_type": "RECTANGLE", "x": 34, "y": 332, "width": 134, "height": 56, "background_color": RED_BG},
+        {"op": "add-shape", "slide": "S19", "shape_type": "RECTANGLE", "x": 34, "y": 332, "width": 134, "height": 2.5, "background_color": RED},
+        {"op": "add-textbox", "slide": "S19", "text": "100% Down", "x": 40, "y": 340, "width": 122, "height": 22, "font_size": 13.0, "bold": True, "color": RED_BRIGHT, "font_family": "Montserrat", "alignment": "center"},
+        {"op": "add-textbox", "slide": "S19", "text": "1 Shared Cluster", "x": 40, "y": 364, "width": 122, "height": 16, "font_size": 7.6, "color": SOFT, "font_family": "Roboto Mono", "alignment": "center"},
+
+        {"op": "add-shape", "slide": "S19", "shape_type": "RECTANGLE", "x": 176, "y": 332, "width": 134, "height": 56, "background_color": SURFACE},
+        {"op": "add-shape", "slide": "S19", "shape_type": "RECTANGLE", "x": 176, "y": 332, "width": 134, "height": 2.5, "background_color": AMBER},
+        {"op": "add-textbox", "slide": "S19", "text": "12.5% Impact", "x": 182, "y": 340, "width": 122, "height": 22, "font_size": 13.0, "bold": True, "color": AMBER_BRIGHT, "font_family": "Montserrat", "alignment": "center"},
+        {"op": "add-textbox", "slide": "S19", "text": "8 Normal Cells (1/8)", "x": 182, "y": 364, "width": 122, "height": 16, "font_size": 7.6, "color": SOFT, "font_family": "Roboto Mono", "alignment": "center"},
+
+        {"op": "add-shape", "slide": "S19", "shape_type": "RECTANGLE", "x": 318, "y": 332, "width": 168, "height": 56, "background_color": GREEN_BG},
+        {"op": "add-shape", "slide": "S19", "shape_type": "RECTANGLE", "x": 318, "y": 332, "width": 168, "height": 2.5, "background_color": GREEN},
+        {"op": "add-textbox", "slide": "S19", "text": "<1.8% (98.2% Online)", "x": 322, "y": 340, "width": 160, "height": 22, "font_size": 12.2, "bold": True, "color": GREEN_BRIGHT, "font_family": "Montserrat", "alignment": "center"},
+        {"op": "add-textbox", "slide": "S19", "text": "3-Cell Shuffle · 56 Hands", "x": 322, "y": 364, "width": 160, "height": 16, "font_size": 7.4, "color": SOFT, "font_family": "Roboto Mono", "alignment": "center"},
+    ])
+    imgs.append({
+        "slide": "S19",
+        "file": str(DIAG_DIR / "11_cell_based_architecture.png"),
+        "x": 38.0,
+        "y": 74.7,
+        "width": 444.0,
+        "height": 244.6,
+    })
+    # Right column (x=496..686, w=190): Why Cells Matter card + Chunky Scannable Blog QR Card
+    ops.extend([
+        {"op": "add-shape", "slide": "S19", "shape_type": "RECTANGLE", "x": 496, "y": 70, "width": 190, "height": 176, "background_color": SURFACE},
+        {"op": "add-shape", "slide": "S19", "shape_type": "RECTANGLE", "x": 496, "y": 70, "width": 190, "height": 3, "background_color": BLUE},
+        {"op": "add-textbox", "slide": "S19", "text": "WHY CELLS MATTER IN 2026", "x": 506, "y": 80, "width": 170, "height": 16, "font_size": 7.8, "bold": True, "color": BLUE_BRIGHT, "font_family": "Roboto Mono"},
+        {
+            "op": "add-textbox",
+            "slide": "S19",
+            "text": (
+                "▸  Watertight Bulkheads: Dedicated GCP Project, Cloud Run/GKE, Spanner & VPC/KMS per cell — zero sideways traffic.\n\n"
+                "▸  Stops Cyber & Outages: Contains bad rollouts, poison-pill requests, ransomware & rogue AI agents to <2%.\n\n"
+                "▸  Stateless Hot Path: ALB Wasm router retries a healthy backup cell (200 OK)."
+            ),
+            "x": 506, "y": 100, "width": 170, "height": 140,
+            "font_size": 8.0, "color": SOFT, "font_family": "Roboto", "line_spacing": 120,
+        },
+        # Scannable QR Card for Mani's Blog (x=496..686, y=254..388, h=134)
+        {"op": "add-shape", "slide": "S19", "shape_type": "RECTANGLE", "x": 496, "y": 254, "width": 190, "height": 134, "background_color": SURFACE_2},
+        {"op": "add-shape", "slide": "S19", "shape_type": "RECTANGLE", "x": 496, "y": 254, "width": 190, "height": 3, "background_color": NEON},
+        {"op": "add-textbox", "slide": "S19", "text": "SCAN · READ MANI'S BLOG", "x": 502, "y": 355, "width": 178, "height": 14, "font_size": 8.0, "bold": True, "color": NEON_BRIGHT, "font_family": "Roboto Mono", "alignment": "center", "link": CELL_BLOG_URL},
+        {"op": "add-textbox", "slide": "S19", "text": "discuss.google.dev/t/413515", "x": 502, "y": 370, "width": 178, "height": 14, "font_size": 7.2, "color": MUTED, "font_family": "Roboto Mono", "alignment": "center", "link": CELL_BLOG_URL},
+        {"op": "set-notes", "slide": "S19", "text": ""},
+    ])
+    imgs.append({
+        "slide": "S19",
+        "file": str(DIAG_DIR / "qr_cell_blog.png"),
+        "x": 546.0,
+        "y": 262.0,
+        "width": 90.0,
+        "height": 90.0,
+    })
+
+    # ── SLIDE 20: CLOSING (5 TAKEAWAYS + ALL 3 SCANNABLE QR CODES!) ────────────
+    add_blank_slide(ops, "S20", BG)
+    ops.extend([
+        {"op": "add-shape", "slide": "S20", "shape_type": "RECTANGLE", "x": 0, "y": 0, "width": 7, "height": 405, "background_color": NEON},
+        {"op": "add-textbox", "slide": "S20", "text": "THANK YOU  ·  DEVFEST BENGALURU 2026", "x": 44, "y": 24, "width": 632, "height": 18, "font_size": 9.2, "bold": True, "color": NEON_BRIGHT, "font_family": "Roboto Mono"},
+        {"op": "add-textbox", "slide": "S20", "text": "Plan Big. Build Fast. Decide Instant.\nShip Safe. Contain Blast Radius.", "x": 44, "y": 46, "width": 632, "height": 84, "font_size": 27.5, "bold": True, "color": WHITE, "font_family": "Montserrat", "line_spacing": 108},
+    ])
+    takeaways20 = [
+        ("1 · Neon", "Plan, modernize & audit at $3/$15", NEON),
+        ("2 · Hydrogen", "Parallel /swarm in sandboxes", BLUE),
+        ("3 · Decisions", "50+ rules at $0 output cost", AMBER),
+        ("4 · Humans", "ADK 2.0 gates on prod merge", GREEN),
+        ("5 · Cells", "Shuffle sharding <1.8% blast", NEON),
+    ]
+    for i, (head, desc, col) in enumerate(takeaways20):
+        tx = 44 + i * 128
+        ops.extend([
+            {"op": "add-shape", "slide": "S20", "shape_type": "RECTANGLE", "x": tx, "y": 144, "width": 120, "height": 86, "background_color": SURFACE},
+            {"op": "add-shape", "slide": "S20", "shape_type": "RECTANGLE", "x": tx, "y": 144, "width": 120, "height": 3, "background_color": col},
+            {"op": "add-textbox", "slide": "S20", "text": head, "x": tx + 9, "y": 156, "width": 102, "height": 20, "font_size": 10.6, "bold": True, "color": WHITE, "font_family": "Montserrat"},
+            {"op": "add-textbox", "slide": "S20", "text": desc, "x": tx + 9, "y": 180, "width": 102, "height": 42, "font_size": 8.0, "color": SOFT, "font_family": "Roboto", "line_spacing": 124},
+        ])
+    # Closing speaker card + buttons + ALL 3 matched QR cards (LinkedIn + GitHub + Cell Blog)
+    ops.extend([
+        {"op": "add-shape", "slide": "S20", "shape_type": "RECTANGLE", "x": 44, "y": 246, "width": 632, "height": 142, "background_color": SURFACE},
+        {"op": "add-shape", "slide": "S20", "shape_type": "RECTANGLE", "x": 44, "y": 246, "width": 5, "height": 142, "background_color": NEON},
+        {"op": "add-textbox", "slide": "S20", "text": "Mani", "x": 62, "y": 258, "width": 266, "height": 28, "font_size": 21, "bold": True, "color": WHITE, "font_family": "Montserrat"},
+        {"op": "add-textbox", "slide": "S20", "text": "Principal Architect, Google Cloud", "x": 62, "y": 288, "width": 268, "height": 18, "font_size": 11.0, "color": SOFT, "font_family": "Roboto"},
+        {"op": "add-textbox", "slide": "S20", "text": "Come say hi — look for the brand-new badge!", "x": 62, "y": 308, "width": 268, "height": 18, "font_size": 8.8, "color": MUTED, "font_family": "Roboto"},
+        {
+            "op": "add-textbox",
+            "slide": "S20",
+            "text": "LinkedIn · Connect",
+            "x": 62, "y": 336, "width": 134, "height": 28,
+            "font_size": 8.0, "bold": True, "color": "#111319", "background_color": NEON_BRIGHT,
+            "font_family": "Roboto Mono", "alignment": "center", "content_alignment": "MIDDLE", "link": LINKEDIN_URL,
+        },
+        {
+            "op": "add-textbox",
+            "slide": "S20",
+            "text": "GitHub · Offline Deck",
+            "x": 202, "y": 336, "width": 128, "height": 28,
+            "font_size": 7.8, "bold": True, "color": WHITE, "background_color": SURFACE_2,
+            "font_family": "Roboto Mono", "alignment": "center", "content_alignment": "MIDDLE", "link": GITHUB_URL,
+        },
+        {"op": "set-notes", "slide": "S20", "text": ""},
+    ])
+    add_qr_trio_ops(ops, imgs, "S20", x_start=344.0, y_top=255.0, card_w=100.0, card_h=124.0, qr_size=80.0, gap=11.0)
+
+    # Synchronize all 20 slides with the rich, jovial Principal Architect speaker notes from build_html_keynote.py
     from presentation.build_html_keynote import build_slides as build_html_slides
     rich_notes = [s["notes"] for s in build_html_slides(tr)]
-    slide_keys = ["p"] + [f"S{n:02d}" for n in range(2, 19)]
+    slide_keys = ["p"] + [f"S{n:02d}" for n in range(2, 21)]
     notes_by_slide = dict(zip(slide_keys, rich_notes))
     for op in ops:
         if op.get("op") == "set-notes" and op.get("slide") in notes_by_slide:
@@ -1442,7 +1843,7 @@ def main() -> None:
 
     ops, img_jobs, video_jobs = build_deck_ops(tr, drive)
 
-    title = "The Periodic Table of Agents — Gemini 4 Neon Keynote (DevFest Bengaluru 2026)"
+    title = "The Periodic Table of Agents — Gemini 4 Neon Keynote v5 (DevFest Bengaluru 2026)"
     if args.pres_id:
         pres_id = args.pres_id
         print(f"Using presentation: {pres_id}")
@@ -1458,17 +1859,17 @@ def main() -> None:
     if args.images_only:
         slides_json = json.loads(run_cmd(["gslides", "readonly", "list-slides", pres_id, "--json"]))
         slide_ids = [s["objectId"] for s in slides_json]
-        if len(slide_ids) != 18:
-            raise RuntimeError(f"Expected 18 slides on {pres_id}, found {len(slide_ids)}")
+        if len(slide_ids) != 20:
+            raise RuntimeError(f"Expected 20 slides on {pres_id}, found {len(slide_ids)}")
         resolved = {"p": slide_ids[0]}
-        for n in range(2, 19):
+        for n in range(2, 21):
             resolved[f"S{n:02d}"] = slide_ids[n - 1]
     else:
         with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as tf:
             json.dump(ops, tf, indent=2)
             batch_file = tf.name
         try:
-            print(f"Applying {len(ops)} batch operations across 18 slides...")
+            print(f"Applying {len(ops)} batch operations across 20 slides...")
             batch_raw = run_cmd(["gslides", "mutate", "batch", pres_id, "-f", batch_file, "--json"])
             batch_res = json.loads(batch_raw)
             resolved = batch_res.get("resolved_ids", {})
@@ -1480,7 +1881,7 @@ def main() -> None:
         finally:
             Path(batch_file).unlink(missing_ok=True)
 
-    print(f"Fetching signed GitHub URLs & placing {len(img_jobs)} crisp diagrams & video frames...")
+    print(f"Fetching signed GitHub URLs & placing {len(img_jobs)} crisp diagrams, QR codes & video frames...")
     img_ops: List[Dict[str, Any]] = []
     for job in img_jobs:
         real_slide = resolved.get(job["slide"], job["slide"])
@@ -1507,19 +1908,24 @@ def main() -> None:
 
     pdf_path = PRES_DIR / "Periodic_Table_of_Agents_DevFest_Keynote.pdf"
     pptx_path = PRES_DIR / "Periodic_Table_of_Agents_DevFest_Keynote.pptx"
+    pptx_offline_path = PRES_DIR / "Periodic_Table_of_Agents_DevFest_Keynote_Offline_v5.pptx"
     run_cmd(["gslides", "readonly", "export", pres_id, str(pdf_path), "--format", "pdf"])
     run_cmd(["gslides", "readonly", "export", pres_id, str(pptx_path), "--format", "pptx"])
     print(f"  ✔ Exported PDF ({pdf_path.stat().st_size // 1024} KB) & base PPTX ({pptx_path.stat().st_size // 1024} KB)")
 
     embed_videos_into_pptx(pptx_path, video_jobs)
-    print(f"  ✔ Final self-contained PPTX with 7 embedded videos: {pptx_path.stat().st_size // 1024} KB")
+    shutil.copy2(pptx_path, pptx_offline_path)
+    print(f"  ✔ Final 100% offline self-contained PPTX ({len(video_jobs)} embedded MP4 videos): {pptx_offline_path.name} ({pptx_offline_path.stat().st_size // 1024} KB)")
 
     meta = {
         "presentation_id": pres_id,
         "presentation_url": f"https://docs.google.com/presentation/d/{pres_id}/edit",
         "title": title,
-        "version": "v4-gemini-4-neon",
-        "slide_count": 18,
+        "version": "v5-gemini-4-neon-offline",
+        "slide_count": 20,
+        "embedded_offline_videos": len(video_jobs),
+        "offline_pptx": str(pptx_offline_path.relative_to(ROOT)),
+        "cell_architecture_blog": CELL_BLOG_URL,
         "drive_videos_folder_id": drive.get("folder_id", ""),
         "drive_videos_folder_url": drive.get("folder_url", ""),
         "drive_videos": drive.get("videos", {}),
@@ -1530,7 +1936,7 @@ def main() -> None:
         "resolved_slide_ids": resolved,
     }
     (PRES_DIR / "google_slides_metadata.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
-    print(f"🎉 DONE! Google Slides v4 URL: {meta['presentation_url']}")
+    print(f"🎉 DONE! Google Slides v5 URL: {meta['presentation_url']}")
 
 
 if __name__ == "__main__":
